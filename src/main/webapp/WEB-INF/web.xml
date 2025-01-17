@@ -4,7 +4,7 @@
   
   <context-param>
     <param-name>dbUrl</param-name>
-    <param-value>jdbc:mysql://localhost:3306/IDS2?serverTimezone=UTC</param-value>
+    <param-value>jdbc:mysql://localhost:3306/sandc?serverTimezone=UTC</param-value>
   </context-param>
   
   <session-config>
@@ -28,9 +28,6 @@
   
   <welcome-file-list>
     <welcome-file>index.html</welcome-file>
-    <welcome-file>default.html</welcome-file>
-    <welcome-file>default.htm</welcome-file>
-    <welcome-file>default.jsp</welcome-file>
   </welcome-file-list>
   
   

@@ -3,12 +3,16 @@ create schema sandc;
 create table sandc.Student(
 	email varchar(50) primary key,
     name varchar(20) not null, 
-    cv varchar(1000) 
+    address varchar(20) not null,
+    phoneNumber varchar(20),
+    cv varchar(1000),
+    psw varchar(100) not null
 );
 
 create table sandc.Company(
 	email varchar(50) primary key,
-    name varchar(20) not null
+    name varchar(20) not null,
+    psw varchar(100) not null
 );
 
 create table sandc.WorkingPreferences( 
