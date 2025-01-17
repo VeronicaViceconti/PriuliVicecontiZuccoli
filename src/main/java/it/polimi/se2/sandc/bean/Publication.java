@@ -17,6 +17,4 @@ public class Publication{
 	public void setStudent(String student) {
 		this.student = student;
 	}
-	
-	
 }

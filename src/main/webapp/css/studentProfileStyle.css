@@ -1,0 +1,393 @@
+.profilo-studente {
+    background-color: #f8f9fa;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    width: 100%;
+  }
+  
+  .profilo-studente .div {
+    background-color: #f8f9fa;
+    width: 1440px;
+    height: 1379px;
+    position: relative;
+  }
+  
+  .profilo-studente .preferences {
+    position: absolute;
+    width: 757px;
+    height: 233px;
+    top: 1098px;
+    left: 47px;
+    border-radius: 20px;
+    overflow: hidden;
+  }
+
+  .card{
+    background-color: #f8f9fa;
+    border-radius: 20px;
+    overflow: hidden;
+    border: 1px solid;
+    border-color: #0000000d;
+    box-shadow: 3px 3px 5px #00000033;
+    padding: 10px;
+    font-size: 30px;
+    width: 677px;
+    height: 210px;
+    margin-top: 20px;
+    text-align: center;
+  }
+
+  .internship-info{
+    height: 100%;
+    display: grid;
+    grid-template-columns: auto auto;
+    padding: 10px;
+  }
+
+  .card-company {
+    position: relative;
+    top: 5px;
+    font-family: "Inter-Regular", Helvetica;
+    font-weight: 400;
+    color: #2e4057;
+    font-size: 40px;
+    letter-spacing: 0;
+    line-height: normal;
+    white-space: nowrap;
+  }
+
+  .card-info{
+    font-family: "Inter-Regular", Helvetica;
+    font-weight: 400;
+    color: #2e4057;
+    font-size: 20px;
+    letter-spacing: 0;
+    line-height: normal;
+    white-space: nowrap;
+  }
+
+  
+  .profilo-studente .text-wrapper {
+    position: absolute;
+    top: 104px;
+    left: 80px;
+    font-family: "Inter-Regular", Helvetica;
+    font-weight: 400;
+    color: #2e4057;
+    font-size: 20px;
+    letter-spacing: 0;
+    line-height: normal;
+    white-space: nowrap;
+  }
+  
+  .profilo-studente .lucide-map-pin {
+    position: absolute;
+    width: 24px;
+    height: 24px;
+    top: 148px;
+    left: 46px;
+  }
+  
+  .profilo-studente .lucide-calendar {
+    position: absolute;
+    width: 24px;
+    height: 24px;
+    top: 104px;
+    left: 402px;
+  }
+  
+  .profilo-studente .lucide-briefcase {
+    position: absolute;
+    width: 24px;
+    height: 24px;
+    top: 104px;
+    left: 46px;
+  }
+  
+  .profilo-studente .waiting-for-feedback {
+    position: absolute;
+    top: 1067px;
+    left: 66px;
+    font-family: "Inter-Regular", Helvetica;
+    font-weight: 400;
+    color: #2e4057;
+    font-size: 25px;
+    letter-spacing: 0;
+    line-height: normal;
+    white-space: nowrap;
+  }
+  
+  .profilo-studente .ongoing-internship {
+    position: absolute;
+    width: 757px;
+    height: 233px;
+    top: 817px;
+    left: 47px;
+    border-radius: 20px;
+    overflow: hidden;
+  }
+  
+  .profilo-studente .text-wrapper-5 {
+    position: absolute;
+    top: 777px;
+    left: 66px;
+    font-family: "Inter-Regular", Helvetica;
+    font-weight: 400;
+    color: #2e4057;
+    font-size: 25px;
+    letter-spacing: 0;
+    line-height: normal;
+    white-space: nowrap;
+  }
+  
+  .profilo-studente .text-wrapper-6 {
+    position: absolute;
+    top: 200px;
+    left: 859px;
+    font-family: "Inter-Regular", Helvetica;
+    font-weight: 400;
+    color: #2e4057;
+    font-size: 25px;
+    letter-spacing: 0;
+    line-height: normal;
+    white-space: nowrap;
+  }
+  
+  .profilo-studente .preferences-2 {
+    position: absolute;
+    width: 757px;
+    height: 233px;
+    top: 536px;
+    left: 47px;
+    background-color: #f6f0eb;
+    border-radius: 20px;
+    overflow: hidden;
+  }
+  
+  .profilo-studente .lucide-square-pen {
+    position: absolute;
+    width: 25px;
+    height: 25px;
+    top: 15px;
+    left: 717px;
+  }
+  
+  .profilo-studente .p {
+    position: absolute;
+    width: 677px;
+    top: 28px;
+    left: 40px;
+    font-family: "Inter-Regular", Helvetica;
+    font-weight: 400;
+    color: #2e4057;
+    font-size: 20px;
+    letter-spacing: 0;
+    line-height: 35px;
+  }
+  
+  .profilo-studente .text-wrapper-7 {
+    position: absolute;
+    top: 505px;
+    left: 66px;
+    font-family: "Inter-Regular", Helvetica;
+    font-weight: 400;
+    color: #2e4057;
+    font-size: 25px;
+    letter-spacing: 0;
+    line-height: normal;
+    white-space: nowrap;
+  }
+  
+  .profilo-studente .user-information {
+    position: absolute;
+    width: 757px;
+    height: 233px;
+    top: 231px;
+    left: 47px;
+    background-color: #f6f0eb;
+    border-radius: 20px;
+    overflow: hidden;
+  }
+  
+  .profilo-studente .profilo {
+    position: absolute;
+    width: 160px;
+    height: 160px;
+    top: 40px;
+    left: 134px;
+  }
+  
+  .profilo-studente .text-wrapper-8 {
+    position: absolute;
+    width: 124px;
+    top: 51px;
+    left: 332px;
+    font-family: "Inter-Regular", Helvetica;
+    font-weight: 400;
+    color: #2e4057;
+    font-size: 20px;
+    letter-spacing: 0;
+    line-height: normal;
+    white-space: nowrap;
+  }
+  
+  .profilo-studente .text-wrapper-9 {
+    position: absolute;
+    width: 181px;
+    top: 83px;
+    left: 332px;
+    font-family: "Inter-Regular", Helvetica;
+    font-weight: 400;
+    color: #2e4057;
+    font-size: 20px;
+    letter-spacing: 0;
+    line-height: normal;
+    white-space: nowrap;
+  }
+  
+  .profilo-studente .text-wrapper-10 {
+    position: absolute;
+    width: 278px;
+    top: 115px;
+    left: 332px;
+    font-family: "Inter-Regular", Helvetica;
+    font-weight: 400;
+    color: #2e4057;
+    font-size: 20px;
+    letter-spacing: 0;
+    line-height: normal;
+    white-space: nowrap;
+  }
+  
+  .profilo-studente .text-wrapper-11 {
+    position: absolute;
+    width: 289px;
+    top: 147px;
+    left: 332px;
+    font-family: "Inter-Regular", Helvetica;
+    font-weight: 400;
+    color: #2e4057;
+    font-size: 20px;
+    letter-spacing: 0;
+    line-height: normal;
+    white-space: nowrap;
+  }
+  
+  .profilo-studente .PDF-frame {
+    position: absolute;
+    width: 541px;
+    height: 900px;
+    top: 231px;
+    left: 859px;
+    background-color: #f6f0eb;
+    border-radius: 20px;
+    overflow: hidden;
+  }
+  
+  .profilo-studente .frame {
+    width: 503px;
+    height: 787px;
+    top: 19px;
+    left: 19px;
+    background-color: #f8f9fa;
+    position: absolute;
+    border-radius: 20px;
+  }
+  
+  .profilo-studente .div-wrapper {
+    width: 157px;
+    height: 48px;
+    top: 831px;
+    left: 98px;
+    background-color: #a37659;
+    overflow: hidden;
+    border: 2px solid;
+    position: absolute;
+    border-radius: 20px;
+  }
+  
+  .profilo-studente .text-wrapper-12 {
+    position: absolute;
+    top: 10px;
+    left: 45px;
+    font-family: "Inter-SemiBold", Helvetica;
+    font-weight: 600;
+    color: #ddc0a2;
+    font-size: 20px;
+    letter-spacing: 0;
+    line-height: normal;
+    white-space: nowrap;
+  }
+  
+  .profilo-studente .frame-2 {
+    width: 157px;
+    height: 48px;
+    top: 831px;
+    left: 285px;
+    background-color: #a37659;
+    overflow: hidden;
+    border: 2px solid;
+    position: absolute;
+    border-radius: 20px;
+  }
+  
+  .profilo-studente .text-wrapper-13 {
+    position: absolute;
+    top: 10px;
+    left: 31px;
+    font-family: "Inter-SemiBold", Helvetica;
+    font-weight: 600;
+    color: #ddc0a2;
+    font-size: 20px;
+    letter-spacing: 0;
+    line-height: normal;
+    white-space: nowrap;
+  }
+  
+  .profilo-studente .text-wrapper-14 {
+    position: absolute;
+    top: 122px;
+    left: 47px;
+    font-family: "Inter-Regular", Helvetica;
+    font-weight: 400;
+    color: #2e4057;
+    font-size: 40px;
+    letter-spacing: 0;
+    line-height: normal;
+    white-space: nowrap;
+  }
+  
+  .profilo-studente .barra-superiore {
+    position: absolute;
+    width: 1440px;
+    height: 86px;
+    top: 0;
+    left: 0;
+    background-color: #ffffff;
+    border-radius: 0px 0px 20px 20px;
+    overflow: hidden;
+  }
+  
+  .profilo-studente .titolo {
+    position: absolute;
+    width: 459px;
+    top: 15px;
+    left: 490px;
+    font-family: "Inter-Regular", Helvetica;
+    font-weight: 400;
+    color: #2e4057;
+    font-size: 45px;
+    letter-spacing: 0;
+    line-height: normal;
+    white-space: nowrap;
+  }
+  
+  .profilo-studente .home {
+    position: absolute;
+    width: 35px;
+    height: 35px;
+    top: 26px;
+    left: 30px;
+  }
+  
