@@ -6,6 +6,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class StudentDAO {
+import it.polimi.se2.sandc.bean.Student;
 
+public class StudentDAO {
+	
 }
