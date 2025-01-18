@@ -88,16 +88,15 @@
     document.getElementById("loginbutton").addEventListener('click', (e) => {
 		var form = e.target.closest("form");
    		if (form.checkValidity()) {
-			makeCall("POST", 'LoginManager', form,  
+			makeCall("POST", 'LoginManager?page=toHomepage', form,  
 	        function(x) { // X è UN OGGETTO XMLHttpRequest
 	          if (x.readyState == XMLHttpRequest.DONE) {
 	            var message = x.responseText;
 	            
 	            switch (x.status) {
 	              case 200:  //richiesta andata a buon fine
-	              	document.getElementById("errors").textContent = "NICE2";
 	            	sessionStorage.setItem('username', message);  //mi salvo in js il nome dell'utente
-	                //window.location.href = "HomePage.html";
+	                window.location.href = "homePageStudente.html";
 	                break;
 	              case 400: // bad request
 	                document.getElementById("errors").textContent = message;

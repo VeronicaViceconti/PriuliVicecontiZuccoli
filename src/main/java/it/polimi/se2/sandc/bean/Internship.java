@@ -1,6 +1,6 @@
 package it.polimi.se2.sandc.bean;
 
-import java.sql.Date;
+import java.util.Date;
 import java.util.List;
 
 public class Internship {
@@ -9,15 +9,8 @@ public class Internship {
 	private Company company; 
 	private Date startingDate;
 	private Date endingDate;
-	private List<CvRequirement> choosenCvRequirements; 
+	private String offeredConditions;
 	
-	
-	public List<CvRequirement> getChoosenCvRequirements() {
-		return choosenCvRequirements;
-	}
-	public void setChoosenCvRequirements(List<CvRequirement> choosenCvRequirements) {
-		this.choosenCvRequirements = choosenCvRequirements;
-	}
 	public int getId() {
 		return id;
 	}
@@ -47,6 +40,12 @@ public class Internship {
 	}
 	public void setEndingDate(Date endingDate) {
 		this.endingDate = endingDate;
+	}
+	public String getOfferedConditions() {
+		return offeredConditions;
+	}
+	public void setOfferedConditions(String offeredConditions) {
+		this.offeredConditions = offeredConditions;
 	}
 	
 	

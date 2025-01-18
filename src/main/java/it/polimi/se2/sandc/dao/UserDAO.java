@@ -59,7 +59,7 @@ public class UserDAO {
 			if (!result2.isBeforeFirst()) {// no results, credential check failed for both
 				return null;	
 			}
-			else { //student
+			else { //company
 				result2.next();
 				User user = new User();
 				user.setName(result2.getString("name"));
@@ -91,7 +91,6 @@ public class UserDAO {
 			query = "INSERT into Company (email,name,address,phoneNumber, psw) VALUES(?, ?, ?, ?, ?)";
 		PreparedStatement pstatement = null;
 		try {
-			System.out.println("creazione query");
 			pstatement = connection.prepareStatement(query);
 			pstatement.setString(1, email);
 			pstatement.setString(2, name);
@@ -99,7 +98,6 @@ public class UserDAO {
 			pstatement.setString(4, phoneNumber);
 			pstatement.setString(5, psw);
 			pstatement.executeUpdate();
-			System.out.println("query eseguita");
 		} catch(SQLException e) {
 			throw new SQLException("Error while creating new user");
 		}finally {

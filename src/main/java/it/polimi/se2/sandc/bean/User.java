@@ -19,7 +19,7 @@ public class User {
 	}
 	
 	public String getWhichUser() {
-		return name;
+		return whichUser;
 	}
 	public void setWhichUser(String whichUser) {
 		this.whichUser = whichUser;

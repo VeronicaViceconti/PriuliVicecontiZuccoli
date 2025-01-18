@@ -1,9 +1,20 @@
 package it.polimi.se2.sandc.bean;
 
+import java.util.List;
+
 public class Student{
 	private String email;
 	private String cv; 
 	private String name;
+	private List<Publication> publications;
+	
+	public List<Publication> getPublications(){
+		return publications;
+	}
+	
+	public void setPublications(List<Publication> publications) {
+		this.publications = publications;
+	}
 	
 	public String getEmail() {
 		return email;

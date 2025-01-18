@@ -12,6 +12,8 @@ create table sandc.Student(
 create table sandc.Company(
 	email varchar(50) primary key,
     name varchar(20) not null,
+    address varchar(20) not null,
+    phoneNumber varchar(20),
     psw varchar(100) not null
 );
 
@@ -39,8 +41,10 @@ create table sandc.Internship (
 	id integer primary key auto_increment, 
     commonId integer not null,
     company varchar(50) not null,
+    openSeats int not null,
     startingDate date,
     endingDate date,
+    offeredConditions varchar(500) not null,
     foreign key (company) references Company(email) on update cascade on delete cascade,	
     check (startingDate < endingDate)
 );
