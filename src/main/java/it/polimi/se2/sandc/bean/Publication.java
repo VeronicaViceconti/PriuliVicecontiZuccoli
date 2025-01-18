@@ -1,10 +1,18 @@
 package it.polimi.se2.sandc.bean;
 
+import java.util.List;
+
 public class Publication{
 	private int id; 
 	private String student;
+	private List<Preferences> choosenPreferences;
 	
-	
+	public List<Preferences> getChoosenPreferences() {
+		return choosenPreferences;
+	}
+	public void setChoosenPreferences(List<Preferences> choosenPreferences) {
+		this.choosenPreferences = choosenPreferences;
+	}
 	public int getId() {
 		return id;
 	}

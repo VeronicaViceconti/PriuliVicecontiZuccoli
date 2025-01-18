@@ -1,6 +1,6 @@
 package it.polimi.se2.sandc.bean;
 
-public class WorkingPreference{
+public class Preferences{
 	private int id; 
 	
 	private String text;
@@ -20,6 +20,5 @@ public class WorkingPreference{
 	public void setText(String text) {
 		this.text = text;
 	} 
-	
-	
+		
 }
