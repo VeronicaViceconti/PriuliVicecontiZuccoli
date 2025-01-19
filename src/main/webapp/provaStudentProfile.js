@@ -1,18 +1,18 @@
 (function() {
 	
 	
-    document.getElementById("card").addEventListener('click', (e) => {
+    document.getElementsByClassName("card")[0].addEventListener('click', (e) => {
 		e.preventDefault();
 
-
-        if (form.checkValidity()) {
+		console.log("ciaoo");
 		 //metodo post della servlet CheckLogin
-	      makeCall("GET", 'ProfileManager?page=internshipInfo&ID='+1010, form,  
-	        function(x) { // X è UN OGGETTO XMLHttpRequest
-	          if (x.readyState == XMLHttpRequest.DONE) {
-	            var message = x.responseText;
+	      makeCall("GET", 'ProfileManager?page=internshipInfo&ID='+1010,null, 
+	      	(req) => {
 	            
-	            switch (x.status) {
+	          	if (req.readyState == 4) {
+	            var message = req.responseText;
+	            
+	            switch (req.status) {
 	              case 200:  //richiesta andata a buon fine
 	              	//document.getElementById("errors").textContent = "FUNZIA TODOS";
 	                break;
@@ -26,10 +26,6 @@
 	          }
 	        }
 	      ); 
-	    } else {
-	    	 form.reportValidity();
-	    }
-        
     });
     
 })();

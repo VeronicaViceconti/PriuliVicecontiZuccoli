@@ -19,15 +19,6 @@ IF EXISTS (SELECT * FROM Student WHERE email = NEW.email)
     END IF;
  end//
  
- create trigger commonIdChek
- before insert on Internship
- for each row
- begin
-	IF exists (select * from Internship where new.commonId = commonId and new.company not like company) then
-		SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'the commonid is already used';
-	end if;
- end // 
- 
  create trigger maxOneMatch
  before insert on Matches
  for each row
@@ -43,7 +34,6 @@ IF EXISTS (SELECT * FROM Student WHERE email = NEW.email)
 	end if;
 																		
  end//
- 
  
  create trigger matchMakerStudents
  after insert on Preference 

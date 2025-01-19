@@ -39,7 +39,6 @@ create table sandc.Preference(
 
 create table sandc.Internship (
 	id integer primary key auto_increment, 
-    commonId integer not null,
     company varchar(50) not null,
     openSeats int not null,
     startingDate date,
@@ -52,7 +51,7 @@ create table sandc.Internship (
 create table sandc.Requirement(
 	idWorkingPreference integer not null, 
     idInternship integer not null, 
-    taken BOOLEAN not null,
+    taken BOOLEAN not null, #TO REMOVE
     primary key (idWorkingPreference, idInternship), 
     foreign key (idWorkingPreference) references WorkingPreferences(id) on update cascade on delete cascade,
     foreign key (idInternship) references Internship(id) on update cascade on delete cascade

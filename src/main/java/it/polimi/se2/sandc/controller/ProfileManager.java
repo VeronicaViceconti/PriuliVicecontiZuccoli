@@ -88,23 +88,18 @@ public class ProfileManager extends HttpServlet {
 			 		break;
 			 	case "addInternshipThenHomepage": //student want to apply to the internship
 			 		int ID = Integer.parseInt(request.getParameter("ID"));
-			 		if(existsInternshipID(ID))
-			 			createMatch(request,response);
-			 		else
-			 			response.setStatus(HttpServletResponse.SC_METHOD_NOT_ALLOWED); //error 405
+			 		
+			 		createMatch(request,response,ID);
 			 		break;
+			 		default:
+			 			response.setStatus(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
 			 } 
 		}else { //we want to use company's profile
 			
 		}
 	}
 
-	private boolean existsInternshipID(int iD) {
-		///control that the ID exists as internship and that available seat > 0
-		return false;
-	}
-
-	private void createMatch(HttpServletRequest request, HttpServletResponse response) throws IOException {
+	private void createMatch(HttpServletRequest request, HttpServletResponse response,int ID) throws IOException {
 		//creare il match tra internship ID e l'utente 
 		
 		CompanyDAO company = null;
@@ -153,6 +148,8 @@ public class ProfileManager extends HttpServlet {
     // Imposta il tipo di contenuto e invia la risposta
        response.setContentType("application/json");
        response.getWriter().write(internshipString);
+       System.out.println("Internship info -> "+internshipString);
+       
        response.setStatus(HttpServletResponse.SC_OK);
 	}
 
