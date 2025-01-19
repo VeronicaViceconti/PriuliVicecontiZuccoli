@@ -13,7 +13,7 @@
     position: relative;
   }
   
-  .profilo-studente .preferences {
+  .profilo-studente .feedbacks {
     position: absolute;
     width: 757px;
     height: 233px;
@@ -302,7 +302,6 @@
     left: 98px;
     background-color: #a37659;
     overflow: hidden;
-    border: 2px solid;
     position: absolute;
     border-radius: 20px;
   }
@@ -318,6 +317,7 @@
     letter-spacing: 0;
     line-height: normal;
     white-space: nowrap;
+    cursor: pointer;
   }
   
   .profilo-studente .frame-2 {
@@ -327,7 +327,6 @@
     left: 285px;
     background-color: #a37659;
     overflow: hidden;
-    border: 2px solid;
     position: absolute;
     border-radius: 20px;
   }
@@ -343,6 +342,7 @@
     letter-spacing: 0;
     line-height: normal;
     white-space: nowrap;
+    cursor: pointer;
   }
   
   .profilo-studente .text-wrapper-14 {

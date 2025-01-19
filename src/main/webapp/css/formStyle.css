@@ -1,0 +1,129 @@
+.generic-form {
+	background-color: #f8f9fa;
+	display: flex;
+	flex-direction: row;
+	justify-content: center;
+	width: 100%;
+}
+
+.generic-form .div {
+	background-color: #f8f9fa;
+	width: 1440px;
+	height: 1128px;
+	position: relative;
+}
+
+.generic-form .barra-superiore {
+	position: absolute;
+	width: 1440px;
+	height: 86px;
+	top: 0;
+	left: 0;
+	background-color: #ffffff;
+	border-radius: 0px 0px 20px 20px;
+	overflow: hidden;
+}
+
+.generic-form .profilo {
+	position: absolute;
+	width: 52px;
+	height: 52px;
+	top: 17px;
+	left: 1368px;
+}
+
+.generic-form .titolo {
+	position: absolute;
+	width: 459px;
+	top: 15px;
+	left: 490px;
+	font-family: "Inter-Regular", Helvetica;
+	font-weight: 400;
+	color: #2e4057;
+	font-size: 45px;
+	letter-spacing: 0;
+	line-height: normal;
+	white-space: nowrap;
+}
+
+.generic-form .home {
+	position: absolute;
+	width: 35px;
+	height: 35px;
+	top: 26px;
+	left: 30px;
+}
+
+.generic-form .text-wrapper {
+	position: absolute;
+	top: 122px;
+	left: 47px;
+	font-family: "Inter-Regular", Helvetica;
+	font-weight: 400;
+	color: #2e4057;
+	font-size: 40px;
+	letter-spacing: 0;
+	line-height: normal;
+	white-space: nowrap;
+}
+
+.generic-form .frame {
+	width: 720px;
+	height: 274px;
+	top: 290px;
+	left: 360px;
+	background-color: #f6f0eb;
+	position: absolute;
+	border-radius: 20px;
+	
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+.generic-form .textArea {
+	width: 90%;
+	height: 90%;
+	resize: none;
+	border-radius: 10px;
+	padding: 10px;
+	font-size: 14px;
+	outline: none;
+}
+
+.generic-form .div-wrapper {
+	width: 109px;
+	height: 48px;
+	top: 590px;
+	left: 665px;
+	background-color: #a37659;
+	overflow: hidden;
+	position: absolute;
+	border-radius: 20px;
+}
+
+.generic-form .text-wrapper-2 {
+	position: absolute;
+	top: 10px;
+	left: 30px;
+	font-family: "Inter-SemiBold", Helvetica;
+	font-weight: 600;
+	color: #ddc0a2;
+	font-size: 20px;
+	letter-spacing: 0;
+	line-height: normal;
+	white-space: nowrap;
+}
+
+.generic-form .text-wrapper-3 {
+	position: absolute;
+	top: 259px;
+	left: 360px;
+	font-family: "Inter-Regular", Helvetica;
+	font-weight: 400;
+	color: #2e4057;
+	font-size: 25px;
+	letter-spacing: 0;
+	line-height: normal;
+	white-space: nowrap;
+}
