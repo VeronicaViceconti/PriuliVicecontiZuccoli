@@ -31,7 +31,6 @@ create table sandc.Publication (
 create table sandc.Preference(
 	idWorkingPreferences integer not null, 
     idPublication integer not null, 
-    taken BOOLEAN not null,
     primary key (idWorkingPreferences, idPublication), 
     foreign key (idWorkingPreferences) references WorkingPreferences(id) on update cascade on delete cascade,
     foreign key (idPublication) references Publication(id) on update cascade on delete cascade
@@ -48,15 +47,6 @@ create table sandc.Internship (
     check (startingDate < endingDate)
 );
 
-create table sandc.Requirement(
-	idWorkingPreference integer not null, 
-    idInternship integer not null, 
-    taken BOOLEAN not null, #TO REMOVE
-    primary key (idWorkingPreference, idInternship), 
-    foreign key (idWorkingPreference) references WorkingPreferences(id) on update cascade on delete cascade,
-    foreign key (idInternship) references Internship(id) on update cascade on delete cascade
-);
-
 create table sandc.Matches(
 	id integer primary key auto_increment, 
 	acceptedYN Boolean,
@@ -65,6 +55,13 @@ create table sandc.Matches(
     foreign key (idPublication) references Publication(id) on update cascade on delete cascade,
     foreign key (idInternship) references Internship(id) on update cascade on delete cascade,
 	unique(idPublication, idInternship)
+);
+create table sandc.Requirement(
+	idWorkingPreference integer not null, 
+    idInternship integer not null, 
+    primary key (idWorkingPreference, idInternship), 
+    foreign key (idWorkingPreference) references WorkingPreferences(id) on update cascade on delete cascade,
+    foreign key (idInternship) references Internship(id) on update cascade on delete cascade
 );
 
 create table sandc.Form (

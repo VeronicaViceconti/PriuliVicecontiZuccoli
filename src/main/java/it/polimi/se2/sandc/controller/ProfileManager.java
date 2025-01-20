@@ -3,6 +3,7 @@ package it.polimi.se2.sandc.controller;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
@@ -18,8 +19,11 @@ import javax.servlet.http.HttpSession;
 import org.apache.commons.lang.StringEscapeUtils;
 
 import it.polimi.se2.sandc.bean.Internship;
+import it.polimi.se2.sandc.bean.Publication;
 import it.polimi.se2.sandc.bean.User;
 import it.polimi.se2.sandc.dao.CompanyDAO;
+import it.polimi.se2.sandc.dao.MatchDAO;
+import it.polimi.se2.sandc.dao.StudentDAO;
 import it.polimi.se2.sandc.dao.UserDAO;
 
 import com.google.gson.Gson;
@@ -66,30 +70,66 @@ public class ProfileManager extends HttpServlet {
 			request.getSession(false).invalidate();
 			return;
         }
-		String email = StringEscapeUtils.escapeJava(request.getParameter("email"));
+
 		String userType = (String) s.getAttribute("userType");
-		
-		if (email == null || email.isEmpty()) {
-			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-			response.getWriter().println("Something went wrong!");
-			return;
-		}
 		
 		if(userType.equals("student")) { //we want to use student profile -> search company publications
 			if(request.getParameter("page") == null)
 				return;
-			
+			User user = (User) request.getSession().getAttribute("user");
+			//the internship exists, now need to find the correspond student's publication
 			 switch (request.getParameter("page").toString()) { //uso lo switch per capire quale azione dobbiamo fare in questa servlet
 			 	case "toHomepage":
-			 		findAllInternships(response);
+			 		
+			 		findAllInternships(response,user.getEmail());
 			 		break;
 			 	case "internshipInfo":
 			 		findInternshipInfo(request,response);
 			 		break;
 			 	case "addInternshipThenHomepage": //student want to apply to the internship
-			 		int ID = Integer.parseInt(request.getParameter("ID"));
+			 		int ID = Integer.parseInt(request.getParameter("IDintern"));
+			 		CompanyDAO company = null;
+					Internship internship = null;
+					company = new CompanyDAO(connection);
+					
+					try {
+						internship = company.findTheInternship(ID);
+					} catch (SQLException e) {
+						// TODO Auto-generated catch block
+						response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+						response.getWriter().println("Internal server error, retry later");
+					}
+					if(internship == null) { //the internship searched doesn't exist
+						response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+						return;
+					}
+					StudentDAO student = new StudentDAO(connection);
+					Publication pub = new Publication();
+					try {
+						pub = student.findStudentPublication(user.getEmail(), Integer.parseInt(request.getParameter("IDworkpref")));
+					} catch (SQLException e) {
+						// TODO Auto-generated catch block
+						response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+						response.getWriter().println("Internal server error, retry later");
+					}
+					if(pub == null) { //the internship searched doesn't exist
+						response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+						return;
+					}
+					//find the 
+					//now we can create the match 
+			 		createMatchStudent(response,internship.getId(),pub.getId());
 			 		
-			 		createMatch(request,response,ID);
+			 		//now need to return to homepage, so return 
+			 		findAllInternships(response,user.getEmail());
+			 		break;
+			 	case "matches":
+			 		//String x = StringEscapeUtils.escapeJava(request.getParameter("condition"));
+			 		
+			 		break;
+			 	case "filteredInternships":
+			 		String x = StringEscapeUtils.escapeJava(request.getParameter("condition"));
+			 		findFilteredInternships(response,x,user.getEmail());
 			 		break;
 			 		default:
 			 			response.setStatus(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
@@ -99,26 +139,57 @@ public class ProfileManager extends HttpServlet {
 		}
 	}
 
-	private void createMatch(HttpServletRequest request, HttpServletResponse response,int ID) throws IOException {
-		//creare il match tra internship ID e l'utente 
+	
+	private void findFilteredInternships(HttpServletResponse response, String nameCompany,String emailStudent) throws IOException {
+		// TODO Auto-generated method stub
+		//questo metodo deve semplicemente cercare tutte le internshipDAO disponibile dell'azienda nameCompany
 		
-		CompanyDAO company = null;
-		Internship internship = null;
-		company = new CompanyDAO(connection);
+		CompanyDAO company = new CompanyDAO(connection);
+		List<Internship> internships = null;
 		
 		 try {
-			internship = company.findTheInternship(Integer.parseInt(request.getParameter("ID")));
+			internships = company.searchAvailableInternships(nameCompany, emailStudent);
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 			response.getWriter().println("Internal server error, retry later");
 		}
+		 
+		String internshipString = new Gson().toJson(internships);
 		
-		String internshipString = new Gson().toJson(internship);
     // Imposta il tipo di contenuto e invia la risposta
        response.setContentType("application/json");
-       response.getWriter().write(internshipString);
+       response.getWriter().write(internshipString);       
        response.setStatus(HttpServletResponse.SC_OK);
+		
+	}
+
+	private List<Publication> findStudentPublications(HttpServletResponse response, String email) throws IOException {
+		// TODO Auto-generated method stub
+		StudentDAO student = new StudentDAO(connection);
+		List<Publication> publications = null;
+		
+		 try {
+			publications = student.findStudentPublications(email);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+			response.getWriter().println("Internal server error, retry later");
+		}
+		return publications;
+	}
+
+	private void createMatchStudent(HttpServletResponse response,int internID,int pubID) throws IOException {
+		//creare il match tra internship ID e l'utente 
+		MatchDAO match = new MatchDAO(connection);
+		
+		try {
+			match.createMatchFromStudent(pubID, internID);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+			response.getWriter().println("Internal server error, retry later");
+		}
 		
 	}
 
@@ -147,23 +218,23 @@ public class ProfileManager extends HttpServlet {
 		String internshipString = new Gson().toJson(internship);
     // Imposta il tipo di contenuto e invia la risposta
        response.setContentType("application/json");
-       response.getWriter().write(internshipString);
-       System.out.println("Internship info -> "+internshipString);
-       
+       response.getWriter().write(internshipString);       
        response.setStatus(HttpServletResponse.SC_OK);
 	}
 
-	private void findAllInternships(HttpServletResponse response) throws IOException {
+	private void findAllInternships(HttpServletResponse response,String emailStudent) throws IOException {
 		CompanyDAO company = null;
 		List<Internship> internships = null;
 		company = new CompanyDAO(connection);
+		//find the publication of the user
+	
 		 try {
-			internships = company.searchAllInternships();
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-			response.getWriter().println("Internal server error, retry later");
-		}
+				internships = company.searchAllInternships(emailStudent);
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+				response.getWriter().println("Internal server error, retry later");
+			}
 		
 		String internshipsString = new Gson().toJson(internships);
     // Imposta il tipo di contenuto e invia la risposta

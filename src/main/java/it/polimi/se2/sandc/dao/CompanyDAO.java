@@ -22,10 +22,74 @@ public class CompanyDAO {
 		this.connection = conn;
 	}
 	
-	public List<Internship> searchAllInternships() throws SQLException{
+	//like the otehr one but this time we are filtering on the internships of ONE company
+	public List<Internship> searchAvailableInternships(String companyName,String emailStudent) throws SQLException{
 		List<Internship> internships = new ArrayList<>();
-	    String query = "SELECT * FROM internship WHERE openSeats > 0"; // Modifica in base alla tua tabella
+		String query = null;
+		
+		query = "SELECT * FROM internship AS i JOIN company ON company.email = i.company WHERE NOT EXISTS (SELECT * FROM matches AS m JOIN publication AS p ON m.idPublication = p.id WHERE m.idInternship = i.id AND p.student = ?) AND openSeats > 0 AND name = ?";
 	    PreparedStatement statement = connection.prepareStatement(query);
+	    
+	    statement.setString(1, emailStudent);
+	    statement.setString(2, companyName);
+	    System.out.println("Prima di  fare query su companydao");
+        ResultSet result = statement.executeQuery();
+        		
+		try {
+			System.out.println("dopo di  fare query su companydao");
+			if (!result.isBeforeFirst()) {// no results, no publications at all 
+				System.out.println("sei null?");
+				return null;	
+			}
+			else { //at least one publication
+				System.out.println("non sei null!");
+				while (result.next()) {
+					System.out.println("internship trovata!");
+		            Internship internship = new Internship();
+		            internship.setId(result.getInt("id"));
+		            Company company = new Company();
+		            company.setName(result.getString("company"));
+		            internship.setCompany(company);
+		            
+		            Date sqlDate = result.getDate("startingDate");
+		            if (sqlDate != null) {
+		                internship.setStartingDate(new Date(sqlDate.getTime())); 
+		            }
+		            sqlDate = result.getDate("endingDate");
+		            if (sqlDate != null) {
+		                internship.setEndingDate(new Date(sqlDate.getTime())); 
+		            }
+		            
+		            internship.setOfferedConditions(result.getString("offeredConditions"));
+		            internships.add(internship);
+		        }	
+			}
+		} catch(SQLException e) {
+			throw new SQLException("Error while trying to access credentials");
+		}finally {
+			try {
+				result.close(); //Devo chiudere result set
+			} catch(Exception e) {
+				throw new SQLException("Error while trying to close Result Set");
+			}
+			try {
+				statement.close();  //devo chiudere prepared statement
+			} catch(Exception e) {
+				throw new SQLException("Error while trying to close prepared statement");
+			}
+		}
+		return internships;
+	}
+	
+	//search all the internships but not the ones that has already a match with that publication (so with that student)
+	public List<Internship> searchAllInternships(String emailStudent) throws SQLException{
+		List<Internship> internships = new ArrayList<>();
+		String query = null;
+		//need to find the internships that doesn't have matches with publications of that student
+		query = "SELECT * FROM sandc.internship AS i WHERE NOT EXISTS (SELECT * FROM sandc.matches AS m JOIN sandc.publication AS p ON m.idPublication = p.id WHERE m.idInternship = i.id AND p.student = ? )  AND openSeats > 0;";
+	    PreparedStatement statement = connection.prepareStatement(query);
+	    statement.setString(1, emailStudent);
+	    
         ResultSet result = statement.executeQuery();
         		
 		try {
@@ -36,7 +100,6 @@ public class CompanyDAO {
 				while (result.next()) {
 		            Internship internship = new Internship();
 		            internship.setId(result.getInt("id"));
-		            internship.setCommonId(result.getInt("commonId"));
 		            Company company = new Company();
 		            company.setName(result.getString("company"));
 		            internship.setCompany(company);
@@ -108,7 +171,7 @@ public class CompanyDAO {
 		}finally {
 			try {
 				result.close(); //Devo chiudere result set
-			} catch(Exception e) {
+			}catch(Exception e) {
 				throw new SQLException("Error while trying to close Result Set");
 			}
 			try {

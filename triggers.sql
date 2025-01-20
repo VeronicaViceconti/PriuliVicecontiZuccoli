@@ -28,11 +28,10 @@ IF EXISTS (SELECT * FROM Student WHERE email = NEW.email)
     select student into s from Publication where id = new.idPublication;
     select company into c from Internship where id = new.idInternship;
     
-	if exists (select * from Publication inner join Matches inner join InternshipmaxOneMatch where student = s and company = c) then
+	if exists (select * from Publication inner join Matches inner join Internship where student = s and company = c) then
 		set new.idPublication = null;
         set new.idInternship = null;
 	end if;
-																		
  end//
  
  create trigger matchMakerStudents
@@ -42,7 +41,7 @@ IF EXISTS (SELECT * FROM Student WHERE email = NEW.email)
 	insert into Matches (idPublication, idInternship)  
 		select idPublication, idInternship 
 		from  Preference as p inner join Requirement as r on p.idWorkingPreferences = r.idWorkingPreference
-        where idPublication = new.idPublication and p.taken and r.taken and not exists (select * from Matches as m where m.idPublication = p.idPublication and r.idInternship)
+        where idPublication = new.idPublication and not exists (select * from Matches as m where m.idPublication = p.idPublication and r.idInternship)
         group by idPublication, idInternship
         having count(*) >= 5;
  end //
@@ -54,7 +53,7 @@ IF EXISTS (SELECT * FROM Student WHERE email = NEW.email)
 	insert into Matches (idPublication, idInternship)  
 		select idPublication, idInternship 
 		from  Preference as p inner join Requirement as r on p.idWorkingPreferences = r.idWorkingPreference
-        where idInternship = new.idInternship and p.taken and r.taken and not exists (select * from Matches as m where m.idPublication = p.idPublication and r.idInternship)
+        where idInternship = new.idInternship and not exists (select * from Matches as m where m.idPublication = p.idPublication and r.idInternship)
         group by idPublication, idInternship
         having count(*) >= 5;
  end //
