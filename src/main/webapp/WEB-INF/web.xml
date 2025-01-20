@@ -18,7 +18,7 @@
   
   <context-param>
     <param-name>dbPassword</param-name>
-    <param-value>asdqwe123!"£</param-value>
+    <param-value>KKlloopp9900</param-value>
   </context-param>
   
   <context-param>
@@ -27,7 +27,7 @@
   </context-param>
   
   <welcome-file-list>
-    <welcome-file>homePageStudente.html</welcome-file>
+    <welcome-file>index.html</welcome-file>
   </welcome-file-list>
   
   
