@@ -32,19 +32,14 @@ public class CompanyDAO {
 	    
 	    statement.setString(1, emailStudent);
 	    statement.setString(2, companyName);
-	    System.out.println("Prima di  fare query su companydao");
         ResultSet result = statement.executeQuery();
         		
 		try {
-			System.out.println("dopo di  fare query su companydao");
 			if (!result.isBeforeFirst()) {// no results, no publications at all 
-				System.out.println("sei null?");
 				return null;	
 			}
 			else { //at least one publication
-				System.out.println("non sei null!");
 				while (result.next()) {
-					System.out.println("internship trovata!");
 		            Internship internship = new Internship();
 		            internship.setId(result.getInt("id"));
 		            Company company = new Company();
