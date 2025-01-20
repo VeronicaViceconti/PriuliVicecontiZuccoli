@@ -5,7 +5,7 @@ import java.util.List;
 public class Company {
 	private String email; 
 	private String name;
-	private List<Publication> publications;
+	private String address;
 	
 	public String getEmail() {
 		return email;
@@ -13,18 +13,18 @@ public class Company {
 	public void setEmail(String email) {
 		this.email = email;
 	}
+	
+	public String getAddress() {
+		return address;
+	}
+	public void setAddress(String address) {
+		this.address = address;
+	}
+	
 	public String getName() {
 		return name;
 	}
 	public void setName(String name) {
 		this.name = name;
-	}
-	
-	public List<Publication> getPublications(){
-		return publications;
-	}
-	
-	public void setPublications(List<Publication> publications) {
-		this.publications = publications;
 	}
 }

@@ -104,9 +104,9 @@ public class LoginManager extends HttpServlet {
 		response.setContentType("application/json");
 		response.setCharacterEncoding("UTF-8");
 		
-		//RequestDispatcher dispatcher = request.getRequestDispatcher("/ProfileManager");
+		/*RequestDispatcher dispatcher = request.getRequestDispatcher("/ProfileManager");
 		// Esegue il forward
-		//dispatcher.forward(request, response);
+		dispatcher.forward(request, response);*/
 	}
 
 	

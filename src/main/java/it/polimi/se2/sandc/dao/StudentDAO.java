@@ -5,6 +5,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -82,7 +83,6 @@ public class StudentDAO {
 		
 	}
 	
-	
 	public List<Publication> findStudentPublications(String email) throws SQLException {
 		String query2 = null;
 		query2 = "SELECT * from publication WHERE student = ?";
@@ -122,6 +122,8 @@ public class StudentDAO {
 			}
 		}
 	}
+	
+	//find THAT specific publication of a student
 	public Publication findStudentPublication(String email,int idWP) throws SQLException {
 		String query2 = null;
 		query2 = "SELECT * from publication JOIN preference ON publication.id = preference.idPublication WHERE student = ? and idWorkingPreferences = ?;";
@@ -157,5 +159,43 @@ public class StudentDAO {
 				throw new SQLException("Error while trying to close prepared statement");
 			}
 		}
+	}
+	
+	public List<Internship> getOnGoingInternship(String email) throws SQLException{
+		
+		ArrayList<Internship> ris = new ArrayList<Internship>();
+		
+		String query = "select i.*, c.*\n"
+				+ "from ((publication as p inner join matches as m on m.idPublication = p.id ) \n"
+				+ "		inner join internship as i on m.idInternship = i.id) inner join company as c on c.email = i.company \n"
+				+ "where m.id in (select idMatch from interview where confirmedYN = 1) and p.student like ? ";
+		
+		try(PreparedStatement statement = connection.prepareStatement(query)){
+			statement.setString(1, email);
+			
+			try(ResultSet result = statement.executeQuery()){
+				while(result.next()) {
+					Company c = new Company();
+					
+					c.setEmail(result.getString("email"));
+					c.setAddress(result.getString("address"));
+					c.setName(result.getString("name"));
+					
+					Internship i = new Internship();
+					
+					i.setCompany(c);
+					i.setId(result.getInt("id"));
+					i.setOpenSeats(result.getInt("openSeats"));
+					i.setStartingDate(result.getDate("startingDate"));
+					i.setStartingDate(result.getDate("endingDate"));
+					i.setjobDescription(result.getString("jobDescription"));
+					
+					ris.add(i);
+				}
+			}
+			
+		}
+		
+		return ris;
 	}
 }

@@ -98,9 +98,11 @@ public class ProfileManager extends HttpServlet {
 						// TODO Auto-generated catch block
 						response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 						response.getWriter().println("Internal server error, retry later");
+						return;
 					}
 					if(internship == null) { //the internship searched doesn't exist
 						response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+						response.getWriter().println("The internship doesn't exist");
 						return;
 					}
 					StudentDAO student = new StudentDAO(connection);
@@ -111,9 +113,11 @@ public class ProfileManager extends HttpServlet {
 						// TODO Auto-generated catch block
 						response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 						response.getWriter().println("Internal server error, retry later");
+						return;
 					}
 					if(pub == null) { //the internship searched doesn't exist
 						response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+						response.getWriter().println("The user doesn't have publication");
 						return;
 					}
 					//find the 
@@ -227,7 +231,6 @@ public class ProfileManager extends HttpServlet {
 		List<Internship> internships = null;
 		company = new CompanyDAO(connection);
 		//find the publication of the user
-	
 		 try {
 				internships = company.searchAllInternships(emailStudent);
 			} catch (SQLException e) {

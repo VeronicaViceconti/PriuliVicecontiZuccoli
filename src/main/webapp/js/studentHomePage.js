@@ -125,7 +125,7 @@
 		if (card) {
 			const cardId = card.id;
 			sessionStorage.setItem("internshipID", cardId);
-			window.location.href = "http://localhost:8080/SandC/internshipInfo_AcceptDecline_student.html";
+			//window.location.href = "http://localhost:8080/SandC/internshipInfo_AcceptDecline_student.html";
 		}
 	})
 }
