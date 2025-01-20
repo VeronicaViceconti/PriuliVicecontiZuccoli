@@ -84,7 +84,7 @@ public class CompanyDAO {
 		List<Internship> internships = new ArrayList<>();
 		String query = null;
 		//need to find the internships that doesn't have matches with publications of that student
-		query = "SELECT * FROM sandc.internship AS i JOIN company ON i.company = company.email WHERE NOT EXISTS (SELECT * FROM sandc.matches AS m JOIN sandc.publication AS p ON m.idPublication = p.id	WHERE m.idInternship = i.id AND p.student = 'veronica@gmail.com' ) AND openSeats > 0;";
+		query = "SELECT * FROM sandc.internship AS i JOIN company ON i.company = company.email WHERE NOT EXISTS (SELECT * FROM sandc.matches AS m JOIN sandc.publication AS p ON m.idPublication = p.id	WHERE m.idInternship = i.id AND p.student = ? ) AND openSeats > 0;";
 
 	    PreparedStatement statement = connection.prepareStatement(query);
 	    statement.setString(1, emailStudent);
@@ -101,7 +101,7 @@ public class CompanyDAO {
 		            internship.setId(result.getInt("id"));
 		            internship.setOpenSeats(result.getInt("openSeats"));
 		            Company company = new Company();
-		            company.setName(result.getString("company"));
+		            company.setName(result.getString("name"));
 		            company.setAddress(result.getString("address"));
 		            internship.setCompany(company);
 		            
