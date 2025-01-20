@@ -6,7 +6,6 @@ public class Company {
 	private String email; 
 	private String name;
 	private String address;
-	private List<Publication> publications;
 	
 	public String getEmail() {
 		return email;
@@ -27,13 +26,5 @@ public class Company {
 	}
 	public void setName(String name) {
 		this.name = name;
-	}
-	
-	public List<Publication> getPublications(){
-		return publications;
-	}
-	
-	public void setPublications(List<Publication> publications) {
-		this.publications = publications;
 	}
 }

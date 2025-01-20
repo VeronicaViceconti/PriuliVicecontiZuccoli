@@ -229,8 +229,8 @@ public class CompanyDAO {
 	
 	public int createInternship(String email ,Internship i) throws SQLException {
 		String query = "insert into Internship "
-				+ "(company, openSeats, startingDate, endingDate, offeredConditions) values"
-				+ " (?,?,?,?,?)";
+				+ "(company, openSeats, startingDate, endingDate, jobDescription, roleToCover) values"
+				+ " (?,?,?,?,?,?)";
 		
 		
 		try(PreparedStatement statement = connection.prepareStatement(query)){
@@ -238,7 +238,8 @@ public class CompanyDAO {
 			statement.setInt(2,i.getOpenSeats());
 			statement.setDate(3, i.getStartingDate());
 			statement.setDate(4, i.getEndingDate());
-			//statement.setString(5, i.getOfferedConditions());
+			statement.setString(5, i.getjobDescription());
+			statement.setString(6, i.getroleToCover());
 			statement.executeUpdate();
 		}
 		
