@@ -11,6 +11,7 @@ import java.util.List;
 
 import it.polimi.se2.sandc.bean.Company;
 import it.polimi.se2.sandc.bean.Internship;
+import it.polimi.se2.sandc.bean.Preferences;
 import it.polimi.se2.sandc.bean.Publication;
 import it.polimi.se2.sandc.bean.User;
 
@@ -44,6 +45,7 @@ public class CompanyDAO {
 		            internship.setId(result.getInt("id"));
 		            Company company = new Company();
 		            company.setName(result.getString("company"));
+		            company.setAddress(result.getString("address"));
 		            internship.setCompany(company);
 		            
 		            Date sqlDate = result.getDate("startingDate");
@@ -54,8 +56,9 @@ public class CompanyDAO {
 		            if (sqlDate != null) {
 		                internship.setEndingDate(new Date(sqlDate.getTime())); 
 		            }
-		            
-		            internship.setOfferedConditions(result.getString("offeredConditions"));
+		           
+		            internship.setOpenSeats(result.getInt("openSeats"));
+		            internship.setroleToCover(result.getString("roleToCover"));
 		            internships.add(internship);
 		        }	
 			}
@@ -81,7 +84,7 @@ public class CompanyDAO {
 		List<Internship> internships = new ArrayList<>();
 		String query = null;
 		//need to find the internships that doesn't have matches with publications of that student
-		query = "SELECT * FROM sandc.internship AS i WHERE NOT EXISTS (SELECT * FROM sandc.matches AS m JOIN sandc.publication AS p ON m.idPublication = p.id WHERE m.idInternship = i.id AND p.student = ? )  AND openSeats > 0;";
+		query = "SELECT * FROM sandc.internship AS i JOIN company ON i.company = company.email WHERE NOT EXISTS (SELECT * FROM sandc.matches AS m JOIN sandc.publication AS p ON m.idPublication = p.id	WHERE m.idInternship = i.id AND p.student = 'veronica@gmail.com' ) AND openSeats > 0;";
 	    PreparedStatement statement = connection.prepareStatement(query);
 	    statement.setString(1, emailStudent);
 	    
@@ -97,6 +100,7 @@ public class CompanyDAO {
 		            internship.setId(result.getInt("id"));
 		            Company company = new Company();
 		            company.setName(result.getString("company"));
+		            company.setAddress(result.getString("address"));
 		            internship.setCompany(company);
 		            
 		            Date sqlDate = result.getDate("startingDate");
@@ -108,7 +112,8 @@ public class CompanyDAO {
 		                internship.setEndingDate(new Date(sqlDate.getTime())); 
 		            }
 		            
-		            internship.setOfferedConditions(result.getString("offeredConditions"));
+		            internship.setOpenSeats(result.getInt("openSeats"));
+		            internship.setroleToCover(result.getString("roleToCover"));
 		            internships.add(internship);
 		        }	
 			}
@@ -130,9 +135,10 @@ public class CompanyDAO {
 	}
 	
 	public Internship findTheInternship(int ID) throws SQLException {
-		String query =  "SELECT * FROM company JOIN internship ON company.email = internship.company WHERE id = ?";
+		String query =  "SELECT * FROM company JOIN internship as i ON company.email = i.company JOIN requirement as r on r.idInternship = i.id JOIN workingpreferences as w ON w.id = r.idWorkingPreference WHERE i.id = ?";
 		ResultSet result = null;
 		PreparedStatement pstatement = null;
+		Internship internship = new Internship();
 		
 		try {
 			pstatement = connection.prepareStatement(query);
@@ -143,10 +149,10 @@ public class CompanyDAO {
 			}
 			else { //found the internship
 				result.next();
-				Internship internship = new Internship();
 				internship.setId(result.getInt("id"));
 				Company company = new Company();
 	            company.setName(result.getString("company"));
+	            company.setAddress(result.getString("address"));
 	            internship.setCompany(company);
 	            
 	            Date sqlDate = result.getDate("startingDate");
@@ -158,8 +164,9 @@ public class CompanyDAO {
 	                internship.setEndingDate(new Date(sqlDate.getTime())); 
 	            }
 	            
-	            internship.setOfferedConditions(result.getString("offeredConditions"));
-				return internship;	
+	            internship.setjobDescription(result.getString("jobDescription"));
+	            internship.setOpenSeats(result.getInt("openSeats"));
+	            internship.setroleToCover(result.getString("roleToCover"));	
 			}
 		} catch(SQLException e) {
 			throw new SQLException("Error while trying to access credentials");
@@ -175,5 +182,46 @@ public class CompanyDAO {
 				throw new SQLException("Error while trying to close prepared statement");
 			}
 		}
+		
+		//need to return all the preferences of that internship
+		query =  "SELECT * FROM internship as i JOIN requirement as r on r.idInternship = i.id JOIN workingpreferences as w ON w.id = r.idWorkingPreference WHERE i.id = ?";
+		result = null;
+		pstatement = null;
+		
+		try {
+			pstatement = connection.prepareStatement(query);
+			
+			pstatement.setInt(1, ID);
+			result = pstatement.executeQuery();
+			if (!result.isBeforeFirst()) {// no results, internships hasen't got working preferences
+				return internship;
+			}
+			else { //found the preferences
+				
+				List<Preferences> preferences = new ArrayList<Preferences>();
+				while(result.next()) {
+					Preferences pref = new Preferences();
+					pref.setId(result.getInt("idWorkingPreference"));
+					pref.setText(result.getString("text"));
+					preferences.add(pref);
+				}
+				internship.setPreferences(preferences);
+			}
+		} catch(SQLException e) {
+			throw new SQLException("Error while trying to access credentials");
+		}finally {
+			try {
+				result.close(); //Devo chiudere result set
+			}catch(Exception e) {
+				throw new SQLException("Error while trying to close Result Set");
+			}
+			try {
+				pstatement.close();  //devo chiudere prepared statement
+			} catch(Exception e) {
+				throw new SQLException("Error while trying to close prepared statement");
+			}
+		}
+		
+		return internship;
 	}
 }

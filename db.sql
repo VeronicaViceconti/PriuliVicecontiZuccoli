@@ -39,10 +39,11 @@ create table sandc.Preference(
 create table sandc.Internship (
 	id integer primary key auto_increment, 
     company varchar(50) not null,
+    roleToCover varchar(50) not null,
     openSeats int not null,
     startingDate date,
     endingDate date,
-    offeredConditions varchar(500) not null,
+    jobDescription varchar(500) not null,
     foreign key (company) references Company(email) on update cascade on delete cascade,	
     check (startingDate < endingDate)
 );

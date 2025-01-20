@@ -22,6 +22,7 @@ public class StudentDAO {
 		this.connection = conn;
 	}
 	
+	//search all the publications of a student
 	public List<Publication> findStudentPublications(String email) throws SQLException {
 		String query2 = null;
 		query2 = "SELECT * from publication WHERE student = ?";
@@ -61,6 +62,8 @@ public class StudentDAO {
 			}
 		}
 	}
+	
+	//find THAT specific publication of a student
 	public Publication findStudentPublication(String email,int idWP) throws SQLException {
 		String query2 = null;
 		query2 = "SELECT * from publication JOIN preference ON publication.id = preference.idPublication WHERE student = ? and idWorkingPreferences = ?;";
