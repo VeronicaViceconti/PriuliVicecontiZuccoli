@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>S&amp;C</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script src="addCv.js" charset="utf-8" defer></script>
+<script src="utils.js" charset="utf-8" defer></script>
+<script src="preferences.js" charset="utf-8" defer></script>
+
+</head>
+<body>	 
+
+	<p id="serverResponse"></p>
+	<h1>upload cv</h1>
+	<form id="uploadCvForm" action="#" method="post" enctype="multipart/form-data">		
+		
+		<label for='cv'><b>insert cv</b></label>
+		<input type="file" name='cv' accept="application/pdf" required> <br>
+		<button id="uploadCvFormButton" type="submit">upload</button>
+	</form>
+	
+	<h1>upload preference</h1>
+	<form id="uploadPublication" action="PublicationManager?page=preferencePublication" method="post">		
+			<input type="checkbox" id="'ai'" name="ai" value="1">
+			<label for="ai">ai</label><br>
+			<input type="checkbox" id="robotic" name="robotic" value="2">
+			<label for="robotic"> robotic</label><br>
+			<input type="checkbox" id="computer security" name="computer security" value="3">
+			<label for="computer security"> computer security</label><br>
+		<button id="uploadPreferenceButton" type="submit">upload</button>
+	</form>
+</body>
+</html>

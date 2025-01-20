@@ -1,11 +1,11 @@
 package it.polimi.se2.sandc.bean;
 
-import java.util.Date;
+import java.sql.Date;
 import java.util.List;
 
 public class Internship {
 	private int id; 
-	private int commonId; 
+	private int openSeats; 
 	private Company company; 
 	private Date startingDate;
 	private Date endingDate;
@@ -17,11 +17,11 @@ public class Internship {
 	public void setId(int id) {
 		this.id = id;
 	}
-	public int getCommonId() {
-		return commonId;
+	public int getOpenSeats() {
+		return openSeats;
 	}
-	public void setCommonId(int commonId) {
-		this.commonId = commonId;
+	public void setOpenSeats(int commonId) {
+		this.openSeats = commonId;
 	}
 	public Company getCompany() {
 		return company;
