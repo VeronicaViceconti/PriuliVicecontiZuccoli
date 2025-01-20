@@ -13,19 +13,32 @@
   
   <context-param>
     <param-name>dbUser</param-name>
-    <param-value>root</param-value>
+    <param-value>Elia</param-value>
   </context-param>
   
   <context-param>
     <param-name>dbPassword</param-name>
-    <param-value>asdqwe123!"£</param-value>
+    <param-value>KKlloopp9900</param-value>
   </context-param>
   
   <context-param>
     <param-name>dbDriver</param-name>
     <param-value>com.mysql.cj.jdbc.Driver</param-value>
   </context-param>
+  <context-param>
+	<param-name>pathUploadCv</param-name>
+	<param-value>C:\\Users\\epriu\\eclipse-workspace\\cv\\</param-value>
+  </context-param>
   
+  <filter> 
+      <filter-name>LoginChecker</filter-name>
+      <filter-class>it.polimi.se2.sandc.filter.LoginChecker</filter-class> 
+ </filter>
+   <filter-mapping> 
+    <filter-name>LoginChecker</filter-name> 
+	<url-pattern>/CvPublication</url-pattern>
+ </filter-mapping> 
+ 
   <welcome-file-list>
     <welcome-file>index.html</welcome-file>
   </welcome-file-list>

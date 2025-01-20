@@ -235,7 +235,7 @@ public class ProfileManager extends HttpServlet {
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
 				response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-				response.getWriter().println("Internal server error, retry later");
+				response.getWriter().println("Internal");
 			}
 		
 		String internshipsString = new Gson().toJson(internships);

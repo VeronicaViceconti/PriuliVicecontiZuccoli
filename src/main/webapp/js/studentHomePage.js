@@ -5,9 +5,30 @@
 	const profileBtn = document.getElementById("profileBtn");
 	const internList = document.getElementById("internList")
 
-	window.onload = function() {
-		sessionStorage.setItem('tab', "available");
+	window.onload = function(e) {
+		e.preventDefault();
+		//sessionStorage.setItem('tab', "available");
 		//TODO: caricare available internships dal databse
+		makeCall("GET", "ProfileManager?page=toHomepage", null,
+			(req) => {
+				if (req.readyState == 4) {
+					switch (req.status) {
+						case 200: // andato a buon fine
+							console.log(req.responseText);
+							break;
+						case 403:
+							console.log("errore 403");
+							break;
+						case 412:
+							console.log("errore 412");
+							break;
+						case 500:
+							console.log("errore 500");
+							break;
+					}
+				}
+			});
+
 	}
 
 	matchesTab.addEventListener("click", () => {

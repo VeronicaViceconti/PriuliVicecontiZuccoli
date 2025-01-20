@@ -6,7 +6,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Date;
+import java.sql.Date;
 import java.util.List;
 
 import it.polimi.se2.sandc.bean.Company;
@@ -85,19 +85,21 @@ public class CompanyDAO {
 		String query = null;
 		//need to find the internships that doesn't have matches with publications of that student
 		query = "SELECT * FROM sandc.internship AS i JOIN company ON i.company = company.email WHERE NOT EXISTS (SELECT * FROM sandc.matches AS m JOIN sandc.publication AS p ON m.idPublication = p.id	WHERE m.idInternship = i.id AND p.student = 'veronica@gmail.com' ) AND openSeats > 0;";
+
 	    PreparedStatement statement = connection.prepareStatement(query);
 	    statement.setString(1, emailStudent);
 	    
         ResultSet result = statement.executeQuery();
         		
 		try {
-			if (!result.isBeforeFirst()) {// no results, no publications at all 
+			if (!result.isBeforeFirst()) {// no results => there are no relevant internshps
 				return null;	
 			}
 			else { //at least one publication
 				while (result.next()) {
 		            Internship internship = new Internship();
 		            internship.setId(result.getInt("id"));
+		            internship.setOpenSeats(result.getInt("openSeats"));
 		            Company company = new Company();
 		            company.setName(result.getString("company"));
 		            company.setAddress(result.getString("address"));
@@ -223,5 +225,48 @@ public class CompanyDAO {
 		}
 		
 		return internship;
+	}
+	
+	public int createInternship(String email ,Internship i) throws SQLException {
+		String query = "insert into Internship "
+				+ "(company, openSeats, startingDate, endingDate, offeredConditions) values"
+				+ " (?,?,?,?,?)";
+		
+		
+		try(PreparedStatement statement = connection.prepareStatement(query)){
+			statement.setString(1, email);
+			statement.setInt(2,i.getOpenSeats());
+			statement.setDate(3, i.getStartingDate());
+			statement.setDate(4, i.getEndingDate());
+			//statement.setString(5, i.getOfferedConditions());
+			statement.executeUpdate();
+		}
+		
+		query = "select max(id) as max from Internship where company like ?";
+		
+		try(PreparedStatement statement = connection.prepareStatement(query)){
+			statement.setString(1, email);
+			try(ResultSet result = statement.executeQuery()){
+				result.next();
+				return result.getInt("max");
+			}
+		}
+		
+	}
+	
+	public void addRequirement(User user, int idPref, int idInt) throws SQLException {
+		String query = "insert into Requirement (idWorkingPreference, idInternship) values (?, ?)";
+		System.out.println(idInt);
+		if(user.getWhichUser().equals("student")) {
+			return;
+		}
+		
+		try(PreparedStatement statement = connection.prepareStatement(query)){
+			statement.setInt(1, idPref);
+			statement.setInt(2, idInt);
+			
+			statement.executeUpdate();
+		}
+		
 	}
 }
