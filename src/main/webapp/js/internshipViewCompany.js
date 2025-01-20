@@ -11,7 +11,7 @@
 	const location = document.getElementById("internshipLocation");
 	const period = document.getElementById("internshipPeriod");
 	const openPositions = document.getElementById("internshipOpenPosition");
-	
+
 	const tab = sessionStorage.getItem("tab");
 	const internID = sessionStorage.getItem("internshipID");
 
@@ -26,53 +26,40 @@
 		openPositions.innerText = "";
 
 		switch (tab) {
-			case "available":
-				pageTitle.innerHTML = "Internship Info";
-
-				let applyBtn = document.createElement("div");
-				applyBtn.classList.add("brownBtn");
-				applyBtn.textContent = "Apply";
-
-				applyBtn.onclick = function() {
-					alert("apply for internship " + internID );
-				}
-
-				actionBtnsContainer.appendChild(applyBtn);
-				break;
-			case "metches":
-				pageTitle.innerHTML = "Match info";
-
-				let acceptBtn = document.createElement("div");
-				acceptBtn.classList.add("brownBtn");
-				acceptBtn.textContent = "accept";
-
-				let declineBtn = document.createElement("div");
-				declineBtn.classList.add("hollowBtn");
-				declineBtn.textContent = "decline";
-				
-				acceptBtn.onclick = function() {
-					alert("accept internship " + internID);
-				}
-				
-				declineBtn.onclick = function() {
-					alert("decline internship " + internID);
-				}
-				
-
-				actionBtnsContainer.appendChild(acceptBtn);
-				actionBtnsContainer.appendChild(declineBtn);
-				break;
 			case "ongoing":
-				pageTitle.innerHTML = "Ongoing internship";
+				pageTitle.innerHTML = "Ongoing internship Info";
 
 				let complaintBtn = document.createElement("div");
 				complaintBtn.classList.add("brownBtn");
-				complaintBtn.textContent = "Write complaint";
+				complaintBtn.textContent = "Write Complaint";
+
 				complaintBtn.onclick = function() {
-					window.location.href = "http://localhost:8080/SandC/generalForm.html";
+					alert("complaint for internship " + internID);
 				}
 
 				actionBtnsContainer.appendChild(complaintBtn);
+				break;
+			case "proposed":
+				pageTitle.innerHTML = "Proposed internship info";
+
+				let modifyBtn = document.createElement("div");
+				modifyBtn.classList.add("brownBtn");
+				modifyBtn.textContent = "Modify";
+
+				modifyBtn.onclick = function() {
+					alert("modify internship " + internID);
+				}
+
+				let deleteBtn = document.createElement("div");
+				deleteBtn.classList.add("hollowBtn");
+				deleteBtn.textContent = "Delete";
+
+				deleteBtn.onclick = function() {
+					alert("Delete internship " + internID);
+				}
+
+				actionBtnsContainer.appendChild(modifyBtn);
+				actionBtnsContainer.appendChild(deleteBtn);
 
 				break;
 			case "waitingFeed":
@@ -83,7 +70,8 @@
 				feedbackBtn.classList.add("brownBtn");
 				feedbackBtn.textContent = "Write feedback";
 				feedbackBtn.onclick = function() {
-					window.location.href = "http://localhost:8080/SandC/generalForm.html";
+					alert("feedback for internhip " + internID);
+					//window.location.href = "http://localhost:8080/SandC/generalForm.html";
 				}
 
 				actionBtnsContainer.appendChild(feedbackBtn);
@@ -91,14 +79,14 @@
 
 		}
 
-		//TODO riempire la pagina con i dati corretti dal DB
 	}
 
 	homeBtn.addEventListener("click", () => {
-		window.location.href = "http://localhost:8080/SandC/homePageStudente.html";
+		window.location.href = "http://localhost:8080/SandC/homePageCompany.html";
 	})
 
 	profileBtn.addEventListener("click", () => {
-		window.location.href = "http://localhost:8080/SandC/studentProfile.html";
+		alert("company profile");
+		//window.location.href = "http://localhost:8080/SandC/studentProfile.html";
 	})
 }

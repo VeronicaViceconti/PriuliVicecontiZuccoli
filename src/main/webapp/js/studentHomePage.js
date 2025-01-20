@@ -7,14 +7,15 @@
 
 	window.onload = function(e) {
 		e.preventDefault();
-		//sessionStorage.setItem('tab', "available");
+		sessionStorage.setItem('tab', "available");
 		//TODO: caricare available internships dal databse
 		makeCall("GET", "ProfileManager?page=toHomepage", null,
 			(req) => {
 				if (req.readyState == 4) {
 					switch (req.status) {
 						case 200: // andato a buon fine
-							console.log(req.responseText);
+							var jsonData = JSON.parse(req.responseText);
+							console.log(jsonData[0]);
 							break;
 						case 403:
 							console.log("errore 403");
@@ -27,9 +28,69 @@
 							break;
 					}
 				}
-			});
+			});		
 
 	}
+
+	function createCard(Id, name, role, startDate, finishDate, location, nomberPos ) {
+		// Dati della card
+		const cardData = {
+		    id: 1,
+		    company: "Google",
+		    role: "Software Engineering Intern",
+		    period: "10/06/25 - 10/09/25",
+		    location: "Milan, Italy",
+		    positions: 3
+		};
+
+		// Seleziona il contenitore in cui aggiungere la card
+		const internList = document.getElementById("internList");
+
+		// Crea il div principale
+		const card = document.createElement("div");
+		card.className = "card";
+		card.id = cardData.id;
+
+		// Aggiungi il nome dell'azienda
+		const companyDiv = document.createElement("div");
+		companyDiv.className = "card-company";
+		companyDiv.textContent = cardData.company;
+		card.appendChild(companyDiv);
+
+		// Aggiungi il contenitore delle informazioni
+		const infoDiv = document.createElement("div");
+		infoDiv.className = "internship-info";
+
+		// Aggiungi ogni sezione di informazioni
+		const sections = [
+		    { img: "img/InternRole.png", text: cardData.role },
+		    { img: "img/internPeriod.png", text: cardData.period },
+		    { img: "img/internLocation.png", text: cardData.location },
+		    { img: "img/internOpenPositions.png", text: cardData.positions }
+		];
+
+		sections.forEach(section => {
+		    const sectionDiv = document.createElement("div");
+		    sectionDiv.className = "card-info";
+
+		    const img = document.createElement("img");
+		    img.src = section.img;
+
+		    const textDiv = document.createElement("div");
+		    textDiv.textContent = section.text;
+
+		    sectionDiv.appendChild(img);
+		    sectionDiv.appendChild(textDiv);
+		    infoDiv.appendChild(sectionDiv);
+		});
+
+		// Aggiungi le informazioni al contenitore principale
+		card.appendChild(infoDiv);
+
+		// Inserisci la card nel DOM
+		internList.appendChild(card);	
+	}
+
 
 	matchesTab.addEventListener("click", () => {
 
