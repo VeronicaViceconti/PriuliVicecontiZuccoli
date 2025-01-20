@@ -282,11 +282,11 @@ public class PublicationManager extends HttpServlet {
 		i.setOpenSeats(Integer.parseInt(request.getParameter("openSeats")));
 		
 		try {
-			i.setOfferedConditions(StringEscapeUtils.escapeJava(request.getParameter("condition")));
+			//i.setOfferedConditions(StringEscapeUtils.escapeJava(request.getParameter("condition")));
 			i.setStartingDate(Date.valueOf(request.getParameter("startingDate")));
 			i.setEndingDate(Date.valueOf(request.getParameter("endingDate")));
-			i.setOpenSeats(Integer.parseInt(request.getParameter("openSeats")));
-			if(i.getEndingDate() == null || i.getStartingDate() == null || i.getOfferedConditions() == null) {
+			//i.setOpenSeats(Integer.parseInt(request.getParameter("openSeats")));
+			if(i.getEndingDate() == null || i.getStartingDate() == null /*|| i.getOfferedConditions() == null*/) {
 				throw new Exception();
 			}
 		}catch (Exception e ) {

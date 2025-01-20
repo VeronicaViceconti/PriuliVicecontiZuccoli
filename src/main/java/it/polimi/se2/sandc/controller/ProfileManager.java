@@ -102,6 +102,7 @@ public class ProfileManager extends HttpServlet {
 					}
 					if(internship == null) { //the internship searched doesn't exist
 						response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+						response.getWriter().println("The internship doesn't exist");
 						return;
 					}
 					StudentDAO student = new StudentDAO(connection);
