@@ -82,7 +82,7 @@ public class SignupManager extends HttpServlet {
 	    }
 		
 		try {
-			usr.createUser(name, email, pwd, address, phoneNumber,userType);
+			usr.registerNewUser(name, email, pwd, address, phoneNumber,userType);
 			//se tutto va bene
 			response.setStatus(HttpServletResponse.SC_OK);
 			response.setContentType("application/json");

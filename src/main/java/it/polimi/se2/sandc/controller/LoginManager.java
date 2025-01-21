@@ -81,7 +81,7 @@ public class LoginManager extends HttpServlet {
 		User u = null;
 		
 		try {
-			u = usr.checkCredentials(email, pwd);
+			u = usr.sendFormLogin(email, pwd);
 		} catch (SQLException e) {
 			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 			response.getWriter().println("Internal server error, retry later");

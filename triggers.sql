@@ -19,21 +19,6 @@ IF EXISTS (SELECT * FROM Student WHERE email = NEW.email)
     END IF;
  end//
  
- create trigger maxOneMatch
- before insert on Matches
- for each row
- begin
-	declare s varchar(50);
-    declare c varchar(50); 
-    select student into s from Publication where id = new.idPublication;
-    select company into c from Internship where id = new.idInternship;
-    
-	if exists (select * from Publication inner join Matches inner join Internship where student = s and company = c) then
-		set new.idPublication = null;
-        set new.idInternship = null;
-	end if;
- end//
- 
  create trigger matchMakerStudents
  after insert on Preference 
  for each row 

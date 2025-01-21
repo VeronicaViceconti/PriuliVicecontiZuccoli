@@ -86,7 +86,7 @@ public class ProfileManager extends HttpServlet {
 			//the internship exists, now need to find the correspond student's publication
 			 switch (request.getParameter("page").toString()) { //uso lo switch per capire quale azione dobbiamo fare in questa servlet
 			 	case "toHomepage":
-			 		findAllInternships(response,user.getEmail());
+			 		findPossibleInternships(response,user.getEmail());
 			 		break;
 			 	case "internshipInfo": //when the page need to open one internship
 			 		findInternshipInfo(request,response);
@@ -133,7 +133,7 @@ public class ProfileManager extends HttpServlet {
 			 		createMatchStudent(response,internship.getId(),pub.getId());
 			 		
 			 		//now need to return to homepage, so return 
-			 		findAllInternships(response,user.getEmail());
+			 		findPossibleInternships(response,user.getEmail());
 			 		break;
 			 	case "showMatches":
 			 		showAllStudentMatches(response,user.getEmail());
@@ -297,7 +297,7 @@ public class ProfileManager extends HttpServlet {
 		}
 	}
 
-	private void findAllInternships(HttpServletResponse response,String emailStudent) throws IOException {
+	private void findPossibleInternships(HttpServletResponse response,String emailStudent) throws IOException {
 		CompanyDAO company = null;
 		List<Internship> internships = null;
 		company = new CompanyDAO(connection);

@@ -13,7 +13,7 @@ public class UserDAO {
 		this.connection = conn;
 	}
 	
-	public User checkCredentials(String email, String psw) throws SQLException {
+	public User sendFormLogin(String email, String psw) throws SQLException {
 		String query = "SELECT name, email  FROM student  WHERE email = ? AND psw = ?";
 		String query2 = "SELECT name, email  FROM company  WHERE email = ? AND psw = ?";
 		ResultSet result = null, result2 = null;
@@ -83,7 +83,7 @@ public class UserDAO {
 		}
 	}
 	
-	public void createUser(String name, String email, String psw,String address,String phoneNumber,String userType) throws SQLException {
+	public void registerNewUser(String name, String email, String psw,String address,String phoneNumber,String userType) throws SQLException {
 		String query = null;
 		if(userType.equals("student"))
 			query = "INSERT into Student (email,name,address,phoneNumber,cv, psw) VALUES(?, ?, ?, ?, null,?)";
