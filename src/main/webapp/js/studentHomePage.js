@@ -3,13 +3,16 @@
 	const availableInternTab = document.getElementById("Avail_Inter_Tab");
 	const homeBtn = document.getElementById("homeBtn");
 	const profileBtn = document.getElementById("profileBtn");
-	const internList = document.getElementById("available/newMatch");
+	const avail_newMatch_section = document.getElementById("available/newMatch");
+	const waitingResponse_section = document.getElementById("waitingResponse");
+	const waitingInterview_section = document.getElementById("waitingInterview");
 	const first_subTitle = document.getElementById("first_subTitle");
 
 	window.onload = function(e) {
 		e.preventDefault();
 		first_subTitle.innerText = "";
 		sessionStorage.setItem('tab', "available");
+		cleanUp();
 		showMatchesDivFields(false);
 		loadAvailableInternships();
 	}
@@ -21,8 +24,9 @@
 		matchesTab.style.color = "#2e4057";
 		sessionStorage.setItem('tab', "available");
 
-		internList.innerHTML = null;
+		
 		first_subTitle.innerText = "";
+		cleanUp();
 		showMatchesDivFields(false);
 		loadAvailableInternships();
 	});
@@ -33,13 +37,19 @@
 		availableInternTab.style.color = "#2e4057";
 		matchesTab.style.color = "#a37659";
 		sessionStorage.setItem('tab', "metches");
-
-		internList.innerHTML = null;
+		
 		first_subTitle.innerText = "New matches";
+		cleanUp();
 		showMatchesDivFields(true);
 		loadMatchInternships();
 
 	});
+	
+	function cleanUp(){
+		avail_newMatch_section.innerHTML = null;
+		waitingResponse_section.innerHTML = null;
+		waitingInterview_section.innerHTML = null;
+	}
 
 	homeBtn.addEventListener("click", () => {
 		window.location.href = "http://localhost:8080/SandC/homePageStudente.html";
@@ -48,16 +58,6 @@
 	profileBtn.addEventListener("click", () => {
 		window.location.href = "http://localhost:8080/SandC/studentProfile.html";
 	})
-
-	/*internList.addEventListener("click", () => {
-		const card = event.target.closest(".card");
-
-		if (card) {
-			const cardId = card.id;
-			sessionStorage.setItem("internshipID", cardId);
-			window.location.href = "http://localhost:8080/SandC/internshipInfo_AcceptDecline_student.html";
-		}
-	})*/
 
 	function AddCardsEventListners() {
 		var cards = null;
