@@ -1,6 +1,6 @@
 {
 	const pageTitle = document.getElementById("pageTitle");
-	const minQualifications = document.getElementById("minimumQualifications");
+	const workCond = document.getElementById("workingConditions");
 	const jobDesc = document.getElementById("jobDescription");
 	const actionBtnsContainer = document.getElementById("actionButtonContainer");
 	const homeBtn = document.getElementById("homeBtn");
@@ -18,7 +18,7 @@
 	window.onload = function() {
 
 		jobDesc.innerText = "";
-		minQualifications.innerText = "";
+		workCond.innerText = "";
 		company.innerText = "";
 		role.innerText = "";
 		location.innerText = "";
@@ -76,8 +76,9 @@
 
 				actionBtnsContainer.appendChild(feedbackBtn);
 				break;
-
 		}
+
+		loadInternshipInfo(internID);
 
 	}
 
@@ -89,4 +90,41 @@
 		alert("company profile");
 		//window.location.href = "http://localhost:8080/SandC/studentProfile.html";
 	})
+
+	function loadInternshipInfo(internshipId) {
+		makeCall("GET", "ProfileManager?page=internshipInfo&ID=" + internshipId, null,
+			(req) => {
+				if (req.readyState == 4) {
+					switch (req.status) {
+						case 200: // andato a buon fine
+							console.log(req.responseText);
+							var jsonData = JSON.parse(req.responseText);
+							console.log(jsonData);
+							//fill the page							
+							company.innerText = jsonData.company.name;
+							role.innerText = jsonData.roleToCover;
+							location.innerText = jsonData.company.address;
+							period.innerText = jsonData.startingDate + " - " + jsonData.endingaData;
+							openPositions.innerText = jsonData.openSeats;
+
+							jobDesc.innerText = jsonData.jobDescription;
+							if ("workCond" in jsonData) {
+								for (const pref of jsonData.workCond) {
+									workCond.innerText += pref.text + " ";
+								}
+							}
+							break;
+						case 403:
+							console.log("errore 403");
+							break;
+						case 412:
+							console.log("errore 412");
+							break;
+						case 500:
+							console.log("errore 500");
+							break;
+					}
+				}
+			});
+	}
 }

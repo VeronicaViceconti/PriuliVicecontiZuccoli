@@ -145,8 +145,18 @@ public class ProfileManager extends HttpServlet {
 			 		default:
 			 			response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 			 } 
-		}else { //we want to use company's profile
-			
+		}else {
+			if(request.getParameter("page") == null) 
+			    return; 
+			    
+			   //the internship exists, now need to find the correspond student's publication 
+			    switch (request.getParameter("page").toString()) { //uso lo switch per capire quale azione dobbiamo fare in questa servlet 
+			     case "internshipInfo": //when the page need to open one internship 
+			      findInternshipInfo(request,response); 
+			      break; 
+			      default: 
+			       response.setStatus(HttpServletResponse.SC_UNAUTHORIZED); 
+			    }			
 		}
 	}
 
@@ -270,6 +280,8 @@ public class ProfileManager extends HttpServlet {
 		CompanyDAO company = null;
 		Internship internship = null;
 		company = new CompanyDAO(connection);
+		
+		
 		
 		 try {
 			internship = company.findTheInternship(Integer.parseInt(request.getParameter("ID")));

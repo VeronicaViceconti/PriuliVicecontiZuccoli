@@ -11,8 +11,8 @@
 	window.onload = function(e) {
 		e.preventDefault();
 		sessionStorage.setItem('tab', "ongoing");
+		internList.innerHTML = null;
 
-		//TODO: caricare available internships dal databse
 		/*makeCall("GET", "ProfileManager?page=toHomepage", null,
 			(req) => {
 				if (req.readyState == 4) {
@@ -35,15 +35,15 @@
 			});*/
 	}
 
-	function createCard(Id, name, role, startDate, finishDate, location, nomberPos) {
+	function createCard(Id, name, role, startDate, finishDate, location, openSeats) {
 		// Dati della card
 		const cardData = {
-			id: 1,
-			company: "Google",
-			role: "Software Engineering Intern",
-			period: "10/06/25 - 10/09/25",
-			location: "Milan, Italy",
-			positions: 3
+			id: Id,
+			company: name,
+			role: role,
+			period: startDate + " - " + finishDate,
+			location: location,
+			positions: openSeats
 		};
 
 		// Seleziona il contenitore in cui aggiungere la card
@@ -104,13 +104,14 @@
 		matchesTab.style.color = "#a37659";
 
 		sessionStorage.setItem('tab', "matches");
+		internList.innerHTML = null;
 		
 		makeCall("GET", "MatchManager?page=acceptMatch&IDmatch="+3+"&accept="+0, null,
 			(req) => {
 				if (req.readyState == 4) {
 					switch (req.status) {
 						case 200: // andato a buon fine
-							//console.log("andato a buon fine");
+							console.log("da fare");
 							break;
 						case 403:
 							console.log("errore 403");
@@ -133,8 +134,8 @@
 		proposedInternTab.style.color = "#2e4057";
 		waitingFeedInternship.style.color = "#2e4057";
 		matchesTab.style.color = "#2e4057";
-
 		sessionStorage.setItem('tab', "ongoing");
+		internList.innerHTML = null;
 		//TODO
 	});
 
@@ -145,10 +146,10 @@
 		proposedInternTab.style.color = "#a37659";
 		waitingFeedInternship.style.color = "#2e4057";
 		matchesTab.style.color = "#2e4057";
-		console.log("prrrrrrrova!");
 		sessionStorage.setItem('tab', "proposed");
-		//TODO
 		
+		internList.innerHTML = null;
+				
 		makeCall("GET", "PublicationManager?page=proposedInternships", null,
 			(req) => {
 				if (req.readyState == 4) {
@@ -156,6 +157,17 @@
 						case 200: // andato a buon fine
 							var jsonData = JSON.parse(req.responseText);
 							console.log(jsonData[0]);
+							for(const internship of jsonData){
+								createCard(
+									internship.id,
+									internship.company.name,
+									internship.roleToCover,
+									internship.startingDate,
+									internship.endingDate,
+									internship.company.address,
+									internship.openSeats
+								)
+							}
 							break;
 						case 403:
 							console.log("errore 403");
@@ -180,6 +192,7 @@
 		matchesTab.style.color = "#2e4057";
 
 		sessionStorage.setItem('tab', "waitingFeed");
+		internList.innerHTML = null;
 		//TODO
 	});
 
@@ -188,14 +201,15 @@
 	})
 
 	profileBtn.addEventListener("click", () => {
-		//window.location.href = "http://localhost:8080/SandC/studentProfile.html";
-		alert("company Profile Page");
+		window.location.href = "http://localhost:8080/SandC/companyProfile.html";
 	})
 
+	//click on card event
 	internList.addEventListener("click", () => {
 		const card = event.target.closest(".card");
 		var tab = sessionStorage.getItem("tab");
 
+		
 		if (card) {
 			if (tab != "matches") {
 				sessionStorage.setItem("internshipID", card.id);

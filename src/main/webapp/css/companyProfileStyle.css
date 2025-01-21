@@ -1,0 +1,176 @@
+.profilo-company {
+  background-color: #f8f9fa;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  width: 100%;
+}
+
+.profilo-company .div {
+  background-color: #f8f9fa;
+  width: 1440px;
+  height: 1379px;
+  position: relative;
+}
+
+.profilo-company .preferences {
+  position: absolute;
+  width: 757px;
+  height: 233px;
+  top: 556px;
+  left: 342px;
+  background-color: #f6f0eb;
+  border-radius: 20px;
+  overflow: hidden;
+}
+
+.profilo-company .lucide-square-pen {
+  position: absolute;
+  width: 25px;
+  height: 25px;
+  top: 15px;
+  left: 717px;
+}
+
+.profilo-company .text-wrapper {
+  position: absolute;
+  width: 677px;
+  top: 28px;
+  left: 40px;
+  font-family: "Inter-Regular", Helvetica;
+  font-weight: 400;
+  color: #2e4057;
+  font-size: 20px;
+  letter-spacing: 0;
+  line-height: 35px;
+}
+
+.profilo-company .text-wrapper-2 {
+  position: absolute;
+  top: 525px;
+  left: 665px;
+  font-family: "Inter-Regular", Helvetica;
+  font-weight: 400;
+  color: #2e4057;
+  font-size: 25px;
+  letter-spacing: 0;
+  line-height: normal;
+  white-space: nowrap;
+}
+
+.profilo-company .user-information {
+  position: absolute;
+  width: 757px;
+  height: 233px;
+  top: 226px;
+  left: 342px;
+  background-color: #f6f0eb;
+  border-radius: 20px;
+  overflow: hidden;
+}
+
+.profilo-company .profilo {
+  position: absolute;
+  width: 160px;
+  height: 160px;
+  top: 40px;
+  left: 134px;
+}
+
+.profilo-company .text-wrapper-3 {
+  position: absolute;
+  top: 68px;
+  left: 328px;
+  font-family: "Inter-Regular", Helvetica;
+  font-weight: 400;
+  color: #2e4057;
+  font-size: 20px;
+  letter-spacing: 0;
+  line-height: normal;
+  white-space: nowrap;
+}
+
+.profilo-company .text-wrapper-4 {
+  position: absolute;
+  top: 92px;
+  left: 328px;
+  font-family: "Inter-Regular", Helvetica;
+  font-weight: 400;
+  color: #2e4057;
+  font-size: 20px;
+  letter-spacing: 0;
+  line-height: normal;
+  white-space: nowrap;
+}
+
+.profilo-company .text-wrapper-5 {
+  position: absolute;
+  top: 116px;
+  left: 328px;
+  font-family: "Inter-Regular", Helvetica;
+  font-weight: 400;
+  color: #2e4057;
+  font-size: 20px;
+  letter-spacing: 0;
+  line-height: normal;
+  white-space: nowrap;
+}
+
+.profilo-company .text-wrapper-6 {
+  position: absolute;
+  top: 140px;
+  left: 328px;
+  font-family: "Inter-Regular", Helvetica;
+  font-weight: 400;
+  color: #000000;
+  font-size: 20px;
+  letter-spacing: 0;
+  line-height: normal;
+  white-space: nowrap;
+}
+
+.profilo-company .text-wrapper-7 {
+  position: absolute;
+  top: 122px;
+  left: 47px;
+  font-family: "Inter-Regular", Helvetica;
+  font-weight: 400;
+  color: #2e4057;
+  font-size: 40px;
+  letter-spacing: 0;
+  line-height: normal;
+  white-space: nowrap;
+}
+
+.profilo-company .barra-superiore {
+  position: absolute;
+  width: 1440px;
+  height: 86px;
+  top: 0;
+  left: 0;
+  background-color: #ffffff;
+  border-radius: 0px 0px 20px 20px;
+  overflow: hidden;
+}
+
+.profilo-company .titolo {
+  position: absolute;
+  width: 459px;
+  top: 15px;
+  left: 490px;
+  font-family: "Inter-Regular", Helvetica;
+  font-weight: 400;
+  color: #2e4057;
+  font-size: 45px;
+  letter-spacing: 0;
+  line-height: normal;
+  white-space: nowrap;
+}
+
+.profilo-company .home {
+  position: absolute;
+  width: 35px;
+  height: 35px;
+  top: 26px;
+  left: 30px;
+}
