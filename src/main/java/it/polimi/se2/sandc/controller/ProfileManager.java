@@ -5,6 +5,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.ServletContext;
@@ -19,10 +20,12 @@ import javax.servlet.http.HttpSession;
 import org.apache.commons.lang.StringEscapeUtils;
 
 import it.polimi.se2.sandc.bean.Internship;
+import it.polimi.se2.sandc.bean.Match;
 import it.polimi.se2.sandc.bean.Publication;
 import it.polimi.se2.sandc.bean.User;
 import it.polimi.se2.sandc.dao.CompanyDAO;
 import it.polimi.se2.sandc.dao.MatchDAO;
+import it.polimi.se2.sandc.dao.PublicationDAO;
 import it.polimi.se2.sandc.dao.StudentDAO;
 import it.polimi.se2.sandc.dao.UserDAO;
 
@@ -83,8 +86,11 @@ public class ProfileManager extends HttpServlet {
 			 		
 			 		findAllInternships(response,user.getEmail());
 			 		break;
-			 	case "internshipInfo":
+			 	case "internshipInfo": //when the page need to open one internship
 			 		findInternshipInfo(request,response);
+			 		break;
+			 	case "openPubAndWP": //when the student click the button apply, so need all the working preferences
+			 		retrieveAllWP(response, user.getEmail());
 			 		break;
 			 	case "addInternshipThenHomepage": //student want to apply to the internship
 			 		int ID = Integer.parseInt(request.getParameter("IDintern"));
@@ -127,11 +133,10 @@ public class ProfileManager extends HttpServlet {
 			 		//now need to return to homepage, so return 
 			 		findAllInternships(response,user.getEmail());
 			 		break;
-			 	case "matches":
-			 		//String x = StringEscapeUtils.escapeJava(request.getParameter("condition"));
-			 		
+			 	case "showMatches":
+			 		showAllStudentMatches(response,user.getEmail());
 			 		break;
-			 	case "filteredInternships":
+			 	case "filteredInternships": //when the student search internship of a x company
 			 		String x = StringEscapeUtils.escapeJava(request.getParameter("condition"));
 			 		findFilteredInternships(response,x,user.getEmail());
 			 		break;
@@ -144,6 +149,64 @@ public class ProfileManager extends HttpServlet {
 	}
 
 	
+	private void showAllStudentMatches(HttpServletResponse response,String emailStudent) throws IOException {
+		MatchDAO match = new MatchDAO(connection);
+		List<Match> matches = null;
+		StudentDAO student = new StudentDAO(connection);
+		List<Publication> publications = new ArrayList<>();
+		 try {
+			publications = student.findStudentPublications(emailStudent);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+			response.getWriter().println("Error finding matches, retry later");
+			return;
+		}
+		 if(publications != null) {
+			 try {
+					matches = match.findStudentMatches(emailStudent);
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+					response.getWriter().println("Error finding matches, retry later");
+					return;
+				}
+				 
+				String pubsString = new Gson().toJson(matches);
+				
+		    // Imposta il tipo di contenuto e invia la risposta
+		       response.setContentType("application/json");
+		       response.getWriter().write(pubsString);       
+		       response.setStatus(HttpServletResponse.SC_OK);
+		 }
+			 
+		 
+		
+	}
+
+	private void retrieveAllWP(HttpServletResponse response, String email) throws IOException {
+		// TODO Auto-generated method stub
+		PublicationDAO pub = new PublicationDAO(connection);
+		List<Publication> pubs = null;
+		
+		 try {
+			pubs = pub.retrieveAllWP(email);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+			response.getWriter().println("Internal db error, retry later");
+			return;
+		}
+		 
+		String pubsString = new Gson().toJson(pubs);
+		
+    // Imposta il tipo di contenuto e invia la risposta
+       response.setContentType("application/json");
+       response.getWriter().write(pubsString);       
+       response.setStatus(HttpServletResponse.SC_OK);
+		
+	}
+
 	private void findFilteredInternships(HttpServletResponse response, String nameCompany,String emailStudent) throws IOException {
 		// TODO Auto-generated method stub
 		//questo metodo deve semplicemente cercare tutte le internshipDAO disponibile dell'azienda nameCompany

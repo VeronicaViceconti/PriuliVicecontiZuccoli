@@ -17,15 +17,16 @@ create table sandc.Company(
     psw varchar(100) not null
 );
 
-create table sandc.WorkingPreferences( 
-	id integer primary key auto_increment,
-    text varchar(100) not null
-);
+
 
 create table sandc.Publication (
 	id integer primary key auto_increment,
     student varchar(50) not null,
     foreign key (student) references Student(email) on update cascade on delete cascade
+);
+create table sandc.WorkingPreferences( 
+	id integer primary key auto_increment,
+    text varchar(100) not null
 );
 
 create table sandc.Preference(
@@ -50,7 +51,8 @@ create table sandc.Internship (
 
 create table sandc.Matches(
 	id integer primary key auto_increment, 
-	acceptedYN Boolean,
+	acceptedYNStudent Boolean,
+    acceptedYNCompany Boolean,
     idPublication integer not null,
     idInternship integer not null, 
     foreign key (idPublication) references Publication(id) on update cascade on delete cascade,
@@ -71,6 +73,7 @@ create table sandc.Form (
 create table sandc.Interview (
 	id integer primary key auto_increment,
     dat date not null,
+    confirmedYN boolean,
 	idMatch integer not null,
     idForm integer not null, 
     foreign key (idMatch) references Matches(id) on update cascade on delete cascade,

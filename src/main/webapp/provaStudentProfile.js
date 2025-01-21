@@ -3,9 +3,8 @@
 	
     document.getElementsByClassName("card")[0].addEventListener('click', (e) => {
 		e.preventDefault();
-		console.log("che due maroni!");
 		 //metodo post della servlet CheckLogin
-	      makeCall("GET", 'ProfileManager?page=addInternshipThenHomepage&IDintern='+1010+"&IDworkpref="+1,null, 
+	      makeCall("GET", 'ProfileManager?page=showMatches',null, 
 	      	(req) => {
 	            
 	          	if (req.readyState == 4) {

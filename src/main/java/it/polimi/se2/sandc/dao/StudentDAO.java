@@ -5,6 +5,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -87,7 +88,7 @@ public class StudentDAO {
 		query2 = "SELECT * from publication WHERE student = ?";
 		ResultSet result2 = null;
 		PreparedStatement pstatement2 = null;
-		List<Publication> publications = null;
+		List<Publication> publications = new ArrayList<>();
 		try {
 			pstatement2 = connection.prepareStatement(query2);
 			pstatement2.setString(1, email);

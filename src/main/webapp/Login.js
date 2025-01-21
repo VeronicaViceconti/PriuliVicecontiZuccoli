@@ -96,7 +96,7 @@
 	            switch (x.status) {
 	              case 200:  //richiesta andata a buon fine
 	            	sessionStorage.setItem('username', message);  //mi salvo in js il nome dell'utente
-	                window.location.href = "companyPublication.html";
+	                window.location.href = "homePageStudente.html";
 	                break;
 	              case 400: // bad request
 	                document.getElementById("errors").textContent = message;
