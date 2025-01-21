@@ -307,4 +307,42 @@ public class CompanyDAO {
 		
 		return ris;
 	}
+	
+	public ArrayList<Internship> getInternshipWaitingFeedback(String email) throws SQLException{
+		
+		ArrayList<Internship> ris = new ArrayList<Internship>();
+		
+		String query = "select i.*, c.*\n"
+				+ "from ((publication as p inner join matches as m on m.idPublication = p.id ) \n"
+				+ "		inner join internship as i on m.idInternship = i.id) inner join company as c on c.email = i.company \n"
+				+ "where m.id in (select idMatch from interview where confirmedYN = 1) and c.email like ? and current_date() > i.endingDate and\n"
+				+ "i.id not in (select internship from feedback where studentYN = 0)";
+		
+		try(PreparedStatement statement = connection.prepareStatement(query)){
+			statement.setString(1, email);
+			
+			try(ResultSet result = statement.executeQuery()){
+				while(result.next()) {
+					Company c = new Company();
+					
+					c.setEmail(result.getString("email"));
+					c.setAddress(result.getString("address"));
+					c.setName(result.getString("name"));
+					
+					Internship i = new Internship();
+					
+					i.setCompany(c);
+					i.setId(result.getInt("id"));
+					i.setOpenSeats(result.getInt("openSeats"));
+					i.setStartingDate(result.getDate("startingDate"));
+					i.setStartingDate(result.getDate("endingDate"));
+					i.setjobDescription(result.getString("jobDescription"));
+					
+					ris.add(i);
+				}
+			}
+			
+		}
+		return ris;
+	}
 }
