@@ -72,7 +72,7 @@ public class MatchManager extends HttpServlet {
 
 		String userType = (String) s.getAttribute("userType");
 		User user = (User) request.getSession().getAttribute("user");
-		if(userType.equals("student")) { //we want to use student profile -> search company publications
+		if(userType.equalsIgnoreCase("student")) { //we want to use student profile -> search company publications
 			if(request.getParameter("page") == null)
 				return;
 			
@@ -115,9 +115,12 @@ public class MatchManager extends HttpServlet {
 			response.getWriter().println("Error controlling ownership, retry later");
 			return;
 		}
-	
+		
 		try {
-			match.updateMatchAccepted(matchID,userType,acceptedOrNot);
+			if(acceptedOrNot == 1)
+				match.updateMatchAccepted(matchID,userType,acceptedOrNot);
+			else
+				match.deleteMatch(matchID);
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);

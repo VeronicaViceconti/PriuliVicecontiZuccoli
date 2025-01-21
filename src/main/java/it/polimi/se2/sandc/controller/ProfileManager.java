@@ -79,7 +79,7 @@ public class ProfileManager extends HttpServlet {
 		String userType = (String) s.getAttribute("userType");
 		
 		User user = (User) request.getSession().getAttribute("user");
-		if(userType.equals("student")) { //we want to use student profile -> search company publications
+		if(userType.equalsIgnoreCase("student")) { //we want to use student profile -> search company publications
 			if(request.getParameter("page") == null)
 				return;
 			

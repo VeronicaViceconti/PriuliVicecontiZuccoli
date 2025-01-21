@@ -109,7 +109,7 @@ public class MatchDAO {
 
 	public void updateMatchAccepted(int matchID,String userType,int acceptedOrNot) throws SQLException {
 		String query = null;
-		if(userType.equals("student"))
+		if(userType.equalsIgnoreCase("student"))
 			query = "UPDATE matches set acceptedYNStudent = ? WHERE id = ?";
 		else
 			query = "UPDATE matches set acceptedYNCompany = ? WHERE id = ?";
@@ -134,14 +134,14 @@ public class MatchDAO {
 	//control student ownership
 	public Boolean controlOwnership(String email,int matchID,String userType) throws SQLException {
 		String query = null;
-		if(userType.equals("Student"))
+		if(userType.equalsIgnoreCase("student"))
 			query = "SELECT * FROM matches as m join publication as p on m.idPublication = p.id join student as s on s.email = p.student WHERE email = ? and m.id = ?;";
 		else
 			query = "SELECT * FROM matches as m join internship as i on m.idInternship = i.id join company as c on c.email = i.company WHERE email = ? and m.id = ?;";
 
 		PreparedStatement pstatement = null;
 		ResultSet result2 = null;
-		List<Match> matches = new ArrayList<>();
+
 		try {
 			pstatement = connection.prepareStatement(query);
 			pstatement.setString(1, email);
@@ -222,6 +222,27 @@ public class MatchDAO {
 			try {
 				pstatement.close(); // devo chiudere prepared statement
 			} catch (Exception e) {
+				throw new SQLException("Error while trying to close prepared statement");
+			}
+		}
+	}
+
+	public void deleteMatch(int matchID) throws SQLException {
+		String query = null;
+		query = "DELETE from matches WHERE id = ?;";
+		PreparedStatement pstatement = null;
+		
+		try {
+			pstatement = connection.prepareStatement(query);
+			pstatement.setInt(1, matchID);
+
+			pstatement.executeUpdate();
+		} catch(SQLException e) {
+			throw new SQLException("Error while deleting match");
+		}finally {
+			try {
+				pstatement.close();  //devo chiudere prepared statement
+			} catch(Exception e) {
 				throw new SQLException("Error while trying to close prepared statement");
 			}
 		}

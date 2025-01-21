@@ -58,5 +58,21 @@ IF EXISTS (SELECT * FROM Student WHERE email = NEW.email)
         having count(*) >= 5;
  end //
  
- 
- delimiter ;
+create trigger noMindChangesOnAcceptingMatchesStudent
+after update on matches
+for each row
+begin 
+	if( old.id = new.id AND exists (SELECT 1 FROM matches WHERE old.acceptedYNStudent is not null AND id = new.id)) then
+        set new.acceptedYNStudent = old.acceptedYNStudent;
+	end if;
+end//
+
+create trigger noMindChangesOnAcceptingMatchesCompany
+after update on matches
+for each row
+begin 
+	if( old.id = new.id AND exists (SELECT 1 FROM matches WHERE old.acceptedYNCompany is not null AND id = new.id)) then
+		 set new.acceptedYNCompany = old.acceptedYNCompany;
+	end if;
+end
+delimiter ;

@@ -85,7 +85,7 @@ public class PublicationManager extends HttpServlet {
 		String email = user.getEmail();
 		String userType = (String) s.getAttribute("userType");
 		
-		if(userType.equals("student")) { //we want to use student profile 
+		if(userType.equalsIgnoreCase("student")) { //we want to use student profile 
 			if(request.getParameter("page") == null)
 				return;
 			
@@ -143,7 +143,7 @@ public class PublicationManager extends HttpServlet {
 		
 		String userType = (String) s.getAttribute("userType");
 		String email = ((User) s.getAttribute("user")).getEmail();
-		if(userType.equals("student")) { //we want to use student profile -> search company publications
+		if(userType.equalsIgnoreCase("student")) { //we want to use student profile -> search company publications
 			if(request.getParameter("page") == null)
 				return;
 			
