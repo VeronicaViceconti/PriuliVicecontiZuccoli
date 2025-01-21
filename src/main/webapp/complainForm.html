@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>S&amp;C</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script src="complain.js" charset="utf-8" defer></script>
+<script src="utils.js" charset="utf-8" defer></script>
+
+</head>
+<body>	 
+
+	<p id="serverResponse"></p>
+	<h1>complaint form</h1>
+	<form id="uploadCvForm" action="ComplainManager?idInternship=1" method="post" enctype="multipart/form-data">		
+		
+		<label for='answer'><b>insert the complaint</b></label>
+		<input type="text" name='answer' accept="application/pdf" required> <br>
+		<button id="complainButton" type="submit">upload</button>
+	</form>
+</body>
+</html>

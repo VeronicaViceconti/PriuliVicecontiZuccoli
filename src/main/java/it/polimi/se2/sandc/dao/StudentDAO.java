@@ -161,7 +161,7 @@ public class StudentDAO {
 		}
 	}
 	
-	public List<Internship> getOnGoingInternship(String email) throws SQLException{
+	public ArrayList<Internship> getOnGoingInternship(String email) throws SQLException{
 		
 		ArrayList<Internship> ris = new ArrayList<Internship>();
 		
