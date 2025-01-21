@@ -85,7 +85,6 @@ public class ProfileManager extends HttpServlet {
 			//the internship exists, now need to find the correspond student's publication
 			 switch (request.getParameter("page").toString()) { //uso lo switch per capire quale azione dobbiamo fare in questa servlet
 			 	case "toHomepage":
-			 		
 			 		findAllInternships(response,user.getEmail());
 			 		break;
 			 	case "internshipInfo": //when the page need to open one internship
@@ -280,8 +279,10 @@ public class ProfileManager extends HttpServlet {
 			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 			response.getWriter().println("Internal server error, retry later");
 		}
-		
+		 
 		String internshipString = new Gson().toJson(internship);
+		System.out.println(internshipString);
+		
     // Imposta il tipo di contenuto e invia la risposta
        response.setContentType("application/json");
        response.getWriter().write(internshipString);       

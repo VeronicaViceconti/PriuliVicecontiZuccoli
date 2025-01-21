@@ -1,4 +1,5 @@
 package it.polimi.se2.sandc.dao;
+
 import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -18,11 +19,10 @@ import it.polimi.se2.sandc.bean.User;
 public class MatchDAO {
 	private Connection connection;
 
-
 	public MatchDAO(Connection conn) {
 		this.connection = conn;
 	}
-	
+
 	public void createMatchFromStudent(int pubID, int IDinternship) throws SQLException {
 		String query = null;
 		query = "INSERT into matches (acceptedYNStudent, idPublication, idInternship) VALUES(true,?, ?)";
@@ -32,13 +32,13 @@ public class MatchDAO {
 			pstatement.setInt(1, pubID);
 			pstatement.setInt(2, IDinternship);
 			pstatement.executeUpdate();
-			
-		} catch(SQLException e) {
+
+		} catch (SQLException e) {
 			throw new SQLException("Error while creating match");
-		}finally {
+		} finally {
 			try {
-				pstatement.close();  //devo chiudere prepared statement
-			} catch(Exception e) {
+				pstatement.close(); // devo chiudere prepared statement
+			} catch (Exception e) {
 				throw new SQLException("Error while trying to close prepared statement");
 			}
 		}
@@ -63,7 +63,10 @@ public class MatchDAO {
 				while (result2.next()) {
 					Match match = new Match();
 					match.setId(result2.getInt("matchID"));
-					match.setAccepted(result2.getBoolean("acceptedYNStudent"));
+					
+					if(result2.getString("acceptedYNStudent") != null) {
+						match.setAccepted(result2.getBoolean("acceptedYNStudent"));
+					}
 					Publication pub = new Publication();
 					pub.setId(result2.getInt("idPublication"));
 					match.setPublication(pub);
@@ -108,19 +111,19 @@ public class MatchDAO {
 			pstatement = connection.prepareStatement(query);
 			pstatement.setInt(1, matchID);
 			pstatement.executeUpdate();
-			
-		} catch(SQLException e) {
+
+		} catch (SQLException e) {
 			throw new SQLException("Error while updating match");
-		}finally {
+		} finally {
 			try {
-				pstatement.close();  //devo chiudere prepared statement
-			} catch(Exception e) {
+				pstatement.close(); // devo chiudere prepared statement
+			} catch (Exception e) {
 				throw new SQLException("Error while trying to close prepared statement");
 			}
 		}
 	}
 
-	public Boolean controlOwnership(String email,int matchID) throws SQLException {
+	public Boolean controlOwnership(String email, int matchID) throws SQLException {
 		String query = null;
 		query = "SELECT * FROM matches as m join publication as p on m.idPublication = p.id join student as s on s.email = p.student WHERE email = ? and m.id = ?;";
 		PreparedStatement pstatement = null;
@@ -132,20 +135,19 @@ public class MatchDAO {
 			pstatement.setInt(2, matchID);
 
 			result2 = pstatement.executeQuery();
-			
+
 			if (!result2.isBeforeFirst()) {// no results,he doesn't have that match
-				return false;	
+				return false;
+			} else {
+				return true;
 			}
-			else {
-				return true;	
-			}
-			
-		} catch(SQLException e) {
+
+		} catch (SQLException e) {
 			throw new SQLException("Error while updating match");
-		}finally {
+		} finally {
 			try {
-				pstatement.close();  //devo chiudere prepared statement
-			} catch(Exception e) {
+				pstatement.close(); // devo chiudere prepared statement
+			} catch (Exception e) {
 				throw new SQLException("Error while trying to close prepared statement");
 			}
 		}

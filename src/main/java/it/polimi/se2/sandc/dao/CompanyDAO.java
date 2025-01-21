@@ -137,16 +137,19 @@ public class CompanyDAO {
 	}
 	
 	public Internship findTheInternship(int ID) throws SQLException {
-		String query =  "SELECT * FROM company JOIN internship as i ON company.email = i.company JOIN requirement as r on r.idInternship = i.id JOIN workingpreferences as w ON w.id = r.idWorkingPreference WHERE i.id = ?";
+		String query =  "SELECT * FROM company JOIN internship as i ON company.email = i.company LEFT JOIN requirement as r on r.idInternship = i.id LEFT JOIN workingpreferences as w ON w.id = r.idWorkingPreference WHERE i.id = ?";
 		ResultSet result = null;
 		PreparedStatement pstatement = null;
 		Internship internship = new Internship();
+		
+		System.out.println("fuori dal try");
 		
 		try {
 			pstatement = connection.prepareStatement(query);
 			pstatement.setInt(1, ID);
 			result = pstatement.executeQuery();
 			if (!result.isBeforeFirst()) {// no results, no internship found
+				System.out.println("no match found");
 				return null;
 			}
 			else { //found the internship
