@@ -195,7 +195,7 @@
 							var jsonData = JSON.parse(req.responseText);
 							var pageLocation;							
 							for (const internship of jsonData) {
-								
+								console.log(internship);
 								if("accepted" in internship){
 									pageLocation = "waitingResponse";
 								}
