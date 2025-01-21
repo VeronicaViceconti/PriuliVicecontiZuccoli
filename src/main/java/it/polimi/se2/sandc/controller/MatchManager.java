@@ -3,6 +3,8 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
@@ -19,6 +21,7 @@ import org.apache.commons.lang.StringEscapeUtils;
 import com.google.gson.Gson;
 
 import it.polimi.se2.sandc.bean.Internship;
+import it.polimi.se2.sandc.bean.Match;
 import it.polimi.se2.sandc.bean.Publication;
 import it.polimi.se2.sandc.bean.User;
 import it.polimi.se2.sandc.dao.CompanyDAO;
@@ -68,32 +71,39 @@ public class MatchManager extends HttpServlet {
         }
 
 		String userType = (String) s.getAttribute("userType");
-		
+		User user = (User) request.getSession().getAttribute("user");
 		if(userType.equals("student")) { //we want to use student profile -> search company publications
 			if(request.getParameter("page") == null)
 				return;
-			User user = (User) request.getSession().getAttribute("user");
+			
 			//the internship exists, now need to find the correspond student's publication
 			 switch (request.getParameter("page").toString()) { //uso lo switch per capire quale azione dobbiamo fare in questa servlet
 			 	case "acceptMatch": //when the page need to open one internship
-			 		acceptMatch(response,Integer.parseInt(request.getParameter("IDmatch")),user.getEmail());
+			 		acceptMatch(response,Integer.parseInt(request.getParameter("IDmatch")),user.getEmail(),userType,Integer.parseInt(request.getParameter("accept")));
 			 		break;
 			 		default:
-			 			response.setStatus(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
+			 			response.setStatus(HttpServletResponse.SC_UNAUTHORIZED); //401
 			 } 
-		}else { //we want to use company's profile
-			
+		}else { //we want to use company
+			switch (request.getParameter("page").toString()) { //uso lo switch per capire quale azione dobbiamo fare in questa servlet
+		 	case "showMatches": //when the page need to open one internship
+		 		showAllCompanyMatches(response,user.getEmail());
+		 		break;
+		 	case "acceptMatch": //when the page need to open one internship
+		 		acceptMatch(response,Integer.parseInt(request.getParameter("IDmatch")),user.getEmail(),userType,Integer.parseInt(request.getParameter("accept")));
+		 		break;
+		 		default:
+		 			response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+		 } 
 		}
 	}
 
-	//update the selected match, the student accepted it!
-	private void acceptMatch(HttpServletResponse response, int matchID, String email) throws IOException {
-		// TODO Auto-generated method stub
-		MatchDAO match = new MatchDAO(connection);
+	private void acceptMatch(HttpServletResponse response, int matchID, String email,String userType,int acceptedOrNot) throws IOException {
 		
+		MatchDAO match = new MatchDAO(connection);
 		//controll that the student has that match
 		try {
-			Boolean YN = match.controlOwnership(email,matchID);
+			Boolean YN = match.controlOwnership(email,matchID,userType);
 			if(!YN) {
 				response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 				response.getWriter().println("You don't have this match.");
@@ -102,18 +112,38 @@ public class MatchManager extends HttpServlet {
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-			response.getWriter().println("Error finding matches, retry later");
+			response.getWriter().println("Error controlling ownership, retry later");
 			return;
 		}
-		
+	
 		try {
-			match.updateMatchAccepted(matchID);
+			match.updateMatchAccepted(matchID,userType,acceptedOrNot);
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-			response.getWriter().println("Error updating matches, retry later");
+			response.getWriter().println("Error accepting matches, retry later");
 			return;
 		}
+	}
+
+	private void showAllCompanyMatches(HttpServletResponse response, String email) throws IOException {
+		MatchDAO match = new MatchDAO(connection);
+		List<Match> matches = null;
+
+		 try {
+				matches = match.findCompanyMatches(email);
+				String matchString = new Gson().toJson(matches);
+				
+				// Imposta il tipo di contenuto e invia la risposta
+		       response.setContentType("application/json");
+		       response.getWriter().write(matchString);       
+		       response.setStatus(HttpServletResponse.SC_OK);
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+				response.getWriter().println("Error finding matches, retry later");
+				return;
+			}
 	}
 
 	/**

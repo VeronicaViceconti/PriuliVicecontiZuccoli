@@ -2,7 +2,8 @@ package it.polimi.se2.sandc.bean;
 
 public class Match{
 	private int id; 
-	private boolean accepted; 
+	private Boolean acceptedYNStudent; 
+	private Boolean acceptedYNCompany; 
 	private Publication publication; 
 	private Internship internship;
 	
@@ -13,11 +14,17 @@ public class Match{
 	public void setId(int id) {
 		this.id = id;
 	}
-	public boolean isAccepted() {
-		return accepted;
+	public Boolean isAcceptedStudent() {
+		return acceptedYNStudent;
 	}
-	public void setAccepted(boolean accepted) {
-		this.accepted = accepted;
+	public void setAcceptedStudent(Boolean accepted) {
+		this.acceptedYNStudent = accepted;
+	}
+	public Boolean isAcceptedCompany() {
+		return acceptedYNCompany;
+	}
+	public void setAcceptedCompany(Boolean accepted) {
+		this.acceptedYNCompany = accepted;
 	}
 	public Publication getPublication() {
 		return publication;

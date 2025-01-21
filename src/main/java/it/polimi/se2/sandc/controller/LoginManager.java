@@ -4,6 +4,8 @@ import java.io.IOException;
 
 import org.apache.commons.lang.StringEscapeUtils;
 
+import com.google.gson.Gson;
+
 import it.polimi.se2.sandc.bean.Student;
 import it.polimi.se2.sandc.bean.User;
 import it.polimi.se2.sandc.dao.StudentDAO;
@@ -96,17 +98,20 @@ public class LoginManager extends HttpServlet {
 		
 		//se tutto va bene
 		request.getSession().setAttribute("user", u);
-		if(u.getWhichUser().equals("student"))
+		String user = null;
+		if(u.getWhichUser().equals("student")) {
 			request.getSession().setAttribute("userType", "student");
-		else
+			user = new Gson().toJson("student");
+			
+		}else {
 			request.getSession().setAttribute("userType", "company");
+			user = new Gson().toJson("company");
+		}
+		
+		response.getWriter().write(user); 
 		response.setStatus(HttpServletResponse.SC_OK);
 		response.setContentType("application/json");
 		response.setCharacterEncoding("UTF-8");
-		
-		/*RequestDispatcher dispatcher = request.getRequestDispatcher("/ProfileManager");
-		// Esegue il forward
-		dispatcher.forward(request, response);*/
 	}
 
 	

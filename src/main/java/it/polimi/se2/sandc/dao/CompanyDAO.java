@@ -210,7 +210,7 @@ public class CompanyDAO {
 				internship.setPreferences(preferences);
 			}
 		} catch(SQLException e) {
-			throw new SQLException("Error while trying to access credentials");
+			throw new SQLException("Error while trying to get preferences");
 		}finally {
 			try {
 				result.close(); //Devo chiudere result set

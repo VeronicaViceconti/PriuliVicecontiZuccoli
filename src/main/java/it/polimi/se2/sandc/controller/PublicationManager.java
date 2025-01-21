@@ -28,6 +28,7 @@ import it.polimi.se2.sandc.bean.Internship;
 import it.polimi.se2.sandc.bean.Preferences;
 import it.polimi.se2.sandc.bean.User;
 import it.polimi.se2.sandc.dao.CompanyDAO;
+import it.polimi.se2.sandc.dao.InternshipDAO;
 import it.polimi.se2.sandc.dao.PreferenceDAO;
 import it.polimi.se2.sandc.dao.StudentDAO;
 import it.polimi.se2.sandc.dao.UserDAO;
@@ -74,11 +75,17 @@ public class PublicationManager extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
 		HttpSession s = request.getSession();
-		
-		String email = StringEscapeUtils.escapeJava(request.getParameter("email"));
+		if (s.getAttribute("user") == null) {
+			response.setStatus(HttpServletResponse.SC_PRECONDITION_FAILED);
+			response.getWriter().println("Utente non trovato..");
+			request.getSession(false).invalidate();
+			return;
+        }
+		User user = (User) request.getSession().getAttribute("user");
+		String email = user.getEmail();
 		String userType = (String) s.getAttribute("userType");
 		
-		if(userType.equals("student")) { //we want to use student profile -> search company publications
+		if(userType.equals("student")) { //we want to use student profile 
 			if(request.getParameter("page") == null)
 				return;
 			
@@ -87,22 +94,45 @@ public class PublicationManager extends HttpServlet {
 			 		getPrefereces(email, request, response);
 			 		break;
 			 	default:
-			 		response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+			 		response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 			 		response.getWriter().println("page not found");
 			 		break;
 			 } 
-		}else { //we want to use company's profile
+		}else { //we want to use company
 			 switch (request.getParameter("page").toString()) { //uso lo switch per capire quale azione dobbiamo fare in questa servlet
 			 	case "getPreferences":
 			 		getPrefereces(email, request, response);
 			 		break;
+			 	case "proposedInternships":
+			 		getAllCompanyInternships(response, email);
+			 		break;
 			 	default:
-			 		response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+			 		response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 			 		response.getWriter().println("page not found");
 			 		break;
 			 } 
 		}
 		
+	}
+
+	//return alla the internships of a company 
+	private void getAllCompanyInternships(HttpServletResponse response, String email) throws IOException {
+		InternshipDAO intern = new InternshipDAO(connection);
+		List<Internship> internships = new ArrayList<>();
+		try {
+			internships = intern.getAllICompanyInternships(email);
+			
+			String internString = new Gson().toJson(internships);
+			
+			// Imposta il tipo di contenuto e invia la risposta
+	       response.setContentType("application/json");
+	       response.getWriter().write(internString);       
+	       response.setStatus(HttpServletResponse.SC_OK);
+		}catch (Exception e) {
+			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+			response.getWriter().println("something was wrong while getting company internships");
+			return;
+		}	
 	}
 
 	/**
@@ -126,7 +156,7 @@ public class PublicationManager extends HttpServlet {
 			 		preferencePublicationStudent(email, request, response);
 			 		break;
 			 	default :
-			 		response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+			 		response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 			 		response.getWriter().println("page not found");
 			 		break;
 			 } 
@@ -139,7 +169,7 @@ public class PublicationManager extends HttpServlet {
 			 		requirementPublicationCompany(email, request, response);
 			 		break;
 			 	default:
-			 		response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+			 		response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 			 		response.getWriter().println("page not found");
 			 		break;
 			 } 

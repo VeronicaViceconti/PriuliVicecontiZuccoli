@@ -114,7 +114,7 @@ public class ComplainManager extends HttpServlet {
 			}
 			if(!found) {
 				response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-				response.getWriter().println("the student aren't in the internship");
+				response.getWriter().println("the student isn't in the internship");
 				return;
 			}
 		} else {

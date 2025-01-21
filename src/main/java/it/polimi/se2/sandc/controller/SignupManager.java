@@ -67,9 +67,7 @@ public class SignupManager extends HttpServlet {
 		String userType = request.getParameter("choose");
     	String  phoneNumber = StringEscapeUtils.escapeJava(request.getParameter("phoneNumber"));
 		UserDAO usr = new UserDAO(connection);
-		
-		System.out.println("utente arrivato al server");
-		
+				
 		if (email == null || email.isEmpty() || name == null || name.trim().isEmpty() ||
 				pwd == null || pwd.trim().isEmpty() || address == null || phoneNumber == null) {
 			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
@@ -85,17 +83,16 @@ public class SignupManager extends HttpServlet {
 		
 		try {
 			usr.createUser(name, email, pwd, address, phoneNumber,userType);
+			//se tutto va bene
+			response.setStatus(HttpServletResponse.SC_OK);
+			response.setContentType("application/json");
+			response.setCharacterEncoding("UTF-8");
 		} catch (SQLException e) {
 			response.getWriter().println("User already exists");
 			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 			
 			return;
  		}		
-		
-		//se tutto va bene
-		response.setStatus(HttpServletResponse.SC_OK);
-		response.setContentType("application/json");
-		response.setCharacterEncoding("UTF-8");
 	}
 
 }

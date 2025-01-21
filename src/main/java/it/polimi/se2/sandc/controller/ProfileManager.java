@@ -78,10 +78,11 @@ public class ProfileManager extends HttpServlet {
 
 		String userType = (String) s.getAttribute("userType");
 		
+		User user = (User) request.getSession().getAttribute("user");
 		if(userType.equals("student")) { //we want to use student profile -> search company publications
 			if(request.getParameter("page") == null)
 				return;
-			User user = (User) request.getSession().getAttribute("user");
+			
 			//the internship exists, now need to find the correspond student's publication
 			 switch (request.getParameter("page").toString()) { //uso lo switch per capire quale azione dobbiamo fare in questa servlet
 			 	case "toHomepage":
@@ -105,7 +106,7 @@ public class ProfileManager extends HttpServlet {
 					} catch (SQLException e) {
 						// TODO Auto-generated catch block
 						response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-						response.getWriter().println("Internal server error, retry later");
+						response.getWriter().println("Internship not found, retry later");
 						return;
 					}
 					if(internship == null) { //the internship searched doesn't exist
@@ -120,7 +121,7 @@ public class ProfileManager extends HttpServlet {
 					} catch (SQLException e) {
 						// TODO Auto-generated catch block
 						response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-						response.getWriter().println("Internal server error, retry later");
+						response.getWriter().println("Publication not found, retry later");
 						return;
 					}
 					if(pub == null) { //the internship searched doesn't exist
@@ -143,7 +144,7 @@ public class ProfileManager extends HttpServlet {
 			 		findFilteredInternships(response,x,user.getEmail());
 			 		break;
 			 		default:
-			 			response.setStatus(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
+			 			response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 			 } 
 		}else { //we want to use company's profile
 			
@@ -161,25 +162,25 @@ public class ProfileManager extends HttpServlet {
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-			response.getWriter().println("Error finding matches, retry later");
+			response.getWriter().println("Error finding publication, retry later");
 			return;
 		}
 		 if(publications != null) {
 			 try {
 					matches = match.findStudentMatches(emailStudent);
+					
+					String pubsString = new Gson().toJson(matches);
+					
+				    // Imposta il tipo di contenuto e invia la risposta
+			       response.setContentType("application/json");
+			       response.getWriter().write(pubsString);       
+			       response.setStatus(HttpServletResponse.SC_OK);
 				} catch (SQLException e) {
 					// TODO Auto-generated catch block
 					response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 					response.getWriter().println("Error finding matches, retry later");
 					return;
 				}
-				 
-				String pubsString = new Gson().toJson(matches);
-				
-		    // Imposta il tipo di contenuto e invia la risposta
-		       response.setContentType("application/json");
-		       response.getWriter().write(pubsString);       
-		       response.setStatus(HttpServletResponse.SC_OK);
 		 }
 	}
 
@@ -190,19 +191,18 @@ public class ProfileManager extends HttpServlet {
 		
 		 try {
 			pubs = pub.retrieveAllWP(email);
+			String pubsString = new Gson().toJson(pubs);
+			
+		    // Imposta il tipo di contenuto e invia la risposta
+	       response.setContentType("application/json");
+	       response.getWriter().write(pubsString);       
+	       response.setStatus(HttpServletResponse.SC_OK);
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 			response.getWriter().println("Internal db error, retry later");
 			return;
 		}
-		 
-		String pubsString = new Gson().toJson(pubs);
-		
-    // Imposta il tipo di contenuto e invia la risposta
-       response.setContentType("application/json");
-       response.getWriter().write(pubsString);       
-       response.setStatus(HttpServletResponse.SC_OK);
 		
 	}
 
@@ -215,18 +215,17 @@ public class ProfileManager extends HttpServlet {
 		
 		 try {
 			internships = company.searchAvailableInternships(nameCompany, emailStudent);
+			String internshipString = new Gson().toJson(internships);
+			
+		    // Imposta il tipo di contenuto e invia la risposta
+		       response.setContentType("application/json");
+		       response.getWriter().write(internshipString);       
+		       response.setStatus(HttpServletResponse.SC_OK);
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-			response.getWriter().println("Internal server error, retry later");
+			response.getWriter().println("Internal server error while searching internships, retry later");
 		}
-		 
-		String internshipString = new Gson().toJson(internships);
-		
-    // Imposta il tipo di contenuto e invia la risposta
-       response.setContentType("application/json");
-       response.getWriter().write(internshipString);       
-       response.setStatus(HttpServletResponse.SC_OK);
 		
 	}
 
@@ -241,6 +240,7 @@ public class ProfileManager extends HttpServlet {
 			// TODO Auto-generated catch block
 			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 			response.getWriter().println("Internal server error, retry later");
+			return null;
 		}
 		return publications;
 	}
@@ -254,9 +254,8 @@ public class ProfileManager extends HttpServlet {
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-			response.getWriter().println("Internal server error, retry later");
+			response.getWriter().println("Internal server error while creating match for student, retry later");
 		}
-		
 	}
 
 	/**
@@ -275,17 +274,16 @@ public class ProfileManager extends HttpServlet {
 		
 		 try {
 			internship = company.findTheInternship(Integer.parseInt(request.getParameter("ID")));
+			String internshipString = new Gson().toJson(internship);
+		    // Imposta il tipo di contenuto e invia la risposta
+		       response.setContentType("application/json");
+		       response.getWriter().write(internshipString);       
+		       response.setStatus(HttpServletResponse.SC_OK);
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 			response.getWriter().println("Internal server error, retry later");
 		}
-		
-		String internshipString = new Gson().toJson(internship);
-    // Imposta il tipo di contenuto e invia la risposta
-       response.setContentType("application/json");
-       response.getWriter().write(internshipString);       
-       response.setStatus(HttpServletResponse.SC_OK);
 	}
 
 	private void findAllInternships(HttpServletResponse response,String emailStudent) throws IOException {
@@ -295,18 +293,17 @@ public class ProfileManager extends HttpServlet {
 		//find the publication of the user
 		 try {
 				internships = company.searchAllInternships(emailStudent);
+				String internshipsString = new Gson().toJson(internships);
+			    // Imposta il tipo di contenuto e invia la risposta
+			       response.setContentType("application/json");
+			       response.getWriter().write(internshipsString);
+			       response.setStatus(HttpServletResponse.SC_OK);	
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
 				response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 				response.getWriter().println("Internal");
 				return;
-			}
-		
-		String internshipsString = new Gson().toJson(internships);
-    // Imposta il tipo di contenuto e invia la risposta
-       response.setContentType("application/json");
-       response.getWriter().write(internshipsString);
-       response.setStatus(HttpServletResponse.SC_OK);	   
+			}   
 	}
 
 }

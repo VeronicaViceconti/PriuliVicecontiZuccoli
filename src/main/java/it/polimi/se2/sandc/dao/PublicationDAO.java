@@ -60,7 +60,7 @@ public class PublicationDAO {
 				publication.add(currP);
 			}
 		} catch(SQLException e) {
-			throw new SQLException("Error while trying to access credentials");
+			throw new SQLException("Error while trying to retrieve working preferences");
 		}finally {
 			try {
 				result2.close(); //Devo chiudere result set

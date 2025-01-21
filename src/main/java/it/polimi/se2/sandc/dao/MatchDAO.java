@@ -13,6 +13,7 @@ import it.polimi.se2.sandc.bean.Company;
 import it.polimi.se2.sandc.bean.Internship;
 import it.polimi.se2.sandc.bean.Match;
 import it.polimi.se2.sandc.bean.Publication;
+import it.polimi.se2.sandc.bean.Student;
 import it.polimi.se2.sandc.bean.User;
 
 public class MatchDAO {
@@ -46,7 +47,7 @@ public class MatchDAO {
 
 	public List<Match> findStudentMatches(String emailStudent) throws SQLException {
 		String query = null;
-		query = "SELECT m.id as matchID, i.id as internID, idPublication,acceptedYNStudent,roleToCover,startingDate,endingDate,c.name,c.address,jobDescription from matches as m join internship as i on m.idInternship = i.id join company as c on c.email = i.company join publication as pub on pub.id = m.idPublication join student as s on s.email = pub.student WHERE s.email = ?;";
+		query = "SELECT m.id as matchID, i.id as internID, idPublication,acceptedYNStudent,acceptedYNCompany,roleToCover,startingDate,endingDate,c.name,c.address,jobDescription from matches as m join internship as i on m.idInternship = i.id join company as c on c.email = i.company join publication as pub on pub.id = m.idPublication join student as s on s.email = pub.student WHERE s.email = ?;";
 		PreparedStatement pstatement = null;
 		ResultSet result2 = null;
 		List<Match> matches = new ArrayList<>();
@@ -63,7 +64,12 @@ public class MatchDAO {
 				while (result2.next()) {
 					Match match = new Match();
 					match.setId(result2.getInt("matchID"));
-					match.setAccepted(result2.getBoolean("acceptedYNStudent"));
+					if(result2.getString("acceptedYNStudent") != null) {
+			            match.setAcceptedStudent(result2.getBoolean("acceptedYNStudent"));
+			        }
+					if(result2.getString("acceptedYNCompany") != null) {
+			            match.setAcceptedCompany(result2.getBoolean("acceptedYNCompany"));
+			        }
 					Publication pub = new Publication();
 					pub.setId(result2.getInt("idPublication"));
 					match.setPublication(pub);
@@ -90,7 +96,7 @@ public class MatchDAO {
 			}
 			
 		} catch(SQLException e) {
-			throw new SQLException("Error while creating match");
+			throw new SQLException("Error while finding student match");
 		}finally {
 			try {
 				pstatement.close();  //devo chiudere prepared statement
@@ -100,13 +106,17 @@ public class MatchDAO {
 		}
 	}
 
-	public void updateMatchAccepted(int matchID) throws SQLException {
+	public void updateMatchAccepted(int matchID,String userType,int acceptedOrNot) throws SQLException {
 		String query = null;
-		query = "UPDATE matches set acceptedYNStudent = 1 WHERE id = ?";
+		if(userType.equals("student"))
+			query = "UPDATE matches set acceptedYNStudent = ? WHERE id = ?";
+		else
+			query = "UPDATE matches set acceptedYNCompany = ? WHERE id = ?";
 		PreparedStatement pstatement = null;
 		try {
 			pstatement = connection.prepareStatement(query);
-			pstatement.setInt(1, matchID);
+			pstatement.setInt(1, acceptedOrNot);
+			pstatement.setInt(2, matchID);
 			pstatement.executeUpdate();
 			
 		} catch(SQLException e) {
@@ -120,9 +130,14 @@ public class MatchDAO {
 		}
 	}
 
-	public Boolean controlOwnership(String email,int matchID) throws SQLException {
+	//control student ownership
+	public Boolean controlOwnership(String email,int matchID,String userType) throws SQLException {
 		String query = null;
-		query = "SELECT * FROM matches as m join publication as p on m.idPublication = p.id join student as s on s.email = p.student WHERE email = ? and m.id = ?;";
+		if(userType.equals("Student"))
+			query = "SELECT * FROM matches as m join publication as p on m.idPublication = p.id join student as s on s.email = p.student WHERE email = ? and m.id = ?;";
+		else
+			query = "SELECT * FROM matches as m join internship as i on m.idInternship = i.id join company as c on c.email = i.company WHERE email = ? and m.id = ?;";
+
 		PreparedStatement pstatement = null;
 		ResultSet result2 = null;
 		List<Match> matches = new ArrayList<>();
@@ -141,7 +156,68 @@ public class MatchDAO {
 			}
 			
 		} catch(SQLException e) {
-			throw new SQLException("Error while updating match");
+			throw new SQLException("Error while controlling ownership");
+		}finally {
+			try {
+				pstatement.close();  //devo chiudere prepared statement
+			} catch(Exception e) {
+				throw new SQLException("Error while trying to close prepared statement");
+			}
+		}
+	}
+	
+	
+	public List<Match> findCompanyMatches(String emailCompany) throws SQLException {
+		String query = null;
+		query = "SELECT m.id as matchID, i.id as internID, idPublication,acceptedYNStudent,acceptedYNCompany,roleToCover,startingDate,endingDate,c.address,s.name from matches as m join internship as i on m.idInternship = i.id join company as c on c.email = i.company join publication as pub on pub.id = m.idPublication join student as s on s.email = pub.student WHERE c.email = ?;";
+		PreparedStatement pstatement = null;
+		ResultSet result2 = null;
+		List<Match> matches = new ArrayList<>();
+		try {
+			pstatement = connection.prepareStatement(query);
+			pstatement.setString(1, emailCompany);
+
+			result2 = pstatement.executeQuery();
+			
+			if (!result2.isBeforeFirst()) {// no results, no matches found
+				return null;	
+			}
+			else { 
+				while (result2.next()) {
+					Match match = new Match();
+					match.setId(result2.getInt("matchID"));
+					if(result2.getString("acceptedYNStudent") != null) {
+			            match.setAcceptedStudent(result2.getBoolean("acceptedYNStudent"));
+			        }
+					if(result2.getString("acceptedYNCompany") != null) {
+			            match.setAcceptedCompany(result2.getBoolean("acceptedYNCompany"));
+			        }
+					Publication pub = new Publication();
+					pub.setId(result2.getInt("idPublication"));
+					pub.setStudent(result2.getString("name")); //student name
+					match.setPublication(pub);
+					Internship intern = new Internship();
+					intern.setId(result2.getInt("internID"));
+					Date sqlDate = result2.getDate("startingDate");
+		            if (sqlDate != null) {
+		                intern.setStartingDate( new Date(sqlDate.getTime())); 
+		            }
+		            sqlDate = result2.getDate("endingDate");
+		            if (sqlDate != null) {
+		                intern.setEndingDate(new Date(sqlDate.getTime())); 
+		            }
+		            intern.setroleToCover(result2.getString("roleToCover"));
+		            Company company = new Company();
+		            company.setAddress(result2.getString("address"));
+		            intern.setCompany(company);
+		            match.setInternship(intern);
+		            matches.add(match);
+		        }
+				return matches;	
+			}
+			
+		} catch(SQLException e) {
+			throw new SQLException("Error while finding match");
 		}finally {
 			try {
 				pstatement.close();  //devo chiudere prepared statement

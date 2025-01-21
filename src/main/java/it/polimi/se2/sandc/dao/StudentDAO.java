@@ -69,7 +69,6 @@ public class StudentDAO {
 	
 	public void addPreference(User user, int idPref, int idPub) throws SQLException {
 		String query = "insert into preference (idWorkingPreferences, idPublication) values (?, ?)";
-		System.out.println(idPref);
 		if(user.getWhichUser().equals("company")) {
 			return;
 		}
@@ -108,7 +107,7 @@ public class StudentDAO {
 				return publications;	
 			}
 		} catch(SQLException e) {
-			throw new SQLException("Error while trying to access credentials");
+			throw new SQLException("Error while trying to find publications student");
 		}finally {
 			try {
 				result2.close(); //Devo chiudere result set
@@ -146,7 +145,7 @@ public class StudentDAO {
 				return publication;	
 			}
 		} catch(SQLException e) {
-			throw new SQLException("Error while trying to access credentials");
+			throw new SQLException("Error while trying to find student publication");
 		}finally {
 			try {
 				result2.close(); //Devo chiudere result set

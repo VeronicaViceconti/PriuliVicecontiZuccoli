@@ -104,6 +104,26 @@
 		matchesTab.style.color = "#a37659";
 
 		sessionStorage.setItem('tab', "matches");
+		
+		makeCall("GET", "MatchManager?page=acceptMatch&IDmatch="+3+"&accept="+0, null,
+			(req) => {
+				if (req.readyState == 4) {
+					switch (req.status) {
+						case 200: // andato a buon fine
+							//console.log("andato a buon fine");
+							break;
+						case 403:
+							console.log("errore 403");
+							break;
+						case 412:
+							console.log("errore 412");
+							break;
+						case 500:
+							console.log("errore 500");
+							break;
+					}
+				}
+			});
 	});
 
 	ongoingInternTab.addEventListener("click", () => {
@@ -125,9 +145,30 @@
 		proposedInternTab.style.color = "#a37659";
 		waitingFeedInternship.style.color = "#2e4057";
 		matchesTab.style.color = "#2e4057";
-
+		console.log("prrrrrrrova!");
 		sessionStorage.setItem('tab', "proposed");
 		//TODO
+		
+		makeCall("GET", "PublicationManager?page=proposedInternships", null,
+			(req) => {
+				if (req.readyState == 4) {
+					switch (req.status) {
+						case 200: // andato a buon fine
+							var jsonData = JSON.parse(req.responseText);
+							console.log(jsonData[0]);
+							break;
+						case 403:
+							console.log("errore 403");
+							break;
+						case 412:
+							console.log("errore 412");
+							break;
+						case 500:
+							console.log("errore 500");
+							break;
+					}
+				}
+			});
 	});
 
 	waitingFeedInternship.addEventListener("click", () => {

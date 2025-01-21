@@ -95,8 +95,14 @@
 	            
 	            switch (x.status) {
 	              case 200:  //richiesta andata a buon fine
-	            	sessionStorage.setItem('username', message);  //mi salvo in js il nome dell'utente
-	                window.location.href = "homePageStudente.html";
+	            	
+	            	
+	            	var jsonData = JSON.parse(message);
+	            	if(jsonData === "company")
+	                	window.location.href = "homePageCompany.html";
+	                else
+	                	window.location.href = "homePageStudente.html";
+	                sessionStorage.setItem('user', jsonData);  //mi salvo in js il nome dell'utente
 	                break;
 	              case 400: // bad request
 	                document.getElementById("errors").textContent = message;
