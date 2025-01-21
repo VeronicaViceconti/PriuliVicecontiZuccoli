@@ -139,7 +139,6 @@ public class PublicationManager extends HttpServlet {
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
 		HttpSession s = request.getSession();
 		
 		String userType = (String) s.getAttribute("userType");
@@ -152,7 +151,7 @@ public class PublicationManager extends HttpServlet {
 			 	case "sendCvForm":
 			 		cvPublication(email, request, response);
 			 		break;
-			 	case "preferencePublication":
+			 	case "sendPreferences":
 			 		preferencePublicationStudent(email, request, response);
 			 		break;
 			 	default :
@@ -165,7 +164,7 @@ public class PublicationManager extends HttpServlet {
 			 	case "sendProjectForm":
 			 		internshipPublication(email, request, response);
 			 		break;
-			 	case "requirementPublication":
+			 	case "sendPreferences":
 			 		requirementPublicationCompany(email, request, response);
 			 		break;
 			 	default:

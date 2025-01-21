@@ -1,42 +1,50 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="utf-8" />
-    <link rel="stylesheet" href="css/GlobalStyle.css" />
-    <link rel="stylesheet" href="css/studentHomePageStyle.css" />
-     <script src="js/studentHomePage.js" defer></script>  
-    <script src="utils.js" charset="utf-8" defer></script>
-  </head>
-  <body>
-    <div class="homepage-studente" >
-      <div class="div">
-        <div class="sfondo-elenco" id="internList"  >
-          
-		<!-- list of available internships -->
-        
-        </div>
-        <div class="schede">
-          <div class="text-wrapper-6" id="Matches_Tab">Matches</div>
-          <div class="overlap-group">
-            <div class="text-wrapper-7" id="Avail_Inter_Tab" >Available Internships</div>
-          </div>
-        </div>
-        <div class="overlap">
-          <div class="component">
-            <div class="barra-ricerca">
-              <div class="search-icon-wrapper"><img class="search-icon" src="img/searchIcon.svg" /></div>
-              <div class="text-wrapper-8">Search for internships</div>
-            </div>
-            <img class="lucide-filter" src="img/filter.png" />
-          </div>
-        </div>
-        <div class="barra-superiore">
-          <img class="profilo" id="profileBtn" src="img/profilePic.png" />
-          <div class="titolo">Students&amp;Companies</div>
-          <img class="home" id="homeBtn" src="img/home.png" />
-        </div>
-      </div>
-    </div>
-    
-  </body>
+<head>
+<meta charset="utf-8" />
+<link rel="stylesheet" href="css/GlobalStyle.css" />
+<link rel="stylesheet" href="css/studentHomePageStyle.css" />
+<script src="js/studentHomePage.js" defer></script>
+<script src="utils.js" charset="utf-8" defer></script>
+</head>
+<body>
+	<div class="homepage-studente">
+		<div class="div">
+			<div class="elenchi">
+				<div class="titolo_sottoElenco" id="first_subTitle"></div>
+				<div class="sfondo-elenco" id="available/newMatch"></div>
+				<div data-tab="matches" class="titolo_sottoElenco">Waiting for
+					response</div>
+				<div data-tab="matches" class="sfondo-elenco" id="waitingResponse">
+				</div>
+				<div data-tab="matches" class="titolo_sottoElenco">Waiting for
+					interrview</div>
+				<div data-tab="matches" class="sfondo-elenco" id="waitingInterview"></div>
+			</div>
+
+			<div class="schede">
+				<div class="text-wrapper-6" id="Matches_Tab">Matches</div>
+				<div class="overlap-group">
+					<div class="text-wrapper-7" id="Avail_Inter_Tab">Available Internships</div>
+				</div>
+			</div>
+			<div class="overlap">
+				<div class="component">
+					<div class="barra-ricerca">
+						<div class="search-icon-wrapper">
+							<img class="search-icon" src="img/searchIcon.svg" />
+						</div>
+						<div class="text-wrapper-8">Search for internships</div>
+					</div>
+					<img class="lucide-filter" src="img/filter.png" />
+				</div>
+			</div>
+			<div class="barra-superiore">
+				<img class="profilo" id="profileBtn" src="img/profilePic.png" />
+				<div class="titolo">Students&amp;Companies</div>
+				<img class="home" id="homeBtn" src="img/home.png" />
+			</div>
+		</div>
+	</div>
+</body>
 </html>

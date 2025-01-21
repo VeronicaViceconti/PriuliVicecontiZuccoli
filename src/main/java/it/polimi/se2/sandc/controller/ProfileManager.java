@@ -86,7 +86,6 @@ public class ProfileManager extends HttpServlet {
 			//the internship exists, now need to find the correspond student's publication
 			 switch (request.getParameter("page").toString()) { //uso lo switch per capire quale azione dobbiamo fare in questa servlet
 			 	case "toHomepage":
-			 		
 			 		findAllInternships(response,user.getEmail());
 			 		break;
 			 	case "internshipInfo": //when the page need to open one internship

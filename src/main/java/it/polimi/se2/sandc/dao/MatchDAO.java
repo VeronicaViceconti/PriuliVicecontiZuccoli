@@ -1,4 +1,5 @@
 package it.polimi.se2.sandc.dao;
+
 import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -19,11 +20,10 @@ import it.polimi.se2.sandc.bean.User;
 public class MatchDAO {
 	private Connection connection;
 
-
 	public MatchDAO(Connection conn) {
 		this.connection = conn;
 	}
-	
+
 	public void createMatchFromStudent(int pubID, int IDinternship) throws SQLException {
 		String query = null;
 		query = "INSERT into matches (acceptedYNStudent, idPublication, idInternship) VALUES(true,?, ?)";
@@ -33,13 +33,13 @@ public class MatchDAO {
 			pstatement.setInt(1, pubID);
 			pstatement.setInt(2, IDinternship);
 			pstatement.executeUpdate();
-			
-		} catch(SQLException e) {
+
+		} catch (SQLException e) {
 			throw new SQLException("Error while creating match");
-		}finally {
+		} finally {
 			try {
-				pstatement.close();  //devo chiudere prepared statement
-			} catch(Exception e) {
+				pstatement.close(); // devo chiudere prepared statement
+			} catch (Exception e) {
 				throw new SQLException("Error while trying to close prepared statement");
 			}
 		}
@@ -64,6 +64,7 @@ public class MatchDAO {
 				while (result2.next()) {
 					Match match = new Match();
 					match.setId(result2.getInt("matchID"));
+
 					if(result2.getString("acceptedYNStudent") != null) {
 			            match.setAcceptedStudent(result2.getBoolean("acceptedYNStudent"));
 			        }
@@ -118,13 +119,13 @@ public class MatchDAO {
 			pstatement.setInt(1, acceptedOrNot);
 			pstatement.setInt(2, matchID);
 			pstatement.executeUpdate();
-			
-		} catch(SQLException e) {
+
+		} catch (SQLException e) {
 			throw new SQLException("Error while updating match");
-		}finally {
+		} finally {
 			try {
-				pstatement.close();  //devo chiudere prepared statement
-			} catch(Exception e) {
+				pstatement.close(); // devo chiudere prepared statement
+			} catch (Exception e) {
 				throw new SQLException("Error while trying to close prepared statement");
 			}
 		}
@@ -147,12 +148,11 @@ public class MatchDAO {
 			pstatement.setInt(2, matchID);
 
 			result2 = pstatement.executeQuery();
-			
+
 			if (!result2.isBeforeFirst()) {// no results,he doesn't have that match
-				return false;	
-			}
-			else {
-				return true;	
+				return false;
+			} else {
+				return true;
 			}
 			
 		} catch(SQLException e) {
@@ -220,8 +220,8 @@ public class MatchDAO {
 			throw new SQLException("Error while finding match");
 		}finally {
 			try {
-				pstatement.close();  //devo chiudere prepared statement
-			} catch(Exception e) {
+				pstatement.close(); // devo chiudere prepared statement
+			} catch (Exception e) {
 				throw new SQLException("Error while trying to close prepared statement");
 			}
 		}

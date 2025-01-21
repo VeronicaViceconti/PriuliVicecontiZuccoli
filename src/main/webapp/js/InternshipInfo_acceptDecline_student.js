@@ -1,6 +1,6 @@
 {
 	const pageTitle = document.getElementById("pageTitle");
-	const minQualifications = document.getElementById("minimumQualifications");
+	const workingConditions = document.getElementById("workingConditions");
 	const jobDesc = document.getElementById("jobDescription");
 	const actionBtnsContainer = document.getElementById("actionButtonContainer");
 	const homeBtn = document.getElementById("homeBtn");
@@ -11,14 +11,17 @@
 	const location = document.getElementById("internshipLocation");
 	const period = document.getElementById("internshipPeriod");
 	const openPositions = document.getElementById("internshipOpenPosition");
-	
+
 	const tab = sessionStorage.getItem("tab");
 	const internID = sessionStorage.getItem("internshipID");
 
 	window.onload = function() {
 
+		console.log(sessionStorage.getItem("internshipID"));
+		console.log(sessionStorage.getItem("tab"));
+
 		jobDesc.innerText = "";
-		minQualifications.innerText = "";
+		workingConditions.innerText = "";
 		company.innerText = "";
 		role.innerText = "";
 		location.innerText = "";
@@ -26,7 +29,7 @@
 		openPositions.innerText = "";
 
 		switch (tab) {
-			case "available":
+			case "available/newMatch":
 				pageTitle.innerHTML = "Internship Info";
 
 				let applyBtn = document.createElement("div");
@@ -34,12 +37,12 @@
 				applyBtn.textContent = "Apply";
 
 				applyBtn.onclick = function() {
-					alert("apply for internship " + internID );
+					alert("apply for internship " + internID);
 				}
 
 				actionBtnsContainer.appendChild(applyBtn);
 				break;
-			case "metches":
+			case "matches":
 				pageTitle.innerHTML = "Match info";
 
 				let acceptBtn = document.createElement("div");
@@ -49,15 +52,15 @@
 				let declineBtn = document.createElement("div");
 				declineBtn.classList.add("hollowBtn");
 				declineBtn.textContent = "decline";
-				
+
 				acceptBtn.onclick = function() {
 					alert("accept internship " + internID);
 				}
-				
+
 				declineBtn.onclick = function() {
 					alert("decline internship " + internID);
 				}
-				
+
 
 				actionBtnsContainer.appendChild(acceptBtn);
 				actionBtnsContainer.appendChild(declineBtn);
@@ -88,10 +91,11 @@
 
 				actionBtnsContainer.appendChild(feedbackBtn);
 				break;
-
 		}
 
-		//TODO riempire la pagina con i dati corretti dal DB
+		loadInternshipInfo(sessionStorage.getItem("internshipID"));
+
+
 	}
 
 	homeBtn.addEventListener("click", () => {
@@ -101,4 +105,41 @@
 	profileBtn.addEventListener("click", () => {
 		window.location.href = "http://localhost:8080/SandC/studentProfile.html";
 	})
+
+	function loadInternshipInfo(internshipId) {
+		makeCall("GET", "ProfileManager?page=internshipInfo&ID=" + internshipId, null,
+			(req) => {
+				if (req.readyState == 4) {
+					switch (req.status) {
+						case 200: // andato a buon fine
+							console.log(req.responseText);
+							var jsonData = JSON.parse(req.responseText);
+							console.log(jsonData);
+							//fill the page							
+							company.innerText = jsonData.company.name;
+							role.innerText = jsonData.roleToCover;
+							location.innerText = jsonData.company.address;
+							period.innerText = jsonData.startingDate + " - " + jsonData.endingaData;
+							openPositions.innerText = jsonData.openSeats;
+
+							jobDesc.innerText = jsonData.jobDescription;
+							if ("preferences" in jsonData) {
+								for (const pref of jsonData.preferences) {
+									workingConditions.innerText += pref.text + " ";
+								}
+							}
+							break;
+						case 403:
+							console.log("errore 403");
+							break;
+						case 412:
+							console.log("errore 412");
+							break;
+						case 500:
+							console.log("errore 500");
+							break;
+					}
+				}
+			});
+	}
 }
