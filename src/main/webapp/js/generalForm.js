@@ -37,7 +37,8 @@
 
 	sendBtn.addEventListener("click", () => {
 		var text = textArea.value;
-		alert(text);
+		var id = sessionStorage.getItem("internshipID");
+		alert(text + "for internship: " + id);
 
 	})
 }

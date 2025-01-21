@@ -300,6 +300,7 @@ public class ProfileManager extends HttpServlet {
 				// TODO Auto-generated catch block
 				response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 				response.getWriter().println("Internal");
+				return;
 			}
 		
 		String internshipsString = new Gson().toJson(internships);

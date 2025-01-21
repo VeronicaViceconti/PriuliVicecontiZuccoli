@@ -278,15 +278,15 @@ public class PublicationManager extends HttpServlet {
 		User user = (User) session.getAttribute("user");
 		
 		Internship i = new Internship();
-
-		i.setOpenSeats(Integer.parseInt(request.getParameter("openSeats")));
 		
 		try {
-			//i.setOfferedConditions(StringEscapeUtils.escapeJava(request.getParameter("condition")));
+			i.setjobDescription(StringEscapeUtils.escapeJava(request.getParameter("description")));
 			i.setStartingDate(Date.valueOf(request.getParameter("startingDate")));
 			i.setEndingDate(Date.valueOf(request.getParameter("endingDate")));
-			//i.setOpenSeats(Integer.parseInt(request.getParameter("openSeats")));
-			if(i.getEndingDate() == null || i.getStartingDate() == null /*|| i.getOfferedConditions() == null*/) {
+			i.setOpenSeats(Integer.parseInt(request.getParameter("openSeats")));
+			i.setroleToCover(StringEscapeUtils.escapeJava(request.getParameter("role")));
+			if(i.getEndingDate() == null || i.getStartingDate() == null || i.getjobDescription() == null 
+					|| i.getroleToCover() == null || request.getParameter("openSeats") == null) {
 				throw new Exception();
 			}
 		}catch (Exception e ) {
