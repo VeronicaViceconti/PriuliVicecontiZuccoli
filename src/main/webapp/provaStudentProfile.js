@@ -1,12 +1,12 @@
 (function() {
 	
 	
-    document.getElementsByClassName("card")[0].addEventListener('click', (e) => {
+    document.getElementsByClassName("search-icon-wrapper")[0].addEventListener('click', (e) => {
 		e.preventDefault();
 		 //metodo post della servlet CheckLogin
-	      makeCall("GET", 'ProfileManager?page=showMatches',null, 
+	      makeCall("GET", 'MatchManager?page=acceptMatch&IDmatch='+3,null, 
 	      	(req) => {
-	            
+	            console.log("funzione chiamata");
 	          	if (req.readyState == 4) {
 	            var message = req.responseText;
 	            

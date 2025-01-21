@@ -11,6 +11,7 @@ import java.util.List;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.UnavailableException;
+import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -36,6 +37,7 @@ import com.google.gson.JsonObject;
  * Servlet implementation class ProfileManager
  */
 @WebServlet("/ProfileManager")
+@MultipartConfig
 public class ProfileManager extends HttpServlet {
 	private Connection connection = null;
 	private static final long serialVersionUID = 1L;
@@ -179,9 +181,6 @@ public class ProfileManager extends HttpServlet {
 		       response.getWriter().write(pubsString);       
 		       response.setStatus(HttpServletResponse.SC_OK);
 		 }
-			 
-		 
-		
 	}
 
 	private void retrieveAllWP(HttpServletResponse response, String email) throws IOException {

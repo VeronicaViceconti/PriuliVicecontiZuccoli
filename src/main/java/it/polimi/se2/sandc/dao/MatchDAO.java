@@ -99,4 +99,55 @@ public class MatchDAO {
 			}
 		}
 	}
+
+	public void updateMatchAccepted(int matchID) throws SQLException {
+		String query = null;
+		query = "UPDATE matches set acceptedYNStudent = 1 WHERE id = ?";
+		PreparedStatement pstatement = null;
+		try {
+			pstatement = connection.prepareStatement(query);
+			pstatement.setInt(1, matchID);
+			pstatement.executeUpdate();
+			
+		} catch(SQLException e) {
+			throw new SQLException("Error while updating match");
+		}finally {
+			try {
+				pstatement.close();  //devo chiudere prepared statement
+			} catch(Exception e) {
+				throw new SQLException("Error while trying to close prepared statement");
+			}
+		}
+	}
+
+	public Boolean controlOwnership(String email,int matchID) throws SQLException {
+		String query = null;
+		query = "SELECT * FROM matches as m join publication as p on m.idPublication = p.id join student as s on s.email = p.student WHERE email = ? and m.id = ?;";
+		PreparedStatement pstatement = null;
+		ResultSet result2 = null;
+		List<Match> matches = new ArrayList<>();
+		try {
+			pstatement = connection.prepareStatement(query);
+			pstatement.setString(1, email);
+			pstatement.setInt(2, matchID);
+
+			result2 = pstatement.executeQuery();
+			
+			if (!result2.isBeforeFirst()) {// no results,he doesn't have that match
+				return false;	
+			}
+			else {
+				return true;	
+			}
+			
+		} catch(SQLException e) {
+			throw new SQLException("Error while updating match");
+		}finally {
+			try {
+				pstatement.close();  //devo chiudere prepared statement
+			} catch(Exception e) {
+				throw new SQLException("Error while trying to close prepared statement");
+			}
+		}
+	}
 }
