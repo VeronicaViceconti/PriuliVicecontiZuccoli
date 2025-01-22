@@ -1,3 +1,7 @@
+body{
+	background-color: #f8f9fa;
+}
+
 .generic-form {
 	background-color: #f8f9fa;
 	display: flex;
@@ -67,18 +71,32 @@
 	white-space: nowrap;
 }
 
-.generic-form .frame {
-	width: 720px;
-	height: 274px;
+.frameList {
+	position: absolute;
 	top: 290px;
 	left: 360px;
+	width: 720px;
+	display: flex;
+	flex-direction: column;
+	gap: 15px;
+}
+
+.frame {
+	width: 100%;
+	height: 250px;
 	background-color: #f6f0eb;
-	position: absolute;
 	border-radius: 20px;
-	
 	display: flex;
 	justify-content: center;
 	align-items: center;
+}
+
+.question {
+	font-family: "Inter-Regular", Helvetica;
+	font-weight: 400;
+	color: #2e4057;
+	font-size: 20px;
+	letter-spacing: 0;
 }
 
 .generic-form .textArea {
@@ -91,21 +109,18 @@
 	outline: none;
 }
 
-.generic-form .div-wrapper {
-	width: 109px;
-	height: 48px;
-	top: 590px;
-	left: 665px;
-	background-color: #a37659;
-	overflow: hidden;
-	position: absolute;
-	border-radius: 20px;
+.BtnSendContainer {
+	display: flex;
+	justify-content: center;
+	align-items: center;
 }
 
-.generic-form .text-wrapper-2 {
-	position: absolute;
-	top: 10px;
-	left: 30px;
+.sendBtn {
+	background-color: #a37659;
+	border-radius: 20px;
+	padding: 10px;
+	min-width: 100px;
+	text-align: center;
 	font-family: "Inter-SemiBold", Helvetica;
 	font-weight: 600;
 	color: #ddc0a2;

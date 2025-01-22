@@ -36,9 +36,19 @@
 	})
 
 	sendBtn.addEventListener("click", () => {
-		var text = textArea.value;
-		var id = sessionStorage.getItem("internshipID");
-		alert(text + "for internship: " + id);
+		const textAreas = document.querySelectorAll(".textArea");
+		const answers = {};
+		textAreas.forEach((textarea) => {
+		    const questionNumber = textarea.getAttribute("data-num"); // Ottieni il numero della domanda
+		    const answer = textarea.value; // Ottieni la risposta inserita
+		    answers[`question_${questionNumber}`] = answer; // Aggiungi al JSON
+		});
+
+		const jsonString = JSON.stringify(answers, null, 2); // 'null, 2' per leggibilità
+
+		console.log(jsonString);
+		alert("send: " + jsonString);
+
 
 	})
 }

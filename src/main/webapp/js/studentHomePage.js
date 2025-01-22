@@ -24,7 +24,7 @@
 		matchesTab.style.color = "#2e4057";
 		sessionStorage.setItem('tab', "available");
 
-		
+
 		first_subTitle.innerText = "";
 		cleanUp();
 		showMatchesDivFields(false);
@@ -37,15 +37,15 @@
 		availableInternTab.style.color = "#2e4057";
 		matchesTab.style.color = "#a37659";
 		sessionStorage.setItem('tab', "metches");
-		
+
 		first_subTitle.innerText = "New matches";
 		cleanUp();
 		showMatchesDivFields(true);
 		loadMatchInternships();
 
 	});
-	
-	function cleanUp(){
+
+	function cleanUp() {
 		avail_newMatch_section.innerHTML = null;
 		waitingResponse_section.innerHTML = null;
 		waitingInterview_section.innerHTML = null;
@@ -83,7 +83,7 @@
 
 	}
 
-	function createCard(pageSection, id, name, role, startDate, endDate, location, openSeats) {
+	function createCard(cardContainer, id, name, role, startDate, endDate, location, openSeats) {
 		// Dati della card
 		const cardData = {
 			id: id,
@@ -95,13 +95,13 @@
 		};
 
 		// Seleziona il contenitore in cui aggiungere la card
-		const cardContainer = document.getElementById(pageSection);
+		//const cardContainer = document.getElementById(pageSection);
 
 		// Crea il div principale
 		const card = document.createElement("div");
 		card.className = "card";
 		card.id = cardData.id;
-		card.setAttribute("data-section", pageSection);
+		card.setAttribute("data-section", cardContainer.id);
 
 		// Aggiungi il nome dell'azienda
 		const companyDiv = document.createElement("div");
@@ -160,7 +160,7 @@
 							var jsonData = JSON.parse(req.responseText);
 							for (const internship of jsonData) {
 								createCard(
-									"available/newMatch",
+									avail_newMatch_section,
 									internship.id,
 									internship.company.name,
 									internship.roleToCover,
@@ -193,14 +193,22 @@
 					switch (req.status) {
 						case 200: // andato a buon fine
 							var jsonData = JSON.parse(req.responseText);
-							var pageLocation;							
+							var pageLocation;
 							for (const internship of jsonData) {
+
+								/*nessuno dei 2 -> new
+								student true e no company -> wait res
+								both true -> wait interview*/
+								acceptedYNCompany:false
+								acceptedYNStudent:true
+
 								console.log(internship);
-								if("accepted" in internship){
-									pageLocation = "waitingResponse";
+								pageLocation = avail_newMatch_section;
+								if ("acceptedYNCompany" in internship && "acceptedYNStudent" in internship) {
+									pageLocation = waitingInterview_section
 								}
-								else{
-									pageLocation = "available/newMatch"
+								else if("acceptedYNCompany" in internship) {
+									pageLocation = waitingResponse_section;
 								}
 								createCard(
 									pageLocation,
