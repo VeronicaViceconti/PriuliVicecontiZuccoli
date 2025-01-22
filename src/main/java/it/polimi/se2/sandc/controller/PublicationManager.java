@@ -375,7 +375,7 @@ public class PublicationManager extends HttpServlet {
 				}
 			}
 		}
-		
+	
 		response.setStatus(HttpServletResponse.SC_OK);
 	}
 

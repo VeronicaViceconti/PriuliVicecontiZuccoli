@@ -5,16 +5,20 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.sql.Date;
 
 import java.util.List;
 
 import it.polimi.se2.sandc.bean.Company;
+import it.polimi.se2.sandc.bean.Form;
 import it.polimi.se2.sandc.bean.Internship;
+import it.polimi.se2.sandc.bean.Interview;
 import it.polimi.se2.sandc.bean.Match;
 import it.polimi.se2.sandc.bean.Publication;
 import it.polimi.se2.sandc.bean.Student;
+import it.polimi.se2.sandc.bean.Question;
 import it.polimi.se2.sandc.bean.User;
 
 public class MatchDAO {
@@ -246,5 +250,79 @@ public class MatchDAO {
 				throw new SQLException("Error while trying to close prepared statement");
 			}
 		}
+	}
+	
+	public Interview createInterview(int idMatch) throws SQLException{
+		
+		String query = "select * \n"
+				+ "from publication as p inner join matches as m on p.id = m.idPublication\n"
+				+ "where m.id = ? and p.student in (select student\n"
+				+ "									from ((interview as i1 inner join matches as m1 on i1.idMatch = m1.id)  inner join publication as p1 on m1.idPublication = p1.id) inner join internship on internship.id = m1.idInternship \n"
+				+ "									where confirmedYN is null or (confirmedYN = true and current_date() < endingDate))";
+		
+		
+		try(PreparedStatement statement = connection.prepareStatement(query)){
+			statement.setInt(1, idMatch);
+			
+			try(ResultSet result = statement.executeQuery()){
+				if (result.isBeforeFirst()) {// the student has already an interview
+					return null;	
+				}
+			}
+		}
+		
+		Interview interview = new Interview();
+		
+		query = "insert into Form values ()";
+		int idForm = -1;
+		try(PreparedStatement statement = connection.prepareStatement(query,Statement.RETURN_GENERATED_KEYS)){
+			statement.executeUpdate();
+			try(ResultSet ris = statement.getGeneratedKeys()){
+				if(ris.next()) {
+					idForm = ris.getInt(1);
+				}
+			}
+		}
+		
+		query = "insert into question (txt, idForm) values (?,?)";
+		ArrayList<Question> questions = new ArrayList<Question>();
+		
+		try(PreparedStatement statement = connection.prepareStatement(query,Statement.RETURN_GENERATED_KEYS)){
+			for(int i = 0; i < 3; i++) {
+				statement.setString(1, "question " + ((i+1)));
+				statement.setInt(2, idForm);
+				statement.executeUpdate();
+				Question tmp = new Question();
+				try(ResultSet ris = statement.getGeneratedKeys()){
+					if(ris.next()) {
+						tmp.setId(ris.getInt(1));
+						tmp.setText("question " + (i+1));
+						questions.add(tmp);
+					}
+				}
+			}
+		}
+		
+		Form form = new Form();
+		
+		form.setId(idForm);
+		form.setQuestions(questions);
+		interview.setForm(form);
+		
+		query = "insert into interview (dat, idMatch, idForm) values (curdate(), ?, ?)";
+		
+		try(PreparedStatement statement = connection.prepareStatement(query,Statement.RETURN_GENERATED_KEYS)){
+			statement.setInt(1, idMatch);
+			statement.setInt(2, idForm);
+			statement.executeUpdate();
+			try(ResultSet ris = statement.getGeneratedKeys()){
+				if(ris.next()) {
+					interview.setId(ris.getInt(1));
+				}
+			}
+		
+		}
+		interview.setData(new Date(System.currentTimeMillis()));
+		return interview;
 	}
 }

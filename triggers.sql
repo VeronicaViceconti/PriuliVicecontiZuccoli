@@ -42,9 +42,10 @@ IF EXISTS (SELECT * FROM Student WHERE email = NEW.email)
         group by idPublication, idInternship
         having count(*) >= 5;
  end //
- 
+
+delimiter //  
 create trigger noMindChangesOnAcceptingMatchesStudent
-after update on matches
+before update on matches
 for each row
 begin 
 	if( old.id = new.id AND exists (SELECT 1 FROM matches WHERE old.acceptedYNStudent is not null AND id = new.id)) then
@@ -53,11 +54,46 @@ begin
 end//
 
 create trigger noMindChangesOnAcceptingMatchesCompany
-after update on matches
+before update on matches
 for each row
 begin 
 	if( old.id = new.id AND exists (SELECT 1 FROM matches WHERE old.acceptedYNCompany is not null AND id = new.id)) then
 		 set new.acceptedYNCompany = old.acceptedYNCompany;
 	end if;
-end
+ends
+ 
+ delimiter ;
+ 
+ delimiter //
+ create trigger deleteMatchWhenNoMoreAvailableSeats 
+ after update on interview
+ for each row 
+ begin 
+	declare intId integer;
+    declare seats integer;
+	declare occupied integer;
+    
+    select m.idInternship into intId
+    from interview as i inner join matches as m on i.idMatch = m.id
+    where i.id = new.id;
+	
+	select openSeats into seats from internship where id = intId;
+    
+    select count(*) into occupied
+    from matches as m inner join interview as i on i.idMatch = m.id
+    where confirmedYN = true and m.idInternship = intId;
+ 
+	if new.confirmedYN <> old.confirmedYN then
+		if seats = occupied then
+			create temporary table temp_match as 
+            select m.id
+			from matches as m inner join interview as i on  i.idMatch = m.id
+			where i.confirmedYN = true and m.idInternship = intId;
+            
+			delete from matches where id not in (select id from temp_match) and idInternship = intId;
+            
+            drop temporary table temp_match;
+        end if;
+	end if;
+ end//
 delimiter ;
