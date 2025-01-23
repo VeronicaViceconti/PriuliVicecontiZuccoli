@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>S&amp;C</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script src="js/internship.js" charset="utf-8" defer></script>
+<script src="utils.js" charset="utf-8" defer></script>
+<link rel="stylesheet" href="css/GlobalStyle.css" />
+<link rel="stylesheet" href="css/formStyle.css" />
+</head>
+<body>
+	<div class="generic-form">
+		<div class="div">
+			<div class="barra-superiore">
+				<img class="profilo" src="img/profilePic.png" />
+				<div class="titolo">Students&amp;Companies</div>	
+				<img class="home" id="homeBtn" src="img/home.png">
+			</div>
+			<div class="text-wrapper" id="pageTitle">Internship Publication</div>
+			<form action="#">
+				
+				<div class="frameList" id="frameList">
+				<div class="question">description</div>
+				<input class="frame" name="description" type="text" maxlength="500"><br>
+				<div class="question">role</div>
+				<input class="frame" name="role" type="text" maxlength="500"><br>
+				<div class="question">open seats</div>
+				<input class="frame" name="openSeats" type="number"><br>
+				<div class="question">starting date</div>
+				<input class="frame" name="startingDate" id="data1" type="date"><br>
+				<div class="question">ending date</div>
+				<input class="frame" name="endingDate"  id="data2" type="date"><br>
+				<div class="BtnSendContainer">
+					<div class="sendBtn" id="sendBtn">send</div>
+				</div>
+			</div>
+			</form>
+		</div>
+	</div>
+	
+</body>
+</html>

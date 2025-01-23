@@ -72,7 +72,7 @@
 		e.preventDefault();
 		let form = e.target.closest("form");
 		if(form.checkValidity()){
-			makeCall("POST", "PublicationManager?page=sendPreferences", form,
+			makeCall("POST", "" + (internship != null)?"PublicationManager?page=sendPreferences&idInternship=" + internship:"PublicationManager?page=sendPreferences", form,
 				function(x) {
 					if (x.readyState == XMLHttpRequest.DONE) {
 			            var message = x.responseText;
