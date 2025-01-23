@@ -76,7 +76,6 @@ public class MatchManager extends HttpServlet {
 			if(request.getParameter("page") == null)
 				return;
 			
-			//the internship exists, now need to find the correspond student's publication
 			 switch (request.getParameter("page").toString()) { //uso lo switch per capire quale azione dobbiamo fare in questa servlet
 			 	case "acceptMatch": //when the page need to open one internship
 			 		acceptMatch(response,Integer.parseInt(request.getParameter("IDmatch")),user.getEmail(),userType,Integer.parseInt(request.getParameter("accept")));

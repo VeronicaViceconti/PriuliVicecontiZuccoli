@@ -72,7 +72,7 @@
 				complaintBtn.classList.add("brownBtn");
 				complaintBtn.textContent = "Write complaint";
 				complaintBtn.onclick = function() {
-					window.location.href = "http://localhost:8080/SandC/generalForm.html";
+					window.location.href = "generalForm.html";
 				}
 
 				actionBtnsContainer.appendChild(complaintBtn);
@@ -86,7 +86,7 @@
 				feedbackBtn.classList.add("brownBtn");
 				feedbackBtn.textContent = "Write feedback";
 				feedbackBtn.onclick = function() {
-					window.location.href = "http://localhost:8080/SandC/generalForm.html";
+					window.location.href = "generalForm.html";
 				}
 
 				actionBtnsContainer.appendChild(feedbackBtn);
@@ -106,11 +106,11 @@
 	}
 
 	homeBtn.addEventListener("click", () => {
-		window.location.href = "http://localhost:8080/SandC/homePageStudente.html";
+		window.location.href = "homePageStudente.html";
 	})
 
 	profileBtn.addEventListener("click", () => {
-		window.location.href = "http://localhost:8080/SandC/studentProfile.html";
+		window.location.href = "studentProfile.html";
 	})
 
 	function loadInternshipInfo(internshipId) {

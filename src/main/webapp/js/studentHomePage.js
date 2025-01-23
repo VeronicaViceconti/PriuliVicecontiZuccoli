@@ -52,11 +52,11 @@
 	}
 
 	homeBtn.addEventListener("click", () => {
-		window.location.href = "http://localhost:8080/SandC/homePageStudente.html";
+		window.location.href = "homePageStudente.html";
 	})
 
 	profileBtn.addEventListener("click", () => {
-		window.location.href = "http://localhost:8080/SandC/studentProfile.html";
+		window.location.href = "studentProfile.html";
 	})
 
 	function AddCardsEventListners() {
@@ -143,7 +143,7 @@
 		card.addEventListener("click", () => {
 			sessionStorage.setItem("internshipID", card.id);
 			sessionStorage.setItem("tab", card.getAttribute("data-section"));
-			window.location.href = "http://localhost:8080/SandC/internshipInfo_AcceptDecline_student.html";
+			window.location.href = "internshipInfo_AcceptDecline_student.html";
 		});
 
 		// Inserisci la card nel DOM

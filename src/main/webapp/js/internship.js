@@ -15,7 +15,7 @@
 
 		switch (user) {
 			case "student":
-				window.location.href = "http://localhost:8080/SandC/homePageStudente.html";
+				window.location.href = "homePageStudente.html";
 				break;
 			case "company":
 				//TOO -> redirect to company homepage
@@ -27,7 +27,7 @@
 
 			switch (user) {
 				case "student":
-					window.location.href = "http://localhost:8080/SandC/homePageStudente.html";
+					window.location.href = "homePageStudente.html";
 					break;
 				case "company":
 					//TOO -> redirect to company homepage

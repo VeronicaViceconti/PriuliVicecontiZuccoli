@@ -11,11 +11,11 @@
 	}
 
 	profileBtn.addEventListener("click", () => {
-		window.location.href = "http://localhost:8080/SandC/companyProfile.html";
+		window.location.href = "companyProfile.html";
 	})
 
 	homeBtn.addEventListener("click", () => {
-		window.location.href = "http://localhost:8080/SandC/homePageCompany.html";
+		window.location.href = "homePageCompany.html";
 	})
 	downloadBtn.addEventListener("click", () => {
 		alert("downloadBtn");

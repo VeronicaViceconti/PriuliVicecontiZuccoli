@@ -24,7 +24,7 @@
 
 
 	homeBtn.addEventListener("click", () => {
-		window.location.href = "http://localhost:8080/SandC/homePageStudente.html";
+		window.location.href = "homePageStudente.html";
 	})
 
 	modfyBtn.addEventListener("click", () => {
@@ -42,7 +42,7 @@
 			sessionStorage.setItem("internshipID", cardId);
 			sessionStorage.setItem("tab", "ongoing");
 			sessionStorage.setItem("user", "student");
-			window.location.href = "http://localhost:8080/SandC/internshipInfo_AcceptDecline_student.html";
+			window.location.href = "internshipInfo_AcceptDecline_student.html";
 		}
 	})
 
@@ -53,7 +53,7 @@
 			sessionStorage.setItem("internshipID", cardId);
 			sessionStorage.setItem("tab", "waitingFeed");
 			sessionStorage.setItem("user", "student");
-			window.location.href = "http://localhost:8080/SandC/internshipInfo_AcceptDecline_student.html";
+			window.location.href = "internshipInfo_AcceptDecline_student.html";
 		}
 	})
 }

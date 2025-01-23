@@ -6,7 +6,7 @@
 	}
 	
 	homeBtn.addEventListener("click", () => {
-		window.location.href = "http://localhost:8080/SandC/homePageCompany.html";
+		window.location.href = "homePageCompany.html";
 	});
 }
 

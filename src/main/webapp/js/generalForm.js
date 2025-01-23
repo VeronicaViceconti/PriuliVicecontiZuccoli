@@ -39,10 +39,10 @@
 
 		switch (user) {
 			case "student":
-				window.location.href = "http://localhost:8080/SandC/homePageStudente.html";
+				window.location.href = "homePageStudente.html";
 				break;
 			case "company":
-				window.location.href = "http://localhost:8080/SandC/homePageCompany.html";
+				window.location.href = "homePageCompany.html";
 				break;
 		}
 	})
@@ -51,10 +51,10 @@
 
 		switch (user) {
 			case "student":
-				window.location.href = "http://localhost:8080/SandC/studentProfile.html";
+				window.location.href = "studentProfile.html";
 				break;
 			case "company":
-				window.location.href = "http://localhost:8080/SandC/companyProfile.html";
+				window.location.href = "companyProfile.html";
 				break;
 		}
 	})

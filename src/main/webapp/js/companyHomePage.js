@@ -296,11 +296,11 @@
 	});
 
 	homeBtn.addEventListener("click", () => {
-		window.location.href = "http://localhost:8080/SandC/homePageCompany.html";
+		window.location.href = "homePageCompany.html";
 	})
 
 	profileBtn.addEventListener("click", () => {
-		window.location.href = "http://localhost:8080/SandC/companyProfile.html";
+		window.location.href = "companyProfile.html";
 	})
 
 	//click on card event
@@ -312,12 +312,12 @@
 		if (card) {
 			if (tab != "matches") {
 				sessionStorage.setItem("internshipID", card.id);
-				window.location.href = "http://localhost:8080/SandC/internshipView_Company.html";
+				window.location.href = "internshipView_Company.html";
 			}
 			else {
 				sessionStorage.setItem("MatchedUserID", card.id);
 				//alert("redirect to MATCHED user page");
-				window.location.href = "http://localhost:8080/SandC/accept_DeclineStudent_Company.html";
+				window.location.href = "accept_DeclineStudent_Company.html";
 			}
 		}
 	})
