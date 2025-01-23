@@ -11,7 +11,7 @@
 	window.onload = function(e) {
 		e.preventDefault();
 		sessionStorage.setItem('tab', "ongoing");
-		internList.innerHTML = null;
+		//internList.innerHTML = null;
 
 		/*makeCall("GET", "ProfileManager?page=toHomepage", null,
 			(req) => {
@@ -94,6 +94,102 @@
 		internList.appendChild(card);
 	}
 
+	function createMatchCard(id, name, courseOfStudies, university, address) {
+		// Dati della card
+		const cardData = {
+			id: id,
+			studentName: name,
+			course: courseOfStudies,
+			university: university,
+			address: address
+		};
+
+		// Seleziona il contenitore in cui aggiungere la card
+		const internList = document.getElementById("internList");
+
+		// Crea il div principale della card
+		const card = document.createElement("div");
+		card.className = "card";
+		card.id = cardData.id;
+
+		// Aggiungi il titolo della card (nome studente)
+		const cardTitle1 = document.createElement("div");
+		cardTitle1.className = "card-title";
+
+		const profilePic = document.createElement("img");
+		profilePic.className = "studentProfilePic";
+		profilePic.id = "studentProfilePic";
+		profilePic.src = "img/profilePic.png"; // Immagine del profilo
+
+		const nameDiv = document.createElement("div");
+		nameDiv.className = "card-company";
+		nameDiv.id = "StudentName";
+		nameDiv.textContent = cardData.studentName;
+
+		cardTitle1.appendChild(profilePic);
+		cardTitle1.appendChild(nameDiv);
+
+		// Aggiungi il secondo titolo (corso di studi)
+		const cardTitle2 = document.createElement("div");
+		cardTitle2.className = "card-title";
+
+		const courseImg = document.createElement("img");
+		courseImg.src = "img/CourseOfStudies.png"; // Icona del corso
+
+		const courseDiv = document.createElement("div");
+		courseDiv.id = "courseOfStudies";
+		courseDiv.className = "card-info";
+		courseDiv.textContent = cardData.course;
+
+		cardTitle2.appendChild(courseImg);
+		cardTitle2.appendChild(courseDiv);
+
+		// Crea la sezione minor-info
+		const minorInfo = document.createElement("div");
+		minorInfo.className = "minor-info";
+
+		// Aggiungi informazioni università
+		const minorInfoTitle1 = document.createElement("div");
+		minorInfoTitle1.className = "card-title";
+
+		const uniImg = document.createElement("img");
+		uniImg.src = "img/university.png"; // Icona dell'università
+
+		const uniDiv = document.createElement("div");
+		uniDiv.id = "studentUniversity";
+		uniDiv.className = "card-info";
+		uniDiv.textContent = cardData.university;
+
+		minorInfoTitle1.appendChild(uniImg);
+		minorInfoTitle1.appendChild(uniDiv);
+
+		// Aggiungi informazioni indirizzo
+		const minorInfoTitle2 = document.createElement("div");
+		minorInfoTitle2.className = "card-title";
+
+		const addrImg = document.createElement("img");
+		addrImg.src = "img/internLocation.png"; // Icona dell'indirizzo
+
+		const addrDiv = document.createElement("div");
+		addrDiv.id = "studentAddress";
+		addrDiv.className = "card-info";
+		addrDiv.textContent = cardData.address;
+
+		minorInfoTitle2.appendChild(addrImg);
+		minorInfoTitle2.appendChild(addrDiv);
+
+		// Aggiungi i minor-info alla card
+		minorInfo.appendChild(minorInfoTitle1);
+		minorInfo.appendChild(minorInfoTitle2);
+
+		// Aggiungi tutti gli elementi alla card
+		card.appendChild(cardTitle1);
+		card.appendChild(cardTitle2);
+		card.appendChild(minorInfo);
+
+		// Inserisci la card nel contenitore
+		internList.appendChild(card);
+	}
 
 	matchesTab.addEventListener("click", () => {
 
@@ -106,7 +202,10 @@
 		sessionStorage.setItem('tab', "matches");
 		internList.innerHTML = null;
 		
-		makeCall("GET", "MatchManager?page=acceptMatch&IDmatch="+3+"&accept="+0, null,
+		//JUST FOR DEGUB
+		createMatchCard(999, "PEPPINO", "ingegneria informatica","Politecnico di Milano", "via Bragello 14");
+
+		/*makeCall("GET", "MatchManager?page=acceptMatch&IDmatch=" + 3 + "&accept=" + 0, null,
 			(req) => {
 				if (req.readyState == 4) {
 					switch (req.status) {
@@ -124,7 +223,7 @@
 							break;
 					}
 				}
-			});
+			});*/
 	});
 
 	ongoingInternTab.addEventListener("click", () => {
@@ -147,9 +246,9 @@
 		waitingFeedInternship.style.color = "#2e4057";
 		matchesTab.style.color = "#2e4057";
 		sessionStorage.setItem('tab', "proposed");
-		
+
 		internList.innerHTML = null;
-				
+
 		makeCall("GET", "PublicationManager?page=proposedInternships", null,
 			(req) => {
 				if (req.readyState == 4) {
@@ -157,7 +256,7 @@
 						case 200: // andato a buon fine
 							var jsonData = JSON.parse(req.responseText);
 							console.log(jsonData[0]);
-							for(const internship of jsonData){
+							for (const internship of jsonData) {
 								createCard(
 									internship.id,
 									internship.company.name,
@@ -209,7 +308,7 @@
 		const card = event.target.closest(".card");
 		var tab = sessionStorage.getItem("tab");
 
-		
+
 		if (card) {
 			if (tab != "matches") {
 				sessionStorage.setItem("internshipID", card.id);
@@ -217,8 +316,8 @@
 			}
 			else {
 				sessionStorage.setItem("MatchedUserID", card.id);
-				alert("redirect to user page");
-				//window.location.href = "http://localhost:8080/SandC/internshipView_Company.html";
+				//alert("redirect to MATCHED user page");
+				window.location.href = "http://localhost:8080/SandC/accept_DeclineStudent_Company.html";
 			}
 		}
 	})
