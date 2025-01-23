@@ -139,7 +139,9 @@ public class StudentDAO {
 				while (result2.next()) {
 					Publication pub = new Publication();
 					pub.setId(result2.getInt("id"));
-					pub.setStudent(result2.getString("student"));
+					Student student = new Student();
+					student.setName(result2.getString("name"));
+					pub.setStudent(student);
 		            
 		            publications.add(pub);
 		        }	
@@ -180,7 +182,9 @@ public class StudentDAO {
 			else { //company
 				result2.next();
 				publication.setId(result2.getInt("id"));
-				publication.setStudent(result2.getString("student"));
+				Student student = new Student();
+				student.setName(result2.getString("name"));
+				publication.setStudent(student);
 				
 				return publication;	
 			}

@@ -8,6 +8,7 @@ public class Student{
 	private String name;
 	private String address;
 	private String phoneNumber;
+	private String studyCourse;
 	private List<Publication> publications;
 	
 	public List<Publication> getPublications(){
@@ -47,6 +48,13 @@ public class Student{
 	}
 	public void setPhoneNumber(String PhoneNumber) {
 		this.phoneNumber = PhoneNumber;
+	}
+	
+	public String getStudyCourse() {
+		return studyCourse;
+	}
+	public void setStudyCourse(String studyCourse) {
+		this.studyCourse = studyCourse;
 	}
 	
 	

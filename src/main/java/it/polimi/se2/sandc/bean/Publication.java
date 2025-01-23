@@ -4,7 +4,7 @@ import java.util.List;
 
 public class Publication{
 	private int id; 
-	private String student;
+	private Student student;
 	private List<Preferences> choosenPreferences;
 	
 	public List<Preferences> getChoosenPreferences() {
@@ -19,10 +19,10 @@ public class Publication{
 	public void setId(int id) {
 		this.id = id;
 	}
-	public String getStudent() {
+	public Student getStudent() {
 		return student;
 	}
-	public void setStudent(String student) {
+	public void setStudent(Student student) {
 		this.student = student;
 	}
 }

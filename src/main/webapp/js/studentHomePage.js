@@ -212,7 +212,7 @@
 								}
 								createCard(
 									pageLocation,
-									internship.id,
+									internship.internship.id,
 									internship.internship.company.name,
 									internship.internship.roleToCover,
 									internship.internship.startingDate,

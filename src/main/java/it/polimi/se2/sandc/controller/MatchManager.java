@@ -23,6 +23,7 @@ import com.google.gson.Gson;
 import it.polimi.se2.sandc.bean.Internship;
 import it.polimi.se2.sandc.bean.Match;
 import it.polimi.se2.sandc.bean.Publication;
+import it.polimi.se2.sandc.bean.Student;
 import it.polimi.se2.sandc.bean.User;
 import it.polimi.se2.sandc.dao.CompanyDAO;
 import it.polimi.se2.sandc.dao.MatchDAO;
@@ -91,10 +92,36 @@ public class MatchManager extends HttpServlet {
 		 	case "acceptMatch": //when the page need to open one internship
 		 		acceptMatch(response,Integer.parseInt(request.getParameter("IDmatch")),user.getEmail(),userType,Integer.parseInt(request.getParameter("accept")));
 		 		break;
+		 	case "openMatch": //return student and internship info
+		 		openMatch(response,Integer.parseInt(request.getParameter("IDmatch")),user.getEmail(),userType);
+		 		break;
 		 		default:
 		 			response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 		 } 
 		}
+	}
+
+	//opens the info about the student in that match
+	private void openMatch(HttpServletResponse response, int matchID,String email,String userType) throws IOException {
+		MatchDAO matchDAO = new MatchDAO(connection);
+		Student student = new Student();
+		
+		try {
+			matchDAO.controlOwnership(email, matchID,userType );
+			student = matchDAO.openMatch(matchID);
+			String studentString = new Gson().toJson(student);
+			
+			// Imposta il tipo di contenuto e invia la risposta
+	       response.setContentType("application/json");
+	       response.getWriter().write(studentString);       
+	       response.setStatus(HttpServletResponse.SC_OK);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+			response.getWriter().println("Error opening match, retry later");
+			return;
+		}
+		
 	}
 
 	private void acceptMatch(HttpServletResponse response, int matchID, String email,String userType,int acceptedOrNot) throws IOException {

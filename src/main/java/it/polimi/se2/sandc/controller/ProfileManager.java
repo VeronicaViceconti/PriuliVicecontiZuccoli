@@ -350,8 +350,6 @@ public class ProfileManager extends HttpServlet {
 		Internship internship = null;
 		company = new CompanyDAO(connection);
 		
-		
-		
 		 try {
 			internship = company.findTheInternship(Integer.parseInt(request.getParameter("ID")));
 			String internshipString = new Gson().toJson(internship);

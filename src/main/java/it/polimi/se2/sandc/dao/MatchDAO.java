@@ -15,6 +15,7 @@ import it.polimi.se2.sandc.bean.Form;
 import it.polimi.se2.sandc.bean.Internship;
 import it.polimi.se2.sandc.bean.Interview;
 import it.polimi.se2.sandc.bean.Match;
+import it.polimi.se2.sandc.bean.Preferences;
 import it.polimi.se2.sandc.bean.Publication;
 import it.polimi.se2.sandc.bean.Student;
 import it.polimi.se2.sandc.bean.Question;
@@ -197,7 +198,9 @@ public class MatchDAO {
 			        }
 					Publication pub = new Publication();
 					pub.setId(result2.getInt("idPublication"));
-					pub.setStudent(result2.getString("name")); //student name
+					Student student = new Student();
+					student.setName(result2.getString("name"));
+					pub.setStudent(student);
 					match.setPublication(pub);
 					Internship intern = new Internship();
 					intern.setId(result2.getInt("internID"));
@@ -323,5 +326,78 @@ public class MatchDAO {
 		}
 		interview.setData(new Date(System.currentTimeMillis()));
 		return interview;
+	}
+
+	public Student openMatch(int matchID) throws SQLException {
+		String query = "SELECT w.text FROM matches as m JOIN internship as i on i.id = m.idInternship JOIN publication as p on  p.id = m.idPublication join student as s on s.email = p.student JOIN preference as pref on pref.idPublication = p.id JOIN workingpreferences as w on w.id = pref.idWorkingPreferences WHERE m.id = ?;";
+		ArrayList<Preferences> ris = new ArrayList <Preferences>();
+		PreparedStatement pstatement = null;
+		ResultSet result2 = null;
+		
+		try {
+			pstatement = connection.prepareStatement(query);
+			pstatement.setInt(1, matchID);
+
+			result2 = pstatement.executeQuery();
+			
+			if (!result2.isBeforeFirst()) {// no results, no matches found
+				return null;	
+			}
+			else { 
+				while(result2.next()) {
+					Preferences tmp = new Preferences();
+					tmp.setText(result2.getString("text"));
+					ris.add(tmp);
+				}
+			}
+			
+		} catch(SQLException e) {
+			throw new SQLException("Error while finding match");
+		}finally {
+			try {
+				pstatement.close(); // devo chiudere prepared statement
+			} catch (Exception e) {
+				throw new SQLException("Error while trying to close prepared statement");
+			}
+		}
+		//find all the other info
+		query = "SELECT p.id as idPublication,s.name,s.email,s.address,cv,s.studyCourse,s.phoneNumber,i.id,startingDate,endingDate,roleToCover FROM matches as m JOIN internship as i on i.id = m.idInternship JOIN publication as p on  p.id = m.idPublication join student as s on s.email = p.student WHERE m.id = ? ;";
+		try {
+			pstatement = connection.prepareStatement(query);
+			pstatement.setInt(1, matchID);
+			Student student = new Student();
+			result2 = pstatement.executeQuery();
+			
+			if (!result2.isBeforeFirst()) {// no results, no matches found
+				return null;	
+			}
+			else { 
+					result2.next();
+					Publication pub = new Publication();
+					pub.setId(result2.getInt("idPublication"));
+					
+					student.setName(result2.getString("name"));
+					student.setPhoneNumber(result2.getString("phoneNumber"));
+					student.setStudyCourse(result2.getString("studyCourse"));
+					student.setaddress(result2.getString("address"));
+					student.setEmail(result2.getString("email"));
+					if(result2.getString("cv") != null)
+						student.setCv(result2.getString("cv"));
+					List<Publication> publication = new ArrayList<>();
+					pub.setChoosenPreferences(ris);
+					publication.add(pub);
+					student.setPublications(publication);
+				return student;	
+			}
+			
+		} catch(SQLException e) {
+			throw new SQLException("Error while finding match");
+		}finally {
+			try {
+				pstatement.close(); // devo chiudere prepared statement
+			} catch (Exception e) {
+				throw new SQLException("Error while trying to close prepared statement");
+			}
+		}
 	}
 }

@@ -121,7 +121,7 @@
 						case 200: // andato a buon fine
 							console.log(req.responseText);
 							var jsonData = JSON.parse(req.responseText);
-							console.log(jsonData);
+							console.log("mi hai richiesto id ->"+internshipId+","+jsonData);
 							//fill the page							
 							company.innerText = jsonData.company.name;
 							role.innerText = jsonData.roleToCover;
