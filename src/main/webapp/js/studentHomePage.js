@@ -36,7 +36,7 @@
 		//change tab color
 		availableInternTab.style.color = "#2e4057";
 		matchesTab.style.color = "#a37659";
-		sessionStorage.setItem('tab', "metches");
+		sessionStorage.setItem('tab', "matches");
 
 		first_subTitle.innerText = "New matches";
 		cleanUp();
@@ -199,15 +199,15 @@
 								/*nessuno dei 2 -> new
 								student true e no company -> wait res
 								both true -> wait interview*/
-								acceptedYNCompany:false
-								acceptedYNStudent:true
+								//acceptedYNCompany:false
+								//acceptedYNStudent:true
 
-								console.log(internship);
+								//console.log(internship);
 								pageLocation = avail_newMatch_section;
 								if ("acceptedYNCompany" in internship && "acceptedYNStudent" in internship) {
 									pageLocation = waitingInterview_section
 								}
-								else if("acceptedYNCompany" in internship) {
+								else if("acceptedYNStudent" in internship) {
 									pageLocation = waitingResponse_section;
 								}
 								createCard(

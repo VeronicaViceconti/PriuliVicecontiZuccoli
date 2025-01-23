@@ -28,6 +28,11 @@ body {
 }
 
 .card {
+	display: flex; 
+	flex-direction: column; 
+	justify-content: space-between;
+	align-items: center;
+	
 	background-color: #f8f9fa;
 	border-radius: 20px;
 	overflow: hidden;
@@ -42,11 +47,36 @@ body {
 	text-align: center;
 }
 
+.studentProfilePic {
+	height: 50px;
+	width: 50px;
+}
+
+.card-title {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	justify-content: center;
+	flex-grow: 1;
+	width: 100%;
+}
+
+.minor-info {
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+	align-items: center;
+	gap: 10px;
+	width: 100%;
+	padding: 10px 0;
+}
+
 .internship-info {
 	height: 100%;
 	display: grid;
 	grid-template-columns: auto auto;
 	padding: 10px;
+	background-color: rad;
 }
 
 .card-company {
@@ -65,7 +95,7 @@ body {
 	font-family: "Inter-Regular", Helvetica;
 	font-weight: 400;
 	color: #2e4057;
-	font-size: 20px;
+	font-size: 25px;
 	letter-spacing: 0;
 	line-height: normal;
 	white-space: nowrap;
@@ -77,8 +107,8 @@ body {
 	height: 63px;
 	top: 126px;
 	left: 0;
-	display: flex; 
-	gap: 10px; 
+	display: flex;
+	gap: 10px;
 	align-items: center;
 	justify-content: start;
 }
@@ -93,10 +123,9 @@ body {
 	line-height: normal;
 	white-space: nowrap;
 	cursor: pointer;
-	
 }
 
-#ongoingInternTab{
+#ongoingInternTab {
 	color: #a37659;
 }
 
