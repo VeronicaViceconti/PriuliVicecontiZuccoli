@@ -195,7 +195,7 @@
 							var jsonData = JSON.parse(req.responseText);
 							var pageLocation;
 							for (const internship of jsonData) {
-
+								console.log(internship);
 								/*nessuno dei 2 -> new
 								student true e no company -> wait res
 								both true -> wait interview*/
@@ -207,12 +207,12 @@
 								if ("acceptedYNCompany" in internship && "acceptedYNStudent" in internship) {
 									pageLocation = waitingInterview_section
 								}
-								else if("acceptedYNStudent" in internship) {
+								else if ("acceptedYNStudent" in internship) {
 									pageLocation = waitingResponse_section;
 								}
 								createCard(
 									pageLocation,
-									internship.id,
+									internship.internship.id,
 									internship.internship.company.name,
 									internship.internship.roleToCover,
 									internship.internship.startingDate,
