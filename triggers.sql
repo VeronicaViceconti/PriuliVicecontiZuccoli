@@ -62,7 +62,7 @@ begin
 	end if;
 ends
  
- delimiter ;
+delimiter ;
  
  delimiter //
  create trigger deleteMatchWhenNoMoreAvailableSeats 
@@ -96,4 +96,40 @@ ends
         end if;
 	end if;
  end//
-delimiter ;
+  
+  
+ create trigger deleteMatchFalseInterview
+ after update on interview
+ for each row
+ begin
+	if( old.confirmedYN is null and new.confirmedYN is false and old.idMatch = new.idMatch) then
+		DELETE from matches where id = new.idMatch;
+        DELETE from form where id = new.idForm;
+    end if;
+ end//
+ 
+ delimiter //
+ create trigger deletePubYesInterview
+ after update on interview
+ for each row
+ begin
+	declare stud varchar(50);
+    declare idPub integer;
+    SELECT p.id into idPub from interview as i join matches as m on i.idMatch = m.id join publication as p on p.id = m.idPublication WHERE i.idMatch = new.idMatch;
+    
+    SELECT s.email into stud FROM interview as i join matches as m on i.idMatch = m.id join publication as p on p.id = m.idPublication join student as s on s.email = p.student WHERE i.idMatch = new.idMatch;  
+	if( old.confirmedYN is null and new.confirmedYN is true and old.idMatch = new.idMatch) then
+		DELETE from publication where student = stud and id  <> idPub;
+    end if;
+ end//
+ 
+create trigger noMindChangesOnAcceptingInterviewCompany
+before update on interview
+for each row
+begin 
+	if( old.id = new.id AND exists (SELECT 1 FROM interview WHERE old.confirmedYN is not null AND id = new.id)) then
+		 set new.confirmedYN = old.confirmedYN;
+	end if;
+end//
+
+ delimiter ;

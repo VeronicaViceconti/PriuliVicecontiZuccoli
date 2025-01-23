@@ -82,6 +82,46 @@ public class StudentDAO {
 		
 	}
 	
+	public Student getProfileInfos(String userType, String email) throws SQLException {
+		String query = null;
+		if(userType.equalsIgnoreCase("student")) 
+			query = "SELECT * FROM sandc.student where email = ?;";
+		
+		PreparedStatement pstatement2 = null;
+		ResultSet result = null;
+		try {
+			pstatement2 = connection.prepareStatement(query);
+			pstatement2.setString(1, email);
+			result = pstatement2.executeQuery();
+			if (!result.isBeforeFirst()) {// no results, credential check failed for both
+				return null;	
+			}
+			else { //company
+				result.next();
+				Student user = new Student();
+				user.setName(result.getString("name"));
+				user.setEmail(result.getString("email"));
+				user.setaddress(result.getString("address"));
+				user.setCv(result.getString("cv"));
+				user.setPhoneNumber(result.getString("phoneNumber"));
+				return user;	
+			}
+		} catch(SQLException e) {
+			throw new SQLException("Error while trying to access profile infos");
+		}finally {
+			try {
+				result.close(); //Devo chiudere result set
+			} catch(Exception e) {
+				throw new SQLException("Error while trying to close Result Set");
+			}
+			try {
+				pstatement2.close();  //devo chiudere prepared statement
+			} catch(Exception e) {
+				throw new SQLException("Error while trying to close prepared statement");
+			}
+		}
+	}
+	
 	public List<Publication> findStudentPublications(String email) throws SQLException {
 		String query2 = null;
 		query2 = "SELECT * from publication WHERE student = ?";
@@ -177,7 +217,7 @@ public class StudentDAO {
 					Company c = new Company();
 					
 					c.setEmail(result.getString("email"));
-					c.setAddress(result.getString("address"));
+					c.setaddress(result.getString("address"));
 					c.setName(result.getString("name"));
 					
 					Internship i = new Internship();
@@ -216,7 +256,7 @@ public class StudentDAO {
 					Company c = new Company();
 					
 					c.setEmail(result.getString("email"));
-					c.setAddress(result.getString("address"));
+					c.setaddress(result.getString("address"));
 					c.setName(result.getString("name"));
 					
 					Internship i = new Internship();

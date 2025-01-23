@@ -1,5 +1,4 @@
 package it.polimi.se2.sandc.dao;
-
 import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -92,7 +91,7 @@ public class MatchDAO {
 		            intern.setroleToCover(result2.getString("roleToCover"));
 		            Company company = new Company();
 		            company.setName(result2.getString("name"));
-		            company.setAddress(result2.getString("address"));
+		            company.setaddress(result2.getString("address"));
 		            intern.setCompany(company);
 		            match.setInternship(intern);
 		            matches.add(match);
@@ -212,7 +211,7 @@ public class MatchDAO {
 		            }
 		            intern.setroleToCover(result2.getString("roleToCover"));
 		            Company company = new Company();
-		            company.setAddress(result2.getString("address"));
+		            company.setaddress(result2.getString("address"));
 		            intern.setCompany(company);
 		            match.setInternship(intern);
 		            matches.add(match);

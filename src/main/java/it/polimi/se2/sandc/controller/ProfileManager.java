@@ -20,11 +20,14 @@ import javax.servlet.http.HttpSession;
 
 import org.apache.commons.lang.StringEscapeUtils;
 
+import it.polimi.se2.sandc.bean.Company;
 import it.polimi.se2.sandc.bean.Internship;
 import it.polimi.se2.sandc.bean.Match;
 import it.polimi.se2.sandc.bean.Publication;
+import it.polimi.se2.sandc.bean.Student;
 import it.polimi.se2.sandc.bean.User;
 import it.polimi.se2.sandc.dao.CompanyDAO;
+import it.polimi.se2.sandc.dao.InternshipDAO;
 import it.polimi.se2.sandc.dao.MatchDAO;
 import it.polimi.se2.sandc.dao.PublicationDAO;
 import it.polimi.se2.sandc.dao.StudentDAO;
@@ -142,6 +145,9 @@ public class ProfileManager extends HttpServlet {
 			 		String x = StringEscapeUtils.escapeJava(request.getParameter("condition"));
 			 		findFilteredInternships(response,x,user.getEmail());
 			 		break;
+			 	case "profileInfo":
+			 		findProfileInfo(response,userType,user.getEmail());
+			 		break;
 			 		default:
 			 			response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 			 } 
@@ -154,6 +160,9 @@ public class ProfileManager extends HttpServlet {
 			     case "internshipInfo": //when the page need to open one internship 
 			      findInternshipInfo(request,response); 
 			      break; 
+			     case "profileInfo":
+			 		findProfileInfo(response,userType,user.getEmail());
+			 		break;
 			      default: 
 			       response.setStatus(HttpServletResponse.SC_UNAUTHORIZED); 
 			    }			
@@ -161,6 +170,66 @@ public class ProfileManager extends HttpServlet {
 	}
 
 	
+	private void findProfileInfo(HttpServletResponse response, String userType, String email) throws IOException {
+		// TODO Auto-generated method stub
+		StudentDAO student = null;
+		CompanyDAO company = null;
+		Student st = null;
+		Company cm = null;
+		String combinedJson = null;
+        
+        // Combina i due JSON in un unico array JSON (visto che abbiamo 2 oggetti differenti e toJson crea solo 1 solo tipo di json)
+        
+		if(userType.equalsIgnoreCase("student")) {
+			String stInfo = null;
+			String internInfo = null;
+			student = new StudentDAO(connection);
+			try {
+				st = student.getProfileInfos(userType,email);
+				stInfo = new Gson().toJson(st);
+		       
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+				response.getWriter().println("Error finding profile infos, retry later");
+				return;
+			}
+			
+			InternshipDAO intern = new InternshipDAO(connection);
+			Internship internship = null;
+			try {
+				internship = intern.getOngoingInternship(email);
+				internInfo = new Gson().toJson(internship);
+				
+				combinedJson = "[" + stInfo + "," + internInfo + "]";
+				response.getWriter().write(combinedJson);       
+			    response.setStatus(HttpServletResponse.SC_OK);
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+				response.getWriter().println("Error finding profile infos, retry later");
+				return;
+			}
+		}else {
+			company = new CompanyDAO(connection);
+			String infoCompany = null;
+			try {
+				cm = company.getProfileInfos(userType,email);
+				infoCompany = new Gson().toJson(cm);
+				combinedJson = "[" + infoCompany + "," + null + "]";
+				response.getWriter().write(combinedJson);       
+			    response.setStatus(HttpServletResponse.SC_OK);
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+				response.getWriter().println("Error finding profile infos, retry later");
+				return;
+			}
+		}
+		
+		
+	}
+
 	private void showAllStudentMatches(HttpServletResponse response,String emailStudent) throws IOException {
 		MatchDAO match = new MatchDAO(connection);
 		List<Match> matches = null;

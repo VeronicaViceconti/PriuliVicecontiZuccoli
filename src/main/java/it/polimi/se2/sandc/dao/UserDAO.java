@@ -90,6 +90,7 @@ public class UserDAO {
 		else
 			query = "INSERT into Company (email,name,address,phoneNumber, psw) VALUES(?, ?, ?, ?, ?)";
 		PreparedStatement pstatement = null;
+		
 		try {
 			pstatement = connection.prepareStatement(query);
 			pstatement.setString(1, email);

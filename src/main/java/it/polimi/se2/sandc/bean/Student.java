@@ -6,6 +6,8 @@ public class Student{
 	private String email;
 	private String cv; 
 	private String name;
+	private String address;
+	private String phoneNumber;
 	private List<Publication> publications;
 	
 	public List<Publication> getPublications(){
@@ -33,6 +35,18 @@ public class Student{
 	}
 	public void setName(String name) {
 		this.name = name;
+	}
+	public String getAddress() {
+		return address;
+	}
+	public void setaddress(String address) {
+		this.address = address;
+	}
+	public String getPhoneNumber() {
+		return phoneNumber;
+	}
+	public void setPhoneNumber(String PhoneNumber) {
+		this.phoneNumber = PhoneNumber;
 	}
 	
 	

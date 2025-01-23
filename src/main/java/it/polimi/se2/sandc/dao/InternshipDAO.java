@@ -59,6 +59,114 @@ public class InternshipDAO {
 		}
 	}
 	
+	//for student
+	public Internship getOngoingInternship(String email) throws SQLException {
+		String query = null;
+			query = "SELECT inter.id,c.name,c.address,inter.startingDate,inter.endingDate,roleToCover FROM interview as i join matches as m on i.idMatch = m.id join publication as p on p.id = m.idPublication join student as s on s.email = p.student join internship as inter on inter.id = m.idInternship join company as c on c.email = inter.company where s.email = ?;";
+		
+		ResultSet result = null;
+		PreparedStatement pstatement2 = null;
+		Internship internship = new Internship();
+		try {
+			pstatement2 = connection.prepareStatement(query);
+			pstatement2.setString(1, email);
+			result = pstatement2.executeQuery();
+			if (!result.isBeforeFirst()) {// no results, no email found 
+				return null;	
+			}
+			else { //company
+				result.next();
+				internship.setId(result.getInt("idInternship"));
+				Company company = new Company();
+	            company.setName(result.getString("name"));
+	            company.setaddress(result.getString("address"));
+	            internship.setCompany(company);
+	            
+	            Date sqlDate = result.getDate("startingDate");
+	            if (sqlDate != null) {
+	                internship.setStartingDate(new Date(sqlDate.getTime())); 
+	            }
+	            sqlDate = result.getDate("endingDate");
+	            if (sqlDate != null) {
+	                internship.setEndingDate(new Date(sqlDate.getTime())); 
+	            }
+	            internship.setroleToCover(result.getString("roleToCover"));
+				
+	            return internship;
+			}
+		} catch(SQLException e) {
+			throw new SQLException("Error while trying to find student publication");
+		}finally {
+			try {
+				result.close(); //Devo chiudere result set
+			} catch(Exception e) {
+				throw new SQLException("Error while trying to close Result Set");
+			}
+			try {
+				pstatement2.close();  //devo chiudere prepared statement
+			} catch(Exception e) {
+				throw new SQLException("Error while trying to close prepared statement");
+			}
+		}
+			
+	}
+	
+	/*//for company 
+		public List<Internship> getOngoingInternships(String email) throws SQLException {
+			String query = null;
+			query = "SELECT * FROM interview as i join matches as m on i.idMatch = m.id join publication as p on p.id = m.idPublication join student as s on s.email = p.student join internship as inter on inter.id = m.idInternship join company as c on c.email = inter.company where s.email = ? AND confirmedYN is true;";;
+			
+			ResultSet result = null;
+			PreparedStatement pstatement2 = null;
+			
+			List<Internship> internships = new ArrayList<>();
+			try {
+				pstatement2 = connection.prepareStatement(query);
+				pstatement2.setString(1, email);
+				result = pstatement2.executeQuery();
+				if (!result.isBeforeFirst()) {// no results, no email found 
+					return null;	
+				}
+				else { //company
+					while(result.next()) {
+						Internship internship = new Internship();
+						internship.setId(result.getInt("idInternship"));
+						Company company = new Company();
+			            company.setName(result.getString("name"));
+			            company.setaddress(result.getString("address"));
+			            internship.setCompany(company);
+			            
+			            Date sqlDate = result.getDate("startingDate");
+			            if (sqlDate != null) {
+			                internship.setStartingDate(new Date(sqlDate.getTime())); 
+			            }
+			            sqlDate = result.getDate("endingDate");
+			            if (sqlDate != null) {
+			                internship.setEndingDate(new Date(sqlDate.getTime())); 
+			            }
+			            internship.setroleToCover(result.getString("roleToCover"));
+			            
+			            internships.add(internship);
+					}
+		            return internships;
+				}
+			} catch(SQLException e) {
+				throw new SQLException("Error while trying to find student publication");
+			}finally {
+				try {
+					result.close(); //Devo chiudere result set
+				} catch(Exception e) {
+					throw new SQLException("Error while trying to close Result Set");
+				}
+				try {
+					pstatement2.close();  //devo chiudere prepared statement
+				} catch(Exception e) {
+					throw new SQLException("Error while trying to close prepared statement");
+				}
+			}
+				
+		} */
+	
 	public void writeFeedback(User user, int idInternship, String answer) throws SQLException {
 		String query;
 		
@@ -117,7 +225,7 @@ public class InternshipDAO {
 		            internship.setOpenSeats(result.getInt("openSeats"));
 		            Company company = new Company();
 		            company.setName(result.getString("name"));
-		            company.setAddress(result.getString("address"));
+		            company.setaddress(result.getString("address"));
 		            internship.setCompany(company);
 		            
 		            Date sqlDate = result.getDate("startingDate");

@@ -8,7 +8,7 @@
   </context-param>
   
   <session-config>
-        <session-timeout>30</session-timeout> <!-- Timeout in minuti -->
+        <session-timeout>60</session-timeout> <!-- Timeout in minuti -->
   </session-config>
   
   <context-param>
@@ -18,7 +18,7 @@
   
   <context-param>
     <param-name>dbPassword</param-name>
-    <param-value>KKlloopp9900</param-value>
+    <param-value>asdqwe123!"£</param-value>
   </context-param>
   
   <context-param>

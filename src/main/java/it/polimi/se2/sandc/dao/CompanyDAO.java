@@ -13,6 +13,7 @@ import it.polimi.se2.sandc.bean.Company;
 import it.polimi.se2.sandc.bean.Internship;
 import it.polimi.se2.sandc.bean.Preferences;
 import it.polimi.se2.sandc.bean.Publication;
+import it.polimi.se2.sandc.bean.Student;
 import it.polimi.se2.sandc.bean.User;
 
 public class CompanyDAO {
@@ -45,7 +46,7 @@ public class CompanyDAO {
 		            internship.setId(result.getInt("id"));
 		            Company company = new Company();
 		            company.setName(result.getString("company"));
-		            company.setAddress(result.getString("address"));
+		            company.setaddress(result.getString("address"));
 		            internship.setCompany(company);
 		            
 		            Date sqlDate = result.getDate("startingDate");
@@ -102,7 +103,7 @@ public class CompanyDAO {
 		            internship.setOpenSeats(result.getInt("openSeats"));
 		            Company company = new Company();
 		            company.setName(result.getString("name"));
-		            company.setAddress(result.getString("address"));
+		            company.setaddress(result.getString("address"));
 		            internship.setCompany(company);
 		            
 		            Date sqlDate = result.getDate("startingDate");
@@ -141,15 +142,12 @@ public class CompanyDAO {
 		ResultSet result = null;
 		PreparedStatement pstatement = null;
 		Internship internship = new Internship();
-		
-		System.out.println("fuori dal try");
-		
+				
 		try {
 			pstatement = connection.prepareStatement(query);
 			pstatement.setInt(1, ID);
 			result = pstatement.executeQuery();
 			if (!result.isBeforeFirst()) {// no results, no internship found
-				System.out.println("no match found");
 				return null;
 			}
 			else { //found the internship
@@ -157,7 +155,7 @@ public class CompanyDAO {
 				internship.setId(result.getInt("id"));
 				Company company = new Company();
 	            company.setName(result.getString("company"));
-	            company.setAddress(result.getString("address"));
+	            company.setaddress(result.getString("address"));
 	            internship.setCompany(company);
 	            
 	            Date sqlDate = result.getDate("startingDate");
@@ -230,6 +228,44 @@ public class CompanyDAO {
 		return internship;
 	}
 	
+	public Company getProfileInfos(String userType, String email) throws SQLException {
+		String query = null;
+		query = "SELECT * FROM sandc.company where email = ?;";
+		
+		PreparedStatement pstatement2 = null;
+		ResultSet result = null;
+		try {
+			pstatement2 = connection.prepareStatement(query);
+			pstatement2.setString(1, email);
+			result = pstatement2.executeQuery();
+			if (!result.isBeforeFirst()) {// no results, credential check failed for both
+				return null;	
+			}
+			else { //company
+				result.next();
+				Company user = new Company();
+				user.setName(result.getString("name"));
+				user.setEmail(result.getString("email"));
+				user.setaddress(result.getString("address"));
+				user.setPhoneNumber(result.getString("phoneNumber"));
+				return user;	
+			}
+		} catch(SQLException e) {
+			throw new SQLException("Error while trying to access profile infos");
+		}finally {
+			try {
+				result.close(); //Devo chiudere result set
+			} catch(Exception e) {
+				throw new SQLException("Error while trying to close Result Set");
+			}
+			try {
+				pstatement2.close();  //devo chiudere prepared statement
+			} catch(Exception e) {
+				throw new SQLException("Error while trying to close prepared statement");
+			}
+		}
+	}
+	
 	public int createInternship(String email ,Internship i) throws SQLException {
 		String query = "insert into Internship "
 				+ "(company, openSeats, startingDate, endingDate, jobDescription, roleToCover) values"
@@ -290,7 +326,7 @@ public class CompanyDAO {
 					Company c = new Company();
 					
 					c.setEmail(result.getString("email"));
-					c.setAddress(result.getString("address"));
+					c.setaddress(result.getString("address"));
 					c.setName(result.getString("name"));
 					
 					Internship i = new Internship();
@@ -329,7 +365,7 @@ public class CompanyDAO {
 					Company c = new Company();
 					
 					c.setEmail(result.getString("email"));
-					c.setAddress(result.getString("address"));
+					c.setaddress(result.getString("address"));
 					c.setName(result.getString("name"));
 					
 					Internship i = new Internship();

@@ -6,6 +6,7 @@ public class Company {
 	private String email; 
 	private String name;
 	private String address;
+	private String phoneNumber;
 	
 	public String getEmail() {
 		return email;
@@ -14,17 +15,23 @@ public class Company {
 		this.email = email;
 	}
 	
-	public String getAddress() {
-		return address;
-	}
-	public void setAddress(String address) {
-		this.address = address;
-	}
-	
 	public String getName() {
 		return name;
 	}
 	public void setName(String name) {
 		this.name = name;
+	}
+	
+	public String getAddress() {
+		return address;
+	}
+	public void setaddress(String address) {
+		this.address = address;
+	}
+	public String getPhoneNumber() {
+		return phoneNumber;
+	}
+	public void setPhoneNumber(String PhoneNumber) {
+		this.phoneNumber = PhoneNumber;
 	}
 }
