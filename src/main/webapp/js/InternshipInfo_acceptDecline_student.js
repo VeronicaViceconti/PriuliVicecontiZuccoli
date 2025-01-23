@@ -91,6 +91,13 @@
 
 				actionBtnsContainer.appendChild(feedbackBtn);
 				break;
+			case "waitingFeed":
+				pageTitle.innerHTML = "Waiting for response";
+				break;
+			case "waitingInterview":
+				pageTitle.innerHTML = "Waiting for interview";
+				break;
+
 		}
 
 		loadInternshipInfo(sessionStorage.getItem("internshipID"));
