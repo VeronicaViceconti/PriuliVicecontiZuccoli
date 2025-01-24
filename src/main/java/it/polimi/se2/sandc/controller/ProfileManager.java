@@ -271,7 +271,7 @@ public class ProfileManager extends HttpServlet {
 		 try {
 			pubs = pub.retrieveAllWP(email);
 			String pubsString = new Gson().toJson(pubs);
-			
+			System.out.println("->"+pubsString);
 		    // Imposta il tipo di contenuto e invia la risposta
 	       response.setContentType("application/json");
 	       response.getWriter().write(pubsString);       

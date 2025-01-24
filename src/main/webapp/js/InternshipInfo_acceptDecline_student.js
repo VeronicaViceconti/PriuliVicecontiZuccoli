@@ -158,7 +158,7 @@
 						case 200: // andato a buon fine
 							var jsonData = JSON.parse(req.responseText);
 							//fill the page							
-							console.log("pub and preferences->"+jsonData);
+							
 
 							break;
 						case 403:
