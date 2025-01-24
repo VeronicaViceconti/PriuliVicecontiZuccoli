@@ -8,90 +8,117 @@
 <script src="utils.js" charset="utf-8" defer></script>
 </head>
 <body>
-   <div id="login">
-   		<h1 class="text-center pt-5">Welcome to the Folder management application</h1>
-   		<h3 class="text-center" id="errors" style="color:red;"></h3>
+	<div id="login">
+		<h1 class="text-center pt-5">Welcome to the Folder management
+			application</h1>
+		<h3 class="text-center" id="errors" style="color: red;"></h3>
 		<br>
-        <div class="container">
-            <div id="login-row" class="row justify-content-center align-items-center">
-                <div id="login-column" class="col-md-6">
-                    <div id="login-box" class="col-md-12">
-                        <form id="login-form" class="form" action="#" method="post">
-                            <h3 class="text-center text-info">Login</h3>
-                            <div class="form-group">
-                                <label for="email" class="text-info">Email:</label><br>
-                                <input type="email" name="email" id="email" class="form-control inputForm" placeholder="Enter your email" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="pwd" class="text-info">Password:</label><br>
-                                <input type="password" name="pwd" id="pwd" class="form-control inputForm" placeholder="Enter your password" required>
-                            </div>
-                            <div class="form-group">
-                                <p class="text-info">Don't have an account?<a href="#" class="text-info" id="link-signin" style="text-decoration: underline;">Register here</a></p><br>
-                                <div id="tocenter">
-                                	<button type="submit" id="loginbutton" name="submit" class="btn btn-info btn-md ">Login!</button>
-                            	</div>
-                            </div>
-                            
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div id="Signin" class="login" style="display:none;">
-   		<h2 class="text-center pt-5">Hi! You can sign in here:</h2>
-		<h3 class="text-center" id="signInError" style="color:red;"></h3>
-        <div class="container">
-            <div id="login-row" class="row justify-content-center align-items-center">
-                <div id="login-column" class="col-md-6">
-                    <div id="login-box" class="col-md-12">
-                        <form id="formSignin" class="form" action="#" method="post">
-                            <h3 class="text-center text-info">SignIn Form</h3>
-                            <div class="form-group">
-                                <label for="Email" class="text-info">Email:</label><br>
-                                <input type="email" name="email" id="Email" class="form-control inputForm" placeholder="Enter an email" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="name" class="text-info">name:</label><br>
-                                <input type="text" name="name" id="name" class="form-control inputForm" placeholder="Enter a name" minlength="5" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="address" class="text-info">address:</label><br>
-                                <input type="text" name="address" id="address" class="form-control inputForm" placeholder="Enter your address" minlength="5" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="phoneNumber" class="text-info">phone number:</label><br>
-                                <input type="number" name="phoneNumber" id="phoneNumber" class="form-control inputForm" placeholder="Enter a phone number" minlength="10" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="Pwd" class="text-info">Password:</label><br>
-                                <input type="password" name="pwd" id="Pwd" class="form-control inputForm" placeholder="Enter a password" minlength="5" required>
-                            </div>
-                            <div class="form-group">
-								<fieldset> 
+		<div class="container">
+			<div id="login-row"
+				class="row justify-content-center align-items-center">
+				<div id="login-column" class="col-md-6">
+					<div id="login-box" class="col-md-12">
+						<form id="login-form" class="form" action="#" method="post">
+							<h3 class="text-center text-info">Login</h3>
+							<div class="form-group">
+								<label for="email" class="text-info">Email:</label><br> <input
+									type="email" name="email" id="email"
+									class="form-control inputForm" placeholder="Enter your email"
+									required>
+							</div>
+							<div class="form-group">
+								<label for="pwd" class="text-info">Password:</label><br> <input
+									type="password" name="pwd" id="pwd"
+									class="form-control inputForm"
+									placeholder="Enter your password" required>
+							</div>
+							<div class="form-group">
+								<p class="text-info">
+									Don't have an account?<a
+										href="#" class="text-info" id="link-signin"
+										style="text-decoration: underline;">Register here</a>
+								</p>
+								<br>
+								<div id="tocenter">
+									<button type="submit" id="loginbutton" name="submit"
+										class="btn btn-info btn-md ">Login!</button>
+								</div>
+							</div>
+
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div id="Signin" class="login" style="display: none;">
+		<h2 class="text-center pt-5">Hi! You can sign in here:</h2>
+		<h3 class="text-center" id="signInError" style="color: red;"></h3>
+		<div class="container">
+			<div id="login-row"
+				class="row justify-content-center align-items-center">
+				<div id="login-column" class="col-md-6">
+					<div id="login-box" class="col-md-12">
+						<form id="formSignin" class="form" action="#" method="post">
+							<h3 class="text-center text-info">SignIn Form</h3>
+							<div class="form-group">
+								<label for="Email" class="text-info">Email:</label><br> <input
+									type="email" name="email" id="Email"
+									class="form-control inputForm" placeholder="Enter an email"
+									required>
+							</div>
+							<div class="form-group">
+								<label for="name" class="text-info">name:</label><br> <input
+									type="text" name="name" id="name"
+									class="form-control inputForm" placeholder="Enter a name"
+									minlength="5" required>
+							</div>
+							<div class="form-group">
+								<label for="address" class="text-info">address:</label><br>
+								<input type="text" name="address" id="address"
+									class="form-control inputForm" placeholder="Enter your address"
+									minlength="5" required>
+							</div>
+							<div class="form-group">
+								<label for="phoneNumber" class="text-info">phone number:</label><br>
+								<input type="number" name="phoneNumber" id="phoneNumber"
+									class="form-control inputForm"
+									placeholder="Enter a phone number" minlength="10" required>
+							</div>
+							<div class="form-group">
+								<label for="Pwd" class="text-info">Password:</label><br> <input
+									type="password" name="pwd" id="Pwd"
+									class="form-control inputForm" placeholder="Enter a password"
+									minlength="5" required>
+							</div>
+							<div class="form-group">
+								<fieldset>
 									<legend>Choose user type:</legend>
-							            <label for="option1">
-							                <input type="radio" id="option1" name="choose" value="student" checked> Student<br>
-							            </label>
-							
-							            <label for="option2">
-							                <input type="radio" id="option2" name="choose" value="company"> Company <br>
-							            </label>
-							        </fieldset>                            
-        					</div>
-                            <div class="form-group">
-                                <p class="text-info">Already have an account?<a href="#" class="text-info" id="link-login" style="text-decoration: underline;">Login Here</a></p><br>
-                                <div id="tocenter">
-                                	<button type="submit" id="signinbutton" name="submit" class="btn btn-info btn-md ">Sign in!</button>
-                            	</div>
-                            </div>
-                            
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+									<label for="option1"> <input type="radio" id="option1"
+										name="choose" value="student" checked> Student<br>
+									</label> <label for="option2"> <input type="radio" id="option2"
+										name="choose" value="company"> Company <br>
+									</label>
+								</fieldset>
+							</div>
+							<div class="form-group">
+								<p class="text-info">
+									Already have an account?<a href="#" class="text-info"
+										id="link-login" style="text-decoration: underline;">Login
+										Here</a>
+								</p>
+								<br>
+								<div id="tocenter">
+									<button type="submit" id="signinbutton" name="submit"
+										class="btn btn-info btn-md ">Sign in!</button>
+								</div>
+							</div>
+
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
 </body>
 </html>
