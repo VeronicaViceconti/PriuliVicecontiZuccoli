@@ -251,7 +251,8 @@ public class ProfileManager extends HttpServlet {
 					
 				    // Imposta il tipo di contenuto e invia la risposta
 			       response.setContentType("application/json");
-			       response.getWriter().write(pubsString);       
+			       response.getWriter().write(pubsString);   
+			       
 			       response.setStatus(HttpServletResponse.SC_OK);
 				} catch (SQLException e) {
 					// TODO Auto-generated catch block

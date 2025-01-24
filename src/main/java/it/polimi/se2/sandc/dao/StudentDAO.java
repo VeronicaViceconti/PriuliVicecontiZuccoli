@@ -140,7 +140,7 @@ public class StudentDAO {
 					Publication pub = new Publication();
 					pub.setId(result2.getInt("id"));
 					Student student = new Student();
-					student.setName(result2.getString("name"));
+					student.setEmail(result2.getString("student"));
 					pub.setStudent(student);
 		            
 		            publications.add(pub);

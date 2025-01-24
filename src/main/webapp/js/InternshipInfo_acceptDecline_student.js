@@ -11,6 +11,7 @@
 	const location = document.getElementById("internshipLocation");
 	const period = document.getElementById("internshipPeriod");
 	const openPositions = document.getElementById("internshipOpenPosition");
+	const applyButton = document.getElementById("applyButton");
 
 	const tab = sessionStorage.getItem("tab");
 	const internID = sessionStorage.getItem("internshipID");
@@ -37,7 +38,8 @@
 				applyBtn.textContent = "Apply";
 
 				applyBtn.onclick = function() {
-					alert("apply for internship " + internID);
+					loadPubAndWP();
+					//alert("apply for internship " + internID);
 				}
 
 				actionBtnsContainer.appendChild(applyBtn);
@@ -119,9 +121,7 @@
 				if (req.readyState == 4) {
 					switch (req.status) {
 						case 200: // andato a buon fine
-							console.log(req.responseText);
 							var jsonData = JSON.parse(req.responseText);
-							console.log("mi hai richiesto id ->"+internshipId+","+jsonData);
 							//fill the page							
 							company.innerText = jsonData.company.name;
 							role.innerText = jsonData.roleToCover;
@@ -135,6 +135,31 @@
 									workingConditions.innerText += pref.text + " ";
 								}
 							}
+							break;
+						case 403:
+							console.log("errore 403");
+							break;
+						case 412:
+							console.log("errore 412");
+							break;
+						case 500:
+							console.log("errore 500");
+							break;
+					}
+				}
+			});
+	}
+	
+	function loadPubAndWP(internshipId) {
+		makeCall("GET", "ProfileManager?page=openPubAndWP", null,
+			(req) => {
+				if (req.readyState == 4) {
+					switch (req.status) {
+						case 200: // andato a buon fine
+							var jsonData = JSON.parse(req.responseText);
+							//fill the page							
+							console.log("pub and preferences->"+jsonData);
+
 							break;
 						case 403:
 							console.log("errore 403");
