@@ -1,10 +1,6 @@
 /**
  * 
  */
-
-window.onload = function (){
-	registerUserFCM();
-}
 (function() {
 	const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -96,10 +92,9 @@ window.onload = function (){
 				function(x) { // X è UN OGGETTO XMLHttpRequest
 					if (x.readyState == XMLHttpRequest.DONE) {
 						var message = x.responseText;
-
 						switch (x.status) {
 							case 200:  //richiesta andata a buon fine
-
+								
 
 								var jsonData = JSON.parse(message);
 								if (jsonData === "company")
@@ -128,4 +123,4 @@ window.onload = function (){
 			form.reportValidity();
 		}
 	});
-});
+})();
