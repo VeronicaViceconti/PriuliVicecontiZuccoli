@@ -98,7 +98,7 @@ public class ProfileManager extends HttpServlet {
 			 		retrieveAllWP(response, user.getEmail());
 			 		break;
 			 	case "addInternshipThenHomepage": //student want to apply to the internship
-			 		int ID = Integer.parseInt(request.getParameter("IDintern"));
+			 		Integer ID = Integer.parseInt(request.getParameter("IDintern"));
 			 		CompanyDAO company = null;
 					Internship internship = null;
 					company = new CompanyDAO(connection);
@@ -178,7 +178,6 @@ public class ProfileManager extends HttpServlet {
 		Company cm = null;
 		String combinedJson = null;
         
-        // Combina i due JSON in un unico array JSON (visto che abbiamo 2 oggetti differenti e toJson crea solo 1 solo tipo di json)
         
 		if(userType.equalsIgnoreCase("student")) {
 			String stInfo = null;
@@ -271,7 +270,6 @@ public class ProfileManager extends HttpServlet {
 		 try {
 			pubs = pub.retrieveAllWP(email);
 			String pubsString = new Gson().toJson(pubs);
-			System.out.println("->"+pubsString);
 		    // Imposta il tipo di contenuto e invia la risposta
 	       response.setContentType("application/json");
 	       response.getWriter().write(pubsString);       

@@ -5,7 +5,6 @@
 	const actionBtnsContainer = document.getElementById("actionButtonContainer");
 	const homeBtn = document.getElementById("homeBtn");
 	const profileBtn = document.getElementById("profileBtn");
-
 	const company = document.getElementById("CompanyName");
 	const role = document.getElementById("internshipRole");
 	const location = document.getElementById("internshipLocation");
@@ -17,9 +16,6 @@
 	const internID = sessionStorage.getItem("internshipID");
 
 	window.onload = function() {
-
-		console.log(sessionStorage.getItem("internshipID"));
-		console.log(sessionStorage.getItem("tab"));
 
 		jobDesc.innerText = "";
 		workingConditions.innerText = "";
@@ -36,10 +32,12 @@
 				let applyBtn = document.createElement("div");
 				applyBtn.classList.add("brownBtn");
 				applyBtn.textContent = "Apply";
-
+				loadPubAndWP();
 				applyBtn.onclick = function() {
-					loadPubAndWP();
-					//alert("apply for internship " + internID);
+					const optionChosen = document.getElementById("options").value;
+					console.log(optionChosen);
+					createMatch(optionChosen);
+					
 				}
 
 				actionBtnsContainer.appendChild(applyBtn);
@@ -150,7 +148,7 @@
 			});
 	}
 	
-	function loadPubAndWP(internshipId) {
+	function loadPubAndWP() {
 		makeCall("GET", "ProfileManager?page=openPubAndWP", null,
 			(req) => {
 				if (req.readyState == 4) {
@@ -158,7 +156,52 @@
 						case 200: // andato a buon fine
 							var jsonData = JSON.parse(req.responseText);
 							//fill the page							
+							console.log(jsonData);
+							const selectorContainer = document.createElement('div');
+							  selectorContainer.id = 'options-container'; // Aggiungi una classe per lo stile (opzionale)
 							
+							  const label = document.createElement('label');
+							  label.textContent = "Choose one publication:";
+							  selectorContainer.appendChild(label);
+							
+							  const select = document.createElement('select');
+							  select.id = "options"; // Imposta il nome per l'invio del form (opzionale)
+							
+							  const opzioni = jsonData[0].choosenPreferences;		
+							  opzioni.forEach(opzioneTesto => {
+							    const option = document.createElement('option');
+							    option.value = opzioneTesto.id; // Valore dell'opzione (es. "opzione-1")
+							    option.text = opzioneTesto.text; // Testo visualizzato all'utente
+							    select.appendChild(option);
+							  });
+							selectorContainer.appendChild(select);
+							selectorContainer.style = "margin:50px";
+							actionBtnsContainer.appendChild(selectorContainer);
+
+							break;
+						case 403:
+							console.log("errore 403");
+							break;
+						case 412:
+							console.log("errore 412");
+							break;
+						case 500:
+							console.log("errore 500");
+							break;
+					}
+				}
+			});
+	}
+	
+	function createMatch(optionChosen) {
+		makeCall("GET", "ProfileManager?page=addInternshipThenHomepage&IDintern="+internID+"&IDworkpref="+optionChosen, null,
+			(req) => {
+				if (req.readyState == 4) {
+					switch (req.status) {
+						case 200: // andato a buon fine
+							var jsonData = JSON.parse(req.responseText);
+							//fill the page							
+							window.location.href = "homePageStudente.html";
 
 							break;
 						case 403:
