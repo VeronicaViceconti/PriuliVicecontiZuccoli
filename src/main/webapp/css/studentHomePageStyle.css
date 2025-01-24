@@ -193,6 +193,14 @@ body {
 	letter-spacing: 0;
 	line-height: normal;
 	white-space: nowrap;
+	
+	border: none; 
+    background: none; 
+    outline: none; 
+    width: calc(100% - 100px);
+    height: 100%; 
+    padding: 0;
+    box-sizing: border-box;
 }
 
 .homepage-studente .barra-superiore {

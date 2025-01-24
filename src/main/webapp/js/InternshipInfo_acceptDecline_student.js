@@ -126,7 +126,7 @@
 							company.innerText = jsonData.company.name;
 							role.innerText = jsonData.roleToCover;
 							location.innerText = jsonData.company.address;
-							period.innerText = jsonData.startingDate + " - " + jsonData.endingaData;
+							period.innerText = jsonData.startingDate + " - " + jsonData.endingDate;
 							openPositions.innerText = jsonData.openSeats;
 
 							jobDesc.innerText = jsonData.jobDescription;

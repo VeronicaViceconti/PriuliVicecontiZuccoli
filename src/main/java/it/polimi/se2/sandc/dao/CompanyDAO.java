@@ -45,8 +45,12 @@ public class CompanyDAO {
 		            Internship internship = new Internship();
 		            internship.setId(result.getInt("id"));
 		            Company company = new Company();
-		            company.setName(result.getString("company"));
+		            company.setName(result.getString("name"));
+<<<<<<< Updated upstream
 		            company.setaddress(result.getString("address"));
+=======
+		            company.setAddress(result.getString("address"));
+>>>>>>> Stashed changes
 		            internship.setCompany(company);
 		            
 		            Date sqlDate = result.getDate("startingDate");
@@ -154,8 +158,12 @@ public class CompanyDAO {
 				result.next();
 				internship.setId(result.getInt("id"));
 				Company company = new Company();
-	            company.setName(result.getString("company"));
+	            company.setName(result.getString("name"));
+<<<<<<< Updated upstream
 	            company.setaddress(result.getString("address"));
+=======
+	            company.setAddress(result.getString("address"));
+>>>>>>> Stashed changes
 	            internship.setCompany(company);
 	            
 	            Date sqlDate = result.getDate("startingDate");
