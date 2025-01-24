@@ -61,7 +61,6 @@
 					alert("decline internship " + internID);
 				}
 
-
 				actionBtnsContainer.appendChild(acceptBtn);
 				actionBtnsContainer.appendChild(declineBtn);
 				break;

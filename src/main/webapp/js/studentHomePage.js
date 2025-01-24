@@ -1,6 +1,7 @@
 {
 	const matchesTab = document.getElementById("Matches_Tab");
 	const availableInternTab = document.getElementById("Avail_Inter_Tab");
+	const addPublication = document.getElementById("Add_Pub");
 	const homeBtn = document.getElementById("homeBtn");
 	const profileBtn = document.getElementById("profileBtn");
 	const avail_newMatch_section = document.getElementById("available/newMatch");
@@ -47,9 +48,9 @@
 	});
 
 	function cleanUp() {
-		avail_newMatch_section.innerHTML = null;
-		waitingResponse_section.innerHTML = null;
-		waitingInterview_section.innerHTML = null;
+		avail_newMatch_section.innerHTML = "";
+		waitingResponse_section.innerHTML = "";
+		waitingInterview_section.innerHTML = "";
 	}
 
 	homeBtn.addEventListener("click", () => {
@@ -162,7 +163,6 @@
 		//click listener for each card
 		cards.forEach(card => {
 			card.addEventListener("click", () => {
-				//alert("Hai cliccato una card");
 				console.log("aggiungo listener card");
 			});
 		});
@@ -177,7 +177,6 @@
 		matchesElements.forEach(element => {
 			element.style.visibility = visibility;
 		});
-
 	}
 
 	function createCard(cardContainer, id, name, role, startDate, endDate, location, openSeats) {
@@ -290,21 +289,15 @@
 					switch (req.status) {
 						case 200: // andato a buon fine
 							var jsonData = JSON.parse(req.responseText);
+							cleanUp();
 							var pageLocation;
 							for (const internship of jsonData) {
 								console.log(internship);
-								/*nessuno dei 2 -> new
-								student true e no company -> wait res
-								both true -> wait interview*/
-								//acceptedYNCompany:false
-								//acceptedYNStudent:true
-
-								//console.log(internship);
 								pageLocation = avail_newMatch_section;
 								if ("acceptedYNCompany" in internship && "acceptedYNStudent" in internship) {
 									pageLocation = waitingInterview_section
 								}
-								else if ("acceptedYNStudent" in internship) {
+								else if ("acceptedYNCompany" in internship) {
 									pageLocation = waitingResponse_section;
 								}
 								createCard(

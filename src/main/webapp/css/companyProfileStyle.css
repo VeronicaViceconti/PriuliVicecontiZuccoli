@@ -23,7 +23,14 @@
   border-radius: 20px;
   overflow: hidden;
 }
-
+.elenchi {
+	position: relative;
+	top: 313px;
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+	align-items: stretch;
+}
 .profilo-company .lucide-square-pen {
   position: absolute;
   width: 25px;
