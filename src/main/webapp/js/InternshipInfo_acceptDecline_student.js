@@ -155,7 +155,6 @@
 						case 200: // andato a buon fine
 							var jsonData = JSON.parse(req.responseText);
 							//fill the page							
-							console.log(jsonData);
 							const selectorContainer = document.createElement('div');
 							  selectorContainer.id = 'options-container'; // Aggiungi una classe per lo stile (opzionale)
 							
@@ -165,14 +164,19 @@
 							
 							  const select = document.createElement('select');
 							  select.id = "options"; // Imposta il nome per l'invio del form (opzionale)
-							
-							  const opzioni = jsonData[0].choosenPreferences;		
-							  opzioni.forEach(opzioneTesto => {
-							    const option = document.createElement('option');
-							    option.value = opzioneTesto.id; // Valore dell'opzione (es. "opzione-1")
-							    option.text = opzioneTesto.text; // Testo visualizzato all'utente
-							    select.appendChild(option);
-							  });
+								var increment = 1;
+								for(const pub of jsonData){
+									const opzioni = pub.choosenPreferences;	
+									const option = document.createElement('option');
+									option.text = increment+"->";
+									increment += 1;	
+									option.value = pub.id;
+								  	opzioni.forEach(opzioneTesto => {
+								    	option.text += opzioneTesto.text+"; "; // Testo visualizzato all'utente  
+								 	});
+								 	select.appendChild(option);
+								}
+							  
 							selectorContainer.appendChild(select);
 							selectorContainer.style = "margin:50px";
 							actionBtnsContainer.appendChild(selectorContainer);
@@ -193,12 +197,11 @@
 	}
 	
 	function createMatch(optionChosen) {
-		makeCall("GET", "ProfileManager?page=addInternshipThenHomepage&IDintern="+internID+"&IDworkpref="+optionChosen, null,
+		makeCall("GET", "ProfileManager?page=addInternshipThenHomepage&IDintern="+internID+"&IDpub="+optionChosen, null,
 			(req) => {
 				if (req.readyState == 4) {
 					switch (req.status) {
 						case 200: // andato a buon fine
-							var jsonData = JSON.parse(req.responseText);
 							//fill the page							
 							window.location.href = "homePageStudente.html";
 

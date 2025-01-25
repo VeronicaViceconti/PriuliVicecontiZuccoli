@@ -124,7 +124,7 @@ public class ProfileManager extends HttpServlet {
 					StudentDAO student = new StudentDAO(connection);
 					Publication pub = new Publication();
 					try {
-						pub = student.findStudentPublication(user.getEmail(), Integer.parseInt(request.getParameter("IDworkpref")));
+						pub = student.findStudentPublication(user.getEmail(), Integer.parseInt(request.getParameter("IDpub")));
 					} catch (SQLException e) {
 						// TODO Auto-generated catch block
 						response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);

@@ -315,7 +315,7 @@
 								if ("acceptedYNCompany" in internship && "acceptedYNStudent" in internship) {
 									pageLocation = waitingInterview_section
 								}
-								else if ("acceptedYNCompany" in internship) {
+								else if ("acceptedYNStudent" in internship) {
 									pageLocation = waitingResponse_section;
 								}
 								createCard(

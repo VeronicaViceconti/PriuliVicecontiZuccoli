@@ -199,16 +199,16 @@ public class StudentDAO {
 	}
 	
 	//find THAT specific publication of a student
-	public Publication findStudentPublication(String email,Integer idWP) throws SQLException {
+	public Publication findStudentPublication(String email,Integer idP) throws SQLException {
 		String query2 = null;
-		query2 = "SELECT * from publication JOIN preference ON publication.id = preference.idPublication WHERE student = ? and idWorkingPreferences = ?;";
+		query2 = "SELECT * from publication WHERE student = ? and id = ?;";
 		ResultSet result2 = null;
 		PreparedStatement pstatement2 = null;
 		Publication publication = new Publication();
 		try {
 			pstatement2 = connection.prepareStatement(query2);
 			pstatement2.setString(1, email);
-			pstatement2.setInt(2, idWP);
+			pstatement2.setInt(2, idP);
 			result2 = pstatement2.executeQuery();
 			if (!result2.isBeforeFirst()) {// no results, no email found 
 				return null;	
