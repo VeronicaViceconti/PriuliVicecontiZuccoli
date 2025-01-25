@@ -5,14 +5,13 @@
 	const homeBtn = document.getElementById("homeBtn");
 	const textArea = document.getElementById("textArea");
 	const framelist = document.getElementById("frameList")
-	
+	const profileBtn = document.getElementById("profileBtn");
 	const tab = sessionStorage.getItem("tab");
 	const user = sessionStorage.getItem("user");
 	const internship = sessionStorage.getItem("internshipID")
 	var preferences;
 	
 	window.onload = function () {
-			console.log("laoding...")
 		    makeCall("GET", "PublicationManager?page=getPreferences&type=all", null, 
 		        function(x) {
 		            if (x.readyState == XMLHttpRequest.DONE) {
@@ -20,7 +19,6 @@
 		                switch (x.status) {
 		                    case 200:  //richiesta andata a buon fineù
 								preferences = JSON.parse(x.responseText);
-								console.log(preferences);
 		                        addPreferences();
 		                        break;
 		                    case 400: // bad request
@@ -66,6 +64,10 @@
 				//TOO -> redirect to company homepage
 				break;
 		}
+	})
+
+	profileBtn.addEventListener("click", () => {
+		window.location.href = "studentProfile.html";
 	})
 
 	sendBtn.addEventListener("click", (e) => {

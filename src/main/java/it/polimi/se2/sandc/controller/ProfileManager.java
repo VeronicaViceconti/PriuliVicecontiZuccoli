@@ -234,7 +234,7 @@ public class ProfileManager extends HttpServlet {
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
 				response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-				response.getWriter().println("Error finding profile infos, retry later");
+				response.getWriter().println("Error finding ongoing internship, retry later");
 				return;
 			}
 		}else {

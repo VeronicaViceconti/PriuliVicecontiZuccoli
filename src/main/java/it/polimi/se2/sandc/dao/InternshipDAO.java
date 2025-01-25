@@ -77,7 +77,7 @@ public class InternshipDAO {
 			}
 			else { //company
 				result.next();
-				internship.setId(result.getInt("idInternship"));
+				internship.setId(result.getInt("id"));
 				Company company = new Company();
 	            company.setName(result.getString("name"));
 	            company.setaddress(result.getString("address"));

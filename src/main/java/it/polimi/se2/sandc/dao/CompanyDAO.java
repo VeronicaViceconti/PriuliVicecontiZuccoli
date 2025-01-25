@@ -299,7 +299,6 @@ public class CompanyDAO {
 	
 	public void addRequirement(User user, int idPref, int idInt) throws SQLException {
 		String query = "insert into Requirement (idWorkingPreference, idInternship) values (?, ?)";
-		System.out.println(idInt);
 		if(user.getWhichUser().equals("student")) {
 			return;
 		}

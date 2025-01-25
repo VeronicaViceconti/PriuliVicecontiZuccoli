@@ -1,7 +1,7 @@
 {
 	const matchesTab = document.getElementById("Matches_Tab");
 	const availableInternTab = document.getElementById("Avail_Inter_Tab");
-	const addPublication = document.getElementById("Add_Pub");
+	const addPublicationTab = document.getElementById("New_Pub");
 	const homeBtn = document.getElementById("homeBtn");
 	const profileBtn = document.getElementById("profileBtn");
 	const avail_newMatch_section = document.getElementById("available/newMatch");
@@ -25,13 +25,28 @@
 		//change tab color
 		availableInternTab.style.color = "#a37659";
 		matchesTab.style.color = "#2e4057";
+		addPublicationTab.style.color = "#2e4057";
 		sessionStorage.setItem('tab', "available");
-
+		document.getElementById("overlap").style.visibility = "visible";
 
 		first_subTitle.innerText = "";
 		cleanUp();
 		showMatchesDivFields(false);
 		loadAvailableInternships();
+	});
+	
+	addPublicationTab.addEventListener("click",()=>{
+		document.getElementById("overlap").style.visibility = "hidden";
+		availableInternTab.style.color = "#2e4057";
+		matchesTab.style.color = "#2e4057";
+		addPublicationTab.style.color = "#a37659";
+		sessionStorage.setItem('tab', "addPublication");
+		first_subTitle.innerText = "";
+		
+		window.location.href = "preferencePublication.html";
+		
+		cleanUp();
+		showMatchesDivFields(false);
 	});
 
 	matchesTab.addEventListener("click", () => {
@@ -39,7 +54,10 @@
 		//change tab color
 		availableInternTab.style.color = "#2e4057";
 		matchesTab.style.color = "#a37659";
+		addPublicationTab.style.color = "#2e4057";
 		sessionStorage.setItem('tab', "matches");
+		document.getElementById("overlap").style.visibility = "visible";
+
 
 		first_subTitle.innerText = "New matches";
 		cleanUp();
@@ -293,7 +311,6 @@
 							cleanUp();
 							var pageLocation;
 							for (const internship of jsonData) {
-								console.log(internship);
 								pageLocation = avail_newMatch_section;
 								if ("acceptedYNCompany" in internship && "acceptedYNStudent" in internship) {
 									pageLocation = waitingInterview_section

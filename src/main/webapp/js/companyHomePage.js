@@ -11,7 +11,35 @@
 	window.onload = function(e) {
 		e.preventDefault();
 		sessionStorage.setItem('tab', "ongoing");
-		//TODO
+		
+		makeCall("GET", "ProfileManager?page=openOngoingInternships", null,
+			(req) => {
+				if (req.readyState == 4) {
+					switch (req.status) {
+						case 200: // andato a buon fine
+							var jsonData = JSON.parse(req.responseText);
+							for (const internship of jsonData) {
+								createMatchCard(
+									internship.id,
+									internship.student.name,
+									internship.student.studyCourse,
+									internship.roleToCover,
+									internship.startingDate + " - " + internship.endingDate
+								)
+							}
+							break;
+						case 403:
+							console.log("errore 403");
+							break;
+						case 412:
+							console.log("errore 412");
+							break;
+						case 500:
+							console.log("errore 500");
+							break;
+					}
+				}
+			});
 	}
 
 	function createCard(Id, name, role, startDate, finishDate, location, openSeats) {
@@ -219,7 +247,35 @@
 		matchesTab.style.color = "#2e4057";
 		sessionStorage.setItem('tab', "ongoing");
 		internList.innerHTML = null;
-		//TODO
+		
+		makeCall("GET", "ProfileManager?page=openOngoingInternships", null,
+			(req) => {
+				if (req.readyState == 4) {
+					switch (req.status) {
+						case 200: // andato a buon fine
+							var jsonData = JSON.parse(req.responseText);
+							for (const internship of jsonData) {
+								createMatchCard(
+									internship.id,
+									internship.student.name,
+									internship.student.studyCourse,
+									internship.roleToCover,
+									internship.startingDate + " - " + internship.endingDate
+								)
+							}
+							break;
+						case 403:
+							console.log("errore 403");
+							break;
+						case 412:
+							console.log("errore 412");
+							break;
+						case 500:
+							console.log("errore 500");
+							break;
+					}
+				}
+			});
 	});
 
 	proposedInternTab.addEventListener("click", () => {
@@ -239,7 +295,6 @@
 					switch (req.status) {
 						case 200: // andato a buon fine
 							var jsonData = JSON.parse(req.responseText);
-							console.log(jsonData[0]);
 							for (const internship of jsonData) {
 								createCard(
 									internship.id,
@@ -276,7 +331,37 @@
 
 		sessionStorage.setItem('tab', "waitingFeed");
 		internList.innerHTML = null;
-		//TODO
+		
+		makeCall("GET", "PublicationManager?page=proposedInternships", null,
+			(req) => {
+				if (req.readyState == 4) {
+					switch (req.status) {
+						case 200: // andato a buon fine
+							var jsonData = JSON.parse(req.responseText);
+							for (const internship of jsonData) {
+								createCard(
+									internship.id,
+									internship.company.name,
+									internship.roleToCover,
+									internship.startingDate,
+									internship.endingDate,
+									internship.company.address,
+									internship.openSeats
+								)
+							}
+							break;
+						case 403:
+							console.log("errore 403");
+							break;
+						case 412:
+							console.log("errore 412");
+							break;
+						case 500:
+							console.log("errore 500");
+							break;
+					}
+				}
+			});
 	});
 
 	homeBtn.addEventListener("click", () => {
