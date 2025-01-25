@@ -37,6 +37,10 @@ public class Interviewer extends HttpServlet {
 	private static final long serialVersionUID = 1L;
     private Connection connection = null;   
 
+    public void init(Connection connection) {
+        this.connection = connection;
+      }
+    
 	public void init() throws ServletException {
 		try {
 			ServletContext context = getServletContext();

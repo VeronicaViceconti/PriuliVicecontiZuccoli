@@ -38,6 +38,11 @@ public class MatchManager extends HttpServlet {
 	private Connection connection = null;
 	private static final long serialVersionUID = 1L;
 
+	
+	public void init(Connection connection) {
+	    this.connection = connection;
+	  }
+	
 	public void init() throws ServletException {
 		try {
 			ServletContext context = getServletContext();

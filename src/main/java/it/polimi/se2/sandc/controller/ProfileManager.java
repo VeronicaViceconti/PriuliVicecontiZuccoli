@@ -21,6 +21,7 @@ import javax.servlet.http.HttpSession;
 import org.apache.commons.lang.StringEscapeUtils;
 
 import it.polimi.se2.sandc.bean.Company;
+import it.polimi.se2.sandc.bean.Feedback;
 import it.polimi.se2.sandc.bean.Internship;
 import it.polimi.se2.sandc.bean.Match;
 import it.polimi.se2.sandc.bean.Publication;
@@ -45,6 +46,10 @@ public class ProfileManager extends HttpServlet {
 	private Connection connection = null;
 	private static final long serialVersionUID = 1L;
 
+	public void init(Connection connection) {
+	    this.connection = connection;
+	  }
+	
 	public void init() throws ServletException {
 		try {
 			ServletContext context = getServletContext();
@@ -223,7 +228,8 @@ public class ProfileManager extends HttpServlet {
 				internInfo = new Gson().toJson(internship);
 				
 				combinedJson = "[" + stInfo + "," + internInfo + "]";
-				response.getWriter().write(combinedJson);       
+				response.getWriter().write(combinedJson);   
+				
 			    response.setStatus(HttpServletResponse.SC_OK);
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
@@ -237,13 +243,26 @@ public class ProfileManager extends HttpServlet {
 			try {
 				cm = company.getProfileInfos(userType,email);
 				infoCompany = new Gson().toJson(cm);
-				combinedJson = "[" + infoCompany + "," + null + "]";
+			    
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+				response.getWriter().println("Error finding profile infos, retry later");
+				return;
+			}
+			List<Feedback> feedbacks = new ArrayList<>();
+			String feedbacksCompany = null;
+			try {
+				feedbacks = company.getFeedbacks(email);
+				infoCompany = new Gson().toJson(cm);
+				feedbacksCompany = new Gson().toJson(feedbacks);
+				combinedJson = "[" + infoCompany + "," + feedbacksCompany + "]";
 				response.getWriter().write(combinedJson);       
 			    response.setStatus(HttpServletResponse.SC_OK);
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
 				response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-				response.getWriter().println("Error finding profile infos, retry later");
+				response.getWriter().println("Error finding feedbacks infos, retry later");
 				return;
 			}
 		}

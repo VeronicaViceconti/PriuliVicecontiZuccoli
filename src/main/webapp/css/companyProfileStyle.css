@@ -13,6 +13,21 @@
   position: relative;
 }
 
+.card {
+	background-color: #f8f9fa;
+	border-radius: 20px;
+	overflow: hidden;
+	border: 1px solid;
+	border-color: #0000000d;
+	box-shadow: 3px 3px 5px #00000033;
+	padding: 10px;
+	font-size: 30px;
+	width: 677px;
+	height: 210px;
+	margin-top: 20px;
+	text-align: center;
+}
+
 .profilo-company .preferences {
   position: absolute;
   width: 757px;
@@ -23,6 +38,29 @@
   border-radius: 20px;
   overflow: hidden;
 }
+
+.sfondo-elenc {
+  position: relative;
+  top: 313px;
+  width: 100%;
+  display: grid;
+  grid-template-columns: auto auto;
+  background-color: #f5e9dd80;
+  border-radius: 20px 20px 0px 0px;
+  padding: 10px;
+}
+.card-company {
+  position: relative;
+  top: 5px;
+  font-family: "Inter-Regular", Helvetica;
+  font-weight: 400;
+  color: #2e4057;
+  font-size: 25px;
+  letter-spacing: 0;
+  line-height: normal;
+  white-space: nowrap;
+}
+
 .elenchi {
 	position: relative;
 	top: 313px;
@@ -31,6 +69,16 @@
 	gap: 10px;
 	align-items: stretch;
 }
+.card-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 10px;
+  justify-content: center;
+  flex-grow: 1;
+  width: 100%;
+}
+
 .profilo-company .lucide-square-pen {
   position: absolute;
   width: 25px;
@@ -159,6 +207,8 @@
   border-radius: 0px 0px 20px 20px;
   overflow: hidden;
 }
+
+
 
 .profilo-company .titolo {
   position: absolute;
