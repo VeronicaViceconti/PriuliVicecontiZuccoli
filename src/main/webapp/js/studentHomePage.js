@@ -11,6 +11,7 @@
 
 	window.onload = function(e) {
 		e.preventDefault();
+		availableInternTab.style.color = "#a37659";
 		first_subTitle.innerText = "";
 		sessionStorage.setItem('tab', "available");
 		cleanUp();

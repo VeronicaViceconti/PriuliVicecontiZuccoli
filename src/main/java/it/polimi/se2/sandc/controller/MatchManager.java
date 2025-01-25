@@ -93,6 +93,7 @@ public class MatchManager extends HttpServlet {
 		 		acceptMatch(response,Integer.parseInt(request.getParameter("IDmatch")),user.getEmail(),userType,Integer.parseInt(request.getParameter("accept")));
 		 		break;
 		 	case "openMatch": //return student and internship info
+		 		//System.out.println(request.getParameter("IDmatch"));
 		 		openMatch(response,Integer.parseInt(request.getParameter("IDmatch")),user.getEmail(),userType);
 		 		break;
 		 		default:

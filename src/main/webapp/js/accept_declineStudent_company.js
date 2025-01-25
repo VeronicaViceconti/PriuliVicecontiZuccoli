@@ -6,18 +6,29 @@
 	const declineBtn = document.getElementById("declineBtn");
 	const studentPreferences = document.getElementById("studentPreferences");
 
+	//student info
+	const studentName = document.getElementById("studentName");
+	const studentCourseStudy = document.getElementById("studentCourseStudy");
+	const studentEmail = document.getElementById("studentEmail");
+	const studentPhone = document.getElementById("studentPhone");
+	const studentAddress = document.getElementById("studentAddress");
+
 	window.onload = function() {
-		//TODO riempire con i dati dell'utente
-		makeCall("GET", "MatchManager?page=openMatch&IDmatch=" + 12, null, //need to send not 12 but the id of the match selected
+		var matchID = sessionStorage.getItem("matchID");
+		makeCall("GET", "MatchManager?page=openMatch&IDmatch=" + matchID, null,
 			(req) => {
 				if (req.readyState == 4) {
 					switch (req.status) {
 						case 200: // andato a buon fine
-							console.log(req.responseText);
 							var jsonData = JSON.parse(req.responseText);
-							console.log("mi hai richiesto id ->"+jsonData);
-							//fill the page							
-							
+							if(jsonData != null){
+								studentName.innerText = jsonData.name;
+								studentCourseStudy.innerText = jsonData.studyCourse;
+								studentEmail.innerText = jsonData.email;
+								studentPhone.innerText = jsonData.phoneNumber;
+								studentAddress.innerText = jsonData.address;
+								studentPreferences.innerText = jsonData.publications[0].choosenPreferences[0].text;
+							}
 							break;
 						case 403:
 							console.log("errore 403");

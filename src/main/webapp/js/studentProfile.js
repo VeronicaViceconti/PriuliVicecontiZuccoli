@@ -2,9 +2,11 @@
 	const homeBtn = document.getElementById("homeBtn");
 
 	const studentName = document.getElementById("studentName");
-	const studentSurname = document.getElementById("studentSurname");
-	const studentUni = document.getElementById("studentUniversity");
-	const studentCourseOfStudies = document.getElementById("studentCourseOfStudies");
+	const studentEmail = document.getElementById("studentEmail");
+	const studentPhone = document.getElementById("studentPhone");
+	const studentAddress = document.getElementById("studentAddress");
+	
+	const preferences = document.getElementById("preferences");
 
 	const modfyBtn = document.getElementById("modifyCurBtn");
 	const downloadBtn = document.getElementById("downloadCurBtn");
@@ -13,13 +15,12 @@
 	const waitingFeed = document.getElementById("feedbacks");
 
 	window.onload = function() {
-		// TODO riempire la pagina con le info prese dal DB
-
 		preferences.innerText = "";
 		studentName.innerText = "";
-		studentSurname.innerText = "";
-		studentUni.innerText = "";
-		studentCourseOfStudies.innerText = "";
+		studentEmail.innerText = "";
+		studentPhone.innerText = "";
+		studentAddress.innerText = "";
+		loadUserInfo();
 	}
 
 
@@ -56,4 +57,35 @@
 			window.location.href = "internshipInfo_AcceptDecline_student.html";
 		}
 	})
+
+	function loadUserInfo() {
+		makeCall("GET", 'ProfileManager?page=profileInfo' , null,
+			(req) => {
+				if (req.readyState == 4) {
+					switch (req.status) {
+						case 200: // andato a buon fine
+							var jsonData = JSON.parse(req.responseText);
+							console.log(jsonData);
+							var studentData = jsonData[0];
+							console.log(studentData);
+							studentName.innerText = studentData.name;
+							studentEmail.innerText = studentData.email;
+							studentPhone.innerText = studentData.phoneNumber;
+							studentAddress.innerText = studentData.address;
+							preferences.innerText = studentData.publications[0].choosenPreferences[0].text;
+							break;
+						case 403:
+							console.log("errore 403");
+							break;
+						case 412:
+							console.log("errore 412");
+							break;
+						case 500:
+							console.log("errore 500");
+							break;
+					}
+				}
+			});
+	}
+
 }

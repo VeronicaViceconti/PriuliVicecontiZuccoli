@@ -86,11 +86,27 @@ body {
 }
 
 .homepage-studente .schede {
-	position: absolute;
-	width: 1440px;
-	height: 63px;
-	top: 126px;
-	left: 0;
+  position: absolute;
+  width: 1440px;
+  height: 63px;
+  top: 126px;
+  left: 0;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  justify-content: start;
+}
+
+.schede>div {
+  padding: 10px 15px;
+  font-family: "Inter-Regular", Helvetica;
+  font-weight: 400;
+  color: #2e4057;
+  font-size: 25px;
+  letter-spacing: 0;
+  line-height: normal;
+  white-space: nowrap;
+  cursor: pointer;
 }
 
 .homepage-studente .text-wrapper-6 {

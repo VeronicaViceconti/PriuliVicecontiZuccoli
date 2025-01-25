@@ -11,28 +11,7 @@
 	window.onload = function(e) {
 		e.preventDefault();
 		sessionStorage.setItem('tab', "ongoing");
-		//internList.innerHTML = null;
-
-		/*makeCall("GET", "ProfileManager?page=toHomepage", null,
-			(req) => {
-				if (req.readyState == 4) {
-					switch (req.status) {
-						case 200: // andato a buon fine
-							var jsonData = JSON.parse(req.responseText);
-							console.log(jsonData[0]);
-							break;
-						case 403:
-							console.log("errore 403");
-							break;
-						case 412:
-							console.log("errore 412");
-							break;
-						case 500:
-							console.log("errore 500");
-							break;
-					}
-				}
-			});*/
+		//TODO
 	}
 
 	function createCard(Id, name, role, startDate, finishDate, location, openSeats) {
@@ -94,14 +73,14 @@
 		internList.appendChild(card);
 	}
 
-	function createMatchCard(id, name, courseOfStudies, university, address) {
+	function createMatchCard(id, name, courseOfStudies, roleToCover, period) {
 		// Dati della card
 		const cardData = {
 			id: id,
 			studentName: name,
 			course: courseOfStudies,
-			university: university,
-			address: address
+			roleToCover: roleToCover,
+			period: period
 		};
 
 		// Seleziona il contenitore in cui aggiungere la card
@@ -153,12 +132,12 @@
 		minorInfoTitle1.className = "card-title";
 
 		const uniImg = document.createElement("img");
-		uniImg.src = "img/university.png"; // Icona dell'università
+		uniImg.src = "img/InternRole.png"; // Icona dell'università
 
 		const uniDiv = document.createElement("div");
-		uniDiv.id = "studentUniversity";
+		uniDiv.id = "roleToCover";
 		uniDiv.className = "card-info";
-		uniDiv.textContent = cardData.university;
+		uniDiv.textContent = cardData.roleToCover;
 
 		minorInfoTitle1.appendChild(uniImg);
 		minorInfoTitle1.appendChild(uniDiv);
@@ -168,12 +147,12 @@
 		minorInfoTitle2.className = "card-title";
 
 		const addrImg = document.createElement("img");
-		addrImg.src = "img/internLocation.png"; // Icona dell'indirizzo
+		addrImg.src = "img/internPeriod.png"; // Icona dell'indirizzo
 
 		const addrDiv = document.createElement("div");
-		addrDiv.id = "studentAddress";
+		addrDiv.id = "internPeriod";
 		addrDiv.className = "card-info";
-		addrDiv.textContent = cardData.address;
+		addrDiv.textContent = cardData.period;
 
 		minorInfoTitle2.appendChild(addrImg);
 		minorInfoTitle2.appendChild(addrDiv);
@@ -201,16 +180,21 @@
 
 		sessionStorage.setItem('tab', "matches");
 		internList.innerHTML = null;
-		
-		//JUST FOR DEGUB
-		createMatchCard(999, "PEPPINO", "ingegneria informatica","Politecnico di Milano", "via Bragello 14");
 
-		/*makeCall("GET", "MatchManager?page=acceptMatch&IDmatch=" + 3 + "&accept=" + 0, null,
+		makeCall("GET", "MatchManager?page=showMatches", null,
 			(req) => {
 				if (req.readyState == 4) {
 					switch (req.status) {
-						case 200: // andato a buon fine
-							console.log("da fare");
+						case 200:
+							var jsonData = JSON.parse(req.responseText);
+							var studentData = jsonData[0];
+							console.log(studentData);
+							createMatchCard(
+								studentData.id,
+								studentData.publication.student.name,
+								studentData.publication.student.studyCourse,
+								studentData.internship.roleToCover,
+								studentData.internship.startingDate + " - " + studentData.internship.endingDate);							
 							break;
 						case 403:
 							console.log("errore 403");
@@ -223,7 +207,7 @@
 							break;
 					}
 				}
-			});*/
+			});
 	});
 
 	ongoingInternTab.addEventListener("click", () => {
@@ -307,16 +291,14 @@
 	internList.addEventListener("click", () => {
 		const card = event.target.closest(".card");
 		var tab = sessionStorage.getItem("tab");
-
-
+		
 		if (card) {
 			if (tab != "matches") {
 				sessionStorage.setItem("internshipID", card.id);
 				window.location.href = "internshipView_Company.html";
 			}
 			else {
-				sessionStorage.setItem("MatchedUserID", card.id);
-				//alert("redirect to MATCHED user page");
+				sessionStorage.setItem("matchID", card.id);
 				window.location.href = "accept_DeclineStudent_Company.html";
 			}
 		}
