@@ -156,10 +156,10 @@
 }
 
 .companyProfilePic img {
-  width: 150px; /* Imposta la larghezza desiderata */
-  height: auto; /* Mantieni le proporzioni dell'immagine */
-  border-radius: 50%; /* Per rendere l'immagine circolare (opzionale) */
-  object-fit: cover; /* Assicura che l'immagine riempia lo spazio */
+  width: 150px;
+  height: auto;
+  border-radius: 50%;
+  object-fit: cover; 
 }
 
 .companyData{

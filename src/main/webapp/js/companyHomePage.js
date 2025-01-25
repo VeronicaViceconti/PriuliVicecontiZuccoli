@@ -3,6 +3,7 @@
 	const proposedInternTab = document.getElementById("proposedInternTab");
 	const matchesTab = document.getElementById("matchesTab");
 	const waitingFeedInternship = document.getElementById("waitingFeedInternship");
+	const newInternship = document.getElementById("newInternTab");
 
 	const homeBtn = document.getElementById("homeBtn");
 	const profileBtn = document.getElementById("profileBtn");
@@ -363,6 +364,10 @@
 				}
 			});
 	});
+	
+	newInternship.addEventListener("click", () =>{
+		alert("To page new internship");
+	})
 
 	homeBtn.addEventListener("click", () => {
 		window.location.href = "homePageCompany.html";
