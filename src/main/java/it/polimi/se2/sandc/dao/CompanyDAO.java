@@ -10,9 +10,12 @@ import java.sql.Date;
 import java.util.List;
 
 import it.polimi.se2.sandc.bean.Company;
+import it.polimi.se2.sandc.bean.Feedback;
+import it.polimi.se2.sandc.bean.Form;
 import it.polimi.se2.sandc.bean.Internship;
 import it.polimi.se2.sandc.bean.Preferences;
 import it.polimi.se2.sandc.bean.Publication;
+import it.polimi.se2.sandc.bean.Question;
 import it.polimi.se2.sandc.bean.Student;
 import it.polimi.se2.sandc.bean.User;
 
@@ -238,7 +241,7 @@ public class CompanyDAO {
 			pstatement2 = connection.prepareStatement(query);
 			pstatement2.setString(1, email);
 			result = pstatement2.executeQuery();
-			if (!result.isBeforeFirst()) {// no results, credential check failed for both
+			if (!result.isBeforeFirst()) {// no results
 				return null;	
 			}
 			else { //company
@@ -378,6 +381,37 @@ public class CompanyDAO {
 					i.setjobDescription(result.getString("jobDescription"));
 					
 					ris.add(i);
+				}
+			}
+			
+		}
+		return ris;
+	}
+	
+	//return all feedbacks made to a company
+	public List<Feedback> getFeedbacks(String email) throws SQLException {
+		List<Feedback> ris = new ArrayList<Feedback>();
+		
+		String query = "SELECT s.name as studentName,q.answer FROM feedback as f join company as c on c.email = f.companyID join student as s on s.email = f.studentID join form as fo on fo.id = f.idForm join question as q on q.idForm = f.idForm WHERE f.studentYn = 1 AND f.companyID = ?;";
+		try(PreparedStatement statement = connection.prepareStatement(query)){
+			statement.setString(1, email);
+			
+			try(ResultSet result = statement.executeQuery()){
+				while(result.next()) {
+					Feedback c = new Feedback();
+					Form i = new Form();
+					List<Question> questions = new ArrayList<>();
+					Question q = new Question();
+					q.setAnswer(result.getString("answer"));
+					questions.add(q);
+					i.setQuestions(questions);
+					Student student = new Student();
+					student.setName(result.getString("studentName"));
+					c.setStudent(student);
+					
+					c.setForm(i);
+					
+					ris.add(c);
 				}
 			}
 			

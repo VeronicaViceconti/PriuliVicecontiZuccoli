@@ -214,6 +214,12 @@ function createMatchCard(container,id, name, courseOfStudies, roleToCover, perio
     card.appendChild(cardTitle2);
     card.appendChild(minorInfo);
 
+	card.addEventListener("click", () => {
+			sessionStorage.setItem("matchID", card.id);
+			sessionStorage.setItem("tab", card.getAttribute("data-section"));
+			window.location.href = "accept_DeclineStudent_Company.html";
+	});
+		
     // Inserisci la card nel contenitore
     container.appendChild(card);
   }
