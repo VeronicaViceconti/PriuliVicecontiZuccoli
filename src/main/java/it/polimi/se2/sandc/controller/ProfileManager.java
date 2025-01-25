@@ -98,7 +98,7 @@ public class ProfileManager extends HttpServlet {
 			 		retrieveAllWP(response, user.getEmail());
 			 		break;
 			 	case "addInternshipThenHomepage": //student want to apply to the internship
-			 		int ID = Integer.parseInt(request.getParameter("IDintern"));
+			 		Integer ID = Integer.parseInt(request.getParameter("IDintern"));
 			 		CompanyDAO company = null;
 					Internship internship = null;
 					company = new CompanyDAO(connection);
@@ -163,13 +163,35 @@ public class ProfileManager extends HttpServlet {
 			     case "profileInfo":
 			 		findProfileInfo(response,userType,user.getEmail());
 			 		break;
+			     case "openOngoingInternships":
+			    	 getOngoingInternships(response,user.getEmail());
+			    	break;
 			      default: 
 			       response.setStatus(HttpServletResponse.SC_UNAUTHORIZED); 
 			    }			
 		}
 	}
 
-	
+	//for company
+	private void getOngoingInternships(HttpServletResponse response, String email) throws IOException {
+		InternshipDAO intern = new InternshipDAO(connection);
+		List<Internship> internships = new ArrayList<>();
+		try {
+			internships = intern.getOngoingInternships(email);
+			String internString = new Gson().toJson(internships);
+			
+			response.setContentType("application/json");
+			response.getWriter().write(internString);   
+	       
+			response.setStatus(HttpServletResponse.SC_OK);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+			response.getWriter().println("Error finding ongoing internships, retry later");
+			return;
+		}
+	}
+
 	private void findProfileInfo(HttpServletResponse response, String userType, String email) throws IOException {
 		// TODO Auto-generated method stub
 		StudentDAO student = null;
@@ -178,7 +200,6 @@ public class ProfileManager extends HttpServlet {
 		Company cm = null;
 		String combinedJson = null;
         
-        // Combina i due JSON in un unico array JSON (visto che abbiamo 2 oggetti differenti e toJson crea solo 1 solo tipo di json)
         
 		if(userType.equalsIgnoreCase("student")) {
 			String stInfo = null;
@@ -271,7 +292,6 @@ public class ProfileManager extends HttpServlet {
 		 try {
 			pubs = pub.retrieveAllWP(email);
 			String pubsString = new Gson().toJson(pubs);
-			System.out.println("->"+pubsString);
 		    // Imposta il tipo di contenuto e invia la risposta
 	       response.setContentType("application/json");
 	       response.getWriter().write(pubsString);       

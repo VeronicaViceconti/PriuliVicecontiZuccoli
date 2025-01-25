@@ -163,7 +163,6 @@ public class MatchManager extends HttpServlet {
 		 try {
 				matches = match.findCompanyMatches(email);
 				String matchString = new Gson().toJson(matches);
-				
 				// Imposta il tipo di contenuto e invia la risposta
 		       response.setContentType("application/json");
 		       response.getWriter().write(matchString);       

@@ -14,6 +14,7 @@ import it.polimi.se2.sandc.bean.Company;
 import it.polimi.se2.sandc.bean.Internship;
 import it.polimi.se2.sandc.bean.Match;
 import it.polimi.se2.sandc.bean.Publication;
+import it.polimi.se2.sandc.bean.Student;
 import it.polimi.se2.sandc.bean.User;
 
 public class InternshipDAO {
@@ -111,11 +112,10 @@ public class InternshipDAO {
 			
 	}
 	
-	/*//for company 
+	//for company 
 		public List<Internship> getOngoingInternships(String email) throws SQLException {
 			String query = null;
-			query = "SELECT * FROM interview as i join matches as m on i.idMatch = m.id join publication as p on p.id = m.idPublication join student as s on s.email = p.student join internship as inter on inter.id = m.idInternship join company as c on c.email = inter.company where s.email = ? AND confirmedYN is true;";;
-			
+			query = "SELECT inter.id as idInter,c.address,c.name companyName,s.name studentName,s.studyCourse,s.email studentEmail,startingDate,endingDate,roleToCover FROM interview as i join matches as m on i.idMatch = m.id join publication as p on p.id = m.idPublication join student as s on s.email = p.student join internship as inter on inter.id = m.idInternship join company as c on c.email = inter.company where c.email = ? AND confirmedYN is true;";			
 			ResultSet result = null;
 			PreparedStatement pstatement2 = null;
 			
@@ -124,17 +124,21 @@ public class InternshipDAO {
 				pstatement2 = connection.prepareStatement(query);
 				pstatement2.setString(1, email);
 				result = pstatement2.executeQuery();
-				if (!result.isBeforeFirst()) {// no results, no email found 
+				if (!result.isBeforeFirst()) {// no results, no ongoing internships 
 					return null;	
 				}
 				else { //company
 					while(result.next()) {
 						Internship internship = new Internship();
-						internship.setId(result.getInt("idInternship"));
+						internship.setId(result.getInt("idInter"));
 						Company company = new Company();
-			            company.setName(result.getString("name"));
+			            company.setName(result.getString("companyName"));
 			            company.setaddress(result.getString("address"));
+			            Student student = new Student();
+			            student.setStudyCourse(result.getString("studyCourse"));
+			            student.setName(result.getString("studentName"));
 			            internship.setCompany(company);
+			            internship.setStudent(student);
 			            
 			            Date sqlDate = result.getDate("startingDate");
 			            if (sqlDate != null) {
@@ -165,7 +169,7 @@ public class InternshipDAO {
 				}
 			}
 				
-		} */
+		} 
 	
 	public void writeFeedback(User user, int idInternship, String answer) throws SQLException {
 		String query;

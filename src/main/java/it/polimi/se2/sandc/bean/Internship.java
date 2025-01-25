@@ -7,6 +7,7 @@ public class Internship {
 	private int id; 
 	private int openSeats; 
 	private Company company; 
+	private Student student;
 	private String roleToCover;
 	private Date startingDate;
 	private Date endingDate;
@@ -18,6 +19,14 @@ public class Internship {
 	}
 	public void setId(int id) {
 		this.id = id;
+	}
+	
+	public void setStudent(Student student) {
+		this.student = student;
+	}
+	
+	public Student getStudent() {
+		return student;
 	}
 	
 	public void setPreferences(List<Preferences> preferences) {

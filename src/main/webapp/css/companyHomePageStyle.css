@@ -16,7 +16,14 @@ body {
   position: relative;
 }
 
-.sfondo-elenco {
+.titolo_sottoElenco{
+	font-family: "Inter-Regular", Helvetica;
+	color: #2e4057;
+	font-size: 25px;
+	letter-spacing: 0;
+}
+
+.sfondo-elenc {
   position: relative;
   top: 313px;
   width: 100%;
@@ -25,6 +32,24 @@ body {
   background-color: #f5e9dd80;
   border-radius: 20px 20px 0px 0px;
   padding: 10px;
+}
+
+.sfondo-elenco {
+	width: 100%;
+	display: grid;
+	grid-template-columns: auto auto;
+	background-color: #f5e9dd80;
+	border-radius: 20px 20px 0px 0px;
+	padding: 10px;
+}
+
+.elenchi {
+	position: relative;
+	top: 313px;
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+	align-items: stretch;
 }
 
 .card {
