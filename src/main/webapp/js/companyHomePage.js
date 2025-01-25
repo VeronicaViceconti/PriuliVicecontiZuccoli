@@ -298,7 +298,7 @@
 				window.location.href = "internshipView_Company.html";
 			}
 			else {
-				sessionStorage.setItem("MatchedUserID", card.id);
+				sessionStorage.setItem("matchID", card.id);
 				window.location.href = "accept_DeclineStudent_Company.html";
 			}
 		}

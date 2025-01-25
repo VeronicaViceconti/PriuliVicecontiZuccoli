@@ -15,6 +15,7 @@
 
 	window.onload = function() {
 		var matchID = sessionStorage.getItem("matchID");
+		console.log(matchID);
 		makeCall("GET", "MatchManager?page=openMatch&IDmatch=" + matchID, null,
 			(req) => {
 				if (req.readyState == 4) {

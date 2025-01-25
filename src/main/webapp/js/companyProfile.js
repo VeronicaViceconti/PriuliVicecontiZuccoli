@@ -81,6 +81,7 @@
 					switch (req.status) {
 						case 200: // andato a buon fine
 							var jsonData = JSON.parse(req.responseText);
+							console.log(jsonData);
 							var profileInfo = jsonData[0];
 							var feedbacks = jsonData[1];
 							console.log(feedbacks);
@@ -96,7 +97,6 @@
 									createFeedbackCard(feedback.form.questions[0].answer,feedback.student1.name)
 								}
 							}
-							
 							break;
 						case 403:
 							console.log("errore 403");
