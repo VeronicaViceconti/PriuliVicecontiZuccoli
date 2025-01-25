@@ -58,7 +58,8 @@ public class Interviewer extends HttpServlet {
 		    e.printStackTrace();
 			throw new UnavailableException("Couldn't get db connection");
 		}
-	}       
+	}    
+
     /**
      * @see HttpServlet#HttpServlet()
      */
@@ -70,7 +71,7 @@ public class Interviewer extends HttpServlet {
 	/**
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		HttpSession s = request.getSession();
 		
 
@@ -100,7 +101,7 @@ public class Interviewer extends HttpServlet {
 	/**
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		HttpSession s = request.getSession();
 		
 		String email =  ((User) s.getAttribute("user")).getEmail();
@@ -148,9 +149,9 @@ public class Interviewer extends HttpServlet {
 			return;
 		}
 		
-		/*
+		
 		try {
-			if(!matchdao.controlOwnership(email, idMatch)) {
+			if(!matchdao.controlOwnership(email, idMatch, user.getWhichUser())) {
 				response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 				response.getWriter().println("the company it isn't in the match");
 				return;
@@ -159,7 +160,7 @@ public class Interviewer extends HttpServlet {
 			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 			response.getWriter().println("db problem");
 			return;
-		}*/
+		}
 		
 		try {
 			Interview interview = matchdao.createInterview(idMatch);
@@ -202,9 +203,9 @@ public class Interviewer extends HttpServlet {
 		
 		//check that the user owns the internship of the interview
 		
-		/*try {
+		try {
 			if(!interviewdao.checkOwnerShip(email, idInterview)) {
-				response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+				response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 				response.getWriter().println("the company doesn't owns the intership relative to the interview");
 				return;
 			}
@@ -212,7 +213,7 @@ public class Interviewer extends HttpServlet {
 			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 			response.getWriter().println("db problem");
 			return;
-		}*/
+		}
 		
 		ArrayList<Question> questions = new ArrayList<Question>();
 		
@@ -269,7 +270,7 @@ public class Interviewer extends HttpServlet {
 	
 		try {
 			if(!interviewdao.checkOwnerShip(email, idInterview)) {
-				response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+				response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 				response.getWriter().println("the company doesn't owns the intership relative to the interview");
 				return;
 			}

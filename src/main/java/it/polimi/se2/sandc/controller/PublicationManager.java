@@ -59,12 +59,13 @@ public class PublicationManager extends HttpServlet {
 		} catch (ClassNotFoundException e) {
 		    e.printStackTrace();
 			throw new UnavailableException("Can't load database driver");
-		} catch (SQLException e) {
+		} catch (SQLException e) {	
 		    e.printStackTrace();
 			throw new UnavailableException("Couldn't get db connection");
 		}
 	}
-       
+		
+	
     /**
      * @see HttpServlet#HttpServlet()
      */
@@ -76,7 +77,7 @@ public class PublicationManager extends HttpServlet {
 	/**
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
 		HttpSession s = request.getSession();
 		if (s.getAttribute("user") == null) {
@@ -142,7 +143,7 @@ public class PublicationManager extends HttpServlet {
 	/**
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		HttpSession s = request.getSession();
 		
 		String userType = (String) s.getAttribute("userType");
@@ -379,7 +380,6 @@ public class PublicationManager extends HttpServlet {
 				}
 			}
 		}
-	
 		response.setStatus(HttpServletResponse.SC_OK);
 	}
 

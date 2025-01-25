@@ -22,8 +22,10 @@ import org.apache.commons.lang.StringEscapeUtils;
 import it.polimi.se2.sandc.bean.Preferences;
 import it.polimi.se2.sandc.bean.User;
 import it.polimi.se2.sandc.bean.Internship;
+import it.polimi.se2.sandc.bean.Match;
 import it.polimi.se2.sandc.dao.CompanyDAO;
 import it.polimi.se2.sandc.dao.InternshipDAO;
+import it.polimi.se2.sandc.dao.MatchDAO;
 import it.polimi.se2.sandc.dao.PreferenceDAO;
 import it.polimi.se2.sandc.dao.StudentDAO;
 
@@ -59,6 +61,7 @@ public class ComplainManager extends HttpServlet {
 		}
 	}
        
+
     /**
      * @see HttpServlet#HttpServlet()
      */
@@ -68,30 +71,23 @@ public class ComplainManager extends HttpServlet {
     }
 
 	/**
-	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
-	 */
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		
-	}
-
-	/**
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
 		CompanyDAO companydao = new CompanyDAO(connection);
 		StudentDAO studentdao = new StudentDAO(connection);
 		InternshipDAO internshipdao = new  InternshipDAO(connection);
+		MatchDAO matchdao = new  MatchDAO(connection);
 		HttpSession session = request.getSession();	
 		User user = (User) session.getAttribute("user");
 		String answer;
-		int idInternship = -1;
-		
+		int idMatch = -1;
 		
 		try {
 			answer = StringEscapeUtils.escapeJava(request.getParameter("answer"));
-			idInternship = Integer.parseInt(request.getParameter("idInternship"));
-			if(answer == null || idInternship == -1) {
+			idMatch = Integer.parseInt(request.getParameter("idMatch"));
+			if(answer == null || request.getParameter("idMatch") == null) {
 				throw new Exception();
 			}
 			
@@ -101,52 +97,36 @@ public class ComplainManager extends HttpServlet {
 			return;
 		}
 		
+		Match m = null;
+		try {
+			m = matchdao.getMatch(idMatch);
+		} catch (SQLException e) {
+			e.printStackTrace();
+			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+			response.getWriter().println("connection error with the db");
+			return;
+		}
+		
 		if(user.getWhichUser().equals("student")) {
-			ArrayList<Internship> list = new ArrayList<Internship> ();
-			try {
-				list = studentdao.getOnGoingInternship(user.getEmail());
-			} catch (SQLException e) {
-				response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-				response.getWriter().println("db problems");
-				return;
-			}
-			Boolean found = false;
-			for(Internship i : list) {
-				if(i.getId() == idInternship) {
-					found = true;
-				}
-			}
-			if(!found) {
+			if(!m.getPublication().getStudent().getEmail().equals(user.getEmail())) {
 				response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-				response.getWriter().println("the student isn't in the internship");
+				response.getWriter().println("the student isn't in the match");
 				return;
 			}
 		} else {
-			ArrayList<Internship> list = new ArrayList<Internship> ();
-			try {
-				list = companydao.getOnGoingInternship(user.getEmail());
-			} catch (SQLException e) {
-				response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-				response.getWriter().println("db problems");
-				return;
-			}
-			Boolean found = false;
-			for(Internship i : list) {
-				if(i.getId() == idInternship) {
-					found = true;
-				}
-			}
-			if(!found) {
+			if(!m.getInternship().getCompany().getEmail().equals(user.getEmail())) {
 				response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-				response.getWriter().println("the company doesn't own the internship");
+				response.getWriter().println("the company isn't in the match");
 				return;
 			}
 		}
 		
 		try {
-			internshipdao.writeComplaint(user, idInternship, answer);
+			internshipdao.writeComplaint(user, m.getPublication().getStudent().getEmail(), m.getInternship().getCompany().getEmail(), answer);
 		} catch (SQLException e) {
 			e.printStackTrace();
+			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+			response.getWriter().println("connection error with the db");
 			return;
 		}
 		

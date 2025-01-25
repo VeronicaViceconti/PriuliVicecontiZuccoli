@@ -401,4 +401,44 @@ public class MatchDAO {
 			}
 		}
 	}
+	
+	public Match getMatch(int id) throws SQLException {
+		Match ris = new Match();
+		
+		ris.setId(id);
+		
+		String query = "select * from (publication as p inner join matches as m on p.id = m.idPublication) "
+				+ "inner join internship as i on i.id = m.idInternship "
+				+ "where m.id = ?";
+		
+		try(PreparedStatement statement = connection.prepareStatement(query)){
+			statement.setInt(1, id);
+			
+			try(ResultSet result = statement.executeQuery()){
+				if(result.isBeforeFirst()) {
+					result.next();
+					Publication p = new Publication ();
+					p.setId(result.getInt("p.id"));
+					
+					Student s = new Student();
+					
+					s.setEmail(result.getString("p.student"));
+					p.setStudent(s);
+					
+					Internship i = new Internship();
+					
+					i.setId(result.getInt("i.id"));
+					
+					Company c = new Company();
+					
+					c.setEmail(result.getString("i.company"));
+					i.setCompany(c);
+					ris.setPublication(p);
+					ris.setInternship(i);
+				}
+			}
+		}
+		
+		return ris;
+	}
 }

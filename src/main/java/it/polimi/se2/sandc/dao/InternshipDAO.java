@@ -26,7 +26,7 @@ public class InternshipDAO {
 	}
 	
 	
-	public void writeComplaint(User user, int idInternship, String answer) throws SQLException {
+	public void writeComplaint(User user, String student, String company, String answer) throws SQLException {
 		String query;
 		
 		query = "insert into Form values ()";
@@ -50,12 +50,13 @@ public class InternshipDAO {
 			statement.executeUpdate();
 		}
 		
-		query = "insert into complaint (studentYn, idForm, internship) values (?,?,?)";
+		query = "insert into complaint (studentYn, idForm, studentID, companyID) values (?,?,?,?)";
 		
 		try(PreparedStatement statement = connection.prepareStatement(query)){
 			statement.setBoolean(1, user.getWhichUser().equals("student"));
 			statement.setInt(2, idForm);
-			statement.setInt(3, idInternship);
+			statement.setString(3, student);
+			statement.setString(4, company);
 			statement.executeUpdate();
 		}
 	}
@@ -171,7 +172,7 @@ public class InternshipDAO {
 				
 		} 
 	
-	public void writeFeedback(User user, int idInternship, String answer) throws SQLException {
+	public void writeFeedback(User user, String student, String company, String answer) throws SQLException {
 		String query;
 		
 		query = "insert into Form values ()";
@@ -195,12 +196,13 @@ public class InternshipDAO {
 			statement.executeUpdate();
 		}
 		
-		query = "insert into feedback (studentYn, idForm, internship) values (?,?,?)";
+		query = "insert into feedback (studentYn, idForm, studentID, companyId) values (?,?,?,?)";
 		
 		try(PreparedStatement statement = connection.prepareStatement(query)){
 			statement.setBoolean(1, user.getWhichUser().equals("student"));
 			statement.setInt(2, idForm);
-			statement.setInt(3, idInternship);
+			statement.setString(3, student);
+			statement.setString(4, company);
 			statement.executeUpdate();
 		}
 	}
@@ -208,7 +210,7 @@ public class InternshipDAO {
 
 	public List<Internship> getAllICompanyInternships(String email) throws SQLException {
 		String query = null;
-		query = "SELECT * FROM sandc.internship AS i JOIN company ON i.company = company.email WHERE company = ?;";
+		query = "SELECT * FROM internship AS i JOIN company ON i.company = company.email WHERE company = ?;";
 		PreparedStatement pstatement = null;
 		ResultSet result = null;
 		List<Internship> intern = new ArrayList<>();

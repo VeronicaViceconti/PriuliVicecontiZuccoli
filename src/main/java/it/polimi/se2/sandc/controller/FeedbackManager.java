@@ -22,6 +22,7 @@ import it.polimi.se2.sandc.bean.User;
 import it.polimi.se2.sandc.dao.CompanyDAO;
 import it.polimi.se2.sandc.dao.InternshipDAO;
 import it.polimi.se2.sandc.dao.StudentDAO;
+import it.polimi.se2.sandc.bean.Match;
 
 /**
  * Servlet implementation class FeedbackManager
@@ -53,6 +54,7 @@ public class FeedbackManager extends HttpServlet {
 			throw new UnavailableException("Couldn't get db connection");
 		}
 	}
+	
     /**
      * @see HttpServlet#HttpServlet()
      */
@@ -64,7 +66,7 @@ public class FeedbackManager extends HttpServlet {
 	/**
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		response.getWriter().append("Served at: ").append(request.getContextPath());
 	}
@@ -72,20 +74,20 @@ public class FeedbackManager extends HttpServlet {
 	/**
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		CompanyDAO companydao = new CompanyDAO(connection);
 		StudentDAO studentdao = new StudentDAO(connection);
 		InternshipDAO internshipdao = new  InternshipDAO(connection);
 		HttpSession session = request.getSession();	
 		User user = (User) session.getAttribute("user");
 		String answer;
-		int idInternship = -1;
+		int idMatch = -1;
 		
 		
 		try {
 			answer = StringEscapeUtils.escapeJava(request.getParameter("answer"));
-			idInternship = Integer.parseInt(request.getParameter("idInternship"));
-			if(answer == null || idInternship == -1) {
+			idMatch = Integer.parseInt(request.getParameter("idMatch"));
+			if(answer == null || idMatch == -1) {
 				throw new Exception();
 			}
 			
@@ -96,17 +98,17 @@ public class FeedbackManager extends HttpServlet {
 		}
 		
 		if(user.getWhichUser().equals("student")) {
-			ArrayList<Internship> list = new ArrayList<Internship> ();
+			ArrayList<Match> list = new ArrayList<Match> ();
 			try {
-				list = studentdao.getInternshipWaitingFeedback(user.getEmail());
+				list = studentdao.getMatchWaitingFeedback(user.getEmail());
 			} catch (SQLException e) {
 				response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 				response.getWriter().println("db problems");
 				return;
 			}
 			Boolean found = false;
-			for(Internship i : list) {
-				if(i.getId() == idInternship) {
+			for(Match i : list) {
+				if(i.getId() == idMatch) {
 					found = true;
 				}
 			}
@@ -116,32 +118,30 @@ public class FeedbackManager extends HttpServlet {
 				return;
 			}
 		} else {
-			ArrayList<Internship> list = new ArrayList<Internship> ();
+			ArrayList<Match> list = new ArrayList<Match> ();
 			try {
-				list = companydao.getInternshipWaitingFeedback(user.getEmail());
+				list = companydao.getMatchWaitingFeedback(user.getEmail());
 			} catch (SQLException e) {
 				response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 				response.getWriter().println("db problems");
 				return;
 			}
 			Boolean found = false;
-			for(Internship i : list) {
-				if(i.getId() == idInternship) {
+			for(Match i : list) {
+				if(i.getId() == idMatch) {
 					found = true;
+					try {
+						internshipdao.writeFeedback(user, i.getPublication().getStudent().getEmail(), i.getInternship().getCompany().getEmail(), answer);
+					} catch (SQLException e) {
+						e.printStackTrace();
+					}
 				}
 			}
 			if(!found) {
 				response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-				response.getWriter().println("the company doesn't own the internship or has already written an internship");
+				response.getWriter().println("the company doesn't own the internship or has already written a feedback");
 				return;
 			}
-		}
-		
-		try {
-			internshipdao.writeFeedback(user, idInternship, answer);
-		} catch (SQLException e) {
-			e.printStackTrace();
-			return;
 		}
 		
 		response.setStatus(HttpServletResponse.SC_OK);

@@ -11,6 +11,7 @@ import java.util.List;
 
 import it.polimi.se2.sandc.bean.Company;
 import it.polimi.se2.sandc.bean.Internship;
+import it.polimi.se2.sandc.bean.Match;
 import it.polimi.se2.sandc.bean.Preferences;
 import it.polimi.se2.sandc.bean.Publication;
 import it.polimi.se2.sandc.bean.Student;
@@ -276,15 +277,15 @@ public class StudentDAO {
 		return ris;
 	}
 	
-	public ArrayList<Internship> getInternshipWaitingFeedback(String email) throws SQLException{
+	public ArrayList<Match> getMatchWaitingFeedback(String email) throws SQLException{
 		
-		ArrayList<Internship> ris = new ArrayList<Internship>();
+		ArrayList<Match> ris = new ArrayList<Match>();
 		
-		String query = "select i.*, c.*\n"
-				+ "from ((publication as p inner join matches as m on m.idPublication = p.id ) \n"
-				+ "		inner join internship as i on m.idInternship = i.id) inner join company as c on c.email = i.company \n"
-				+ "where m.id in (select idMatch from interview where confirmedYN = 1) and p.student like ? and current_date() > i.endingDate and\n"
-				+ "i.id not in (select internship from feedback where studentYN = 1)";
+		String query = "select i.*, c.*, p.*, m.*, s.*\n"
+				+ "from (((publication as p inner join matches as m on m.idPublication = p.id )\n"
+				+ "inner join internship as i on m.idInternship = i.id) inner join company as c on c.email = i.company) inner join student as s on p.student = s.email\n"
+				+ "where m.id in (select idMatch from interview where confirmedYN = 1) and s.email like ? and current_date() > i.endingDate and\n"
+				+ "s.email not in (select companyID from feedback where studentYN = 1)";
 		
 		try(PreparedStatement statement = connection.prepareStatement(query)){
 			statement.setString(1, email);
@@ -293,20 +294,34 @@ public class StudentDAO {
 				while(result.next()) {
 					Company c = new Company();
 					
-					c.setEmail(result.getString("email"));
-					c.setaddress(result.getString("address"));
-					c.setName(result.getString("name"));
+					c.setEmail(result.getString("c.email"));
+					c.setaddress(result.getString("c.address"));
+					c.setName(result.getString("c.name"));
 					
 					Internship i = new Internship();
 					
 					i.setCompany(c);
-					i.setId(result.getInt("id"));
-					i.setOpenSeats(result.getInt("openSeats"));
-					i.setStartingDate(result.getDate("startingDate"));
-					i.setStartingDate(result.getDate("endingDate"));
-					i.setjobDescription(result.getString("jobDescription"));
+					i.setId(result.getInt("i.id"));
+					i.setOpenSeats(result.getInt("i.openSeats"));
+					i.setStartingDate(result.getDate("i.startingDate"));
+					i.setStartingDate(result.getDate("i.endingDate"));
+					i.setjobDescription(result.getString("i.jobDescription"));
 					
-					ris.add(i);
+					Student s = new Student();
+					s.setEmail(result.getString("s.email"));
+					s.setName(result.getString("s.name"));
+					
+					
+					Publication p = new Publication();
+					
+					p.setId(result.getInt("p.id"));
+					p.setStudent(s);
+					
+					Match m = new Match();
+					m.setId(result.getInt("m.id"));
+					m.setInternship(i);
+					m.setPublication(p);
+					ris.add(m);
 				}
 			}
 			
