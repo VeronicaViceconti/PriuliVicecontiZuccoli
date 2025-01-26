@@ -1,11 +1,14 @@
 package it.polimi.se2.sandc.controller;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
 
 import javax.servlet.ServletContext;
@@ -19,6 +22,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.apache.commons.lang.StringEscapeUtils;
+import org.apache.tomcat.util.http.fileupload.FileUtils;
 
 import it.polimi.se2.sandc.bean.Company;
 import it.polimi.se2.sandc.bean.Feedback;
@@ -198,7 +202,6 @@ public class ProfileManager extends HttpServlet {
 	}
 
 	private void findProfileInfo(HttpServletResponse response, String userType, String email) throws IOException {
-		// TODO Auto-generated method stub
 		StudentDAO student = null;
 		CompanyDAO company = null;
 		Student st = null;
@@ -212,13 +215,25 @@ public class ProfileManager extends HttpServlet {
 			student = new StudentDAO(connection);
 			try {
 				st = student.getProfileInfos(userType,email);
+				
+				if(st != null && st.getCv() != null) {
+					File f = new File(st.getCv());
+					if(f.exists()) {
+						byte[] fileContent = new byte[(int) f.length()];
+						try (FileInputStream fileInputStream = new FileInputStream(f)) {
+				            fileInputStream.read(fileContent);
+				        }
+						st.setCv(Base64.getEncoder().encodeToString(fileContent));
+					}
+				}
+				
 				stInfo = new Gson().toJson(st);
 		       
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
 				response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 				response.getWriter().println("Error finding profile infos, retry later");
-				return;
+				return;	
 			}
 			
 			InternshipDAO intern = new InternshipDAO(connection);

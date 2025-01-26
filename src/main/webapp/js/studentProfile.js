@@ -13,6 +13,8 @@
 
 	const ongoingList = document.getElementById("ongoing-internship");
 	const waitingFeed = document.getElementById("feedbacks");
+	
+	const pdf = document.getElementById("pdf-frame");
 
 	window.onload = function() {
 		preferences.innerText = "";
@@ -28,13 +30,6 @@
 		window.location.href = "homePageStudente.html";
 	})
 
-	modfyBtn.addEventListener("click", () => {
-		alert("modify");
-	})
-
-	downloadBtn.addEventListener("click", () => {
-		alert("Download");
-	})
 
 	ongoingList.addEventListener("click", () => {
 		const card = event.target.closest(".card");
@@ -72,7 +67,28 @@
 							studentEmail.innerText = studentData.email;
 							studentPhone.innerText = studentData.phoneNumber;
 							studentAddress.innerText = studentData.address;
-							preferences.innerText = studentData.publications[0].choosenPreferences[0].text;
+							if(!(typeof studentData.publications[0].choosenPreferences === 'undefined')){
+								preferences.innerText = studentData.publications[0].choosenPreferences[0].text;
+							}
+							if(studentData.cv != null	){
+								var pdfBase64 = studentData.cv;
+						        var pdfArrayBuffer = base64ToArrayBuffer(pdfBase64);
+						        var blob = new Blob([pdfArrayBuffer], { type: 'application/pdf' });
+
+						        // Crea un URL oggetto per il Blob
+						        var url = URL.createObjectURL(blob);
+
+						        // Imposta l'URL nell'iframe
+						        pdf.src = url;
+								
+								
+							}else{
+								modfyBtn.innerHTML = "upload CV";
+																
+								modfyBtn.addEventListener("click", () => {
+										window.location.href = "addCvForm.html";
+									})
+							}
 							break;
 						case 403:
 							console.log("errore 403");
@@ -88,4 +104,13 @@
 			});
 	}
 
+	function base64ToArrayBuffer(base64) {
+	            var binaryString = window.atob(base64);
+	            var len = binaryString.length;
+	            var bytes = new Uint8Array(len);
+	            for (var i = 0; i < len; i++) {
+	                bytes[i] = binaryString.charCodeAt(i);
+	            }
+	            return bytes.buffer;
+	        }
 }

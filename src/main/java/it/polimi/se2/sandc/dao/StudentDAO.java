@@ -100,7 +100,7 @@ public class StudentDAO {
 			result2 = pstatement.executeQuery();
 			
 			if (!result2.isBeforeFirst()) {// no results, no matches found
-				;
+				ris = null;
 			}
 			else { 
 				while(result2.next()) {
@@ -120,7 +120,7 @@ public class StudentDAO {
 			}
 		}
 		
-		query = "SELECT p.id as idPublication,s.name,s.email,s.address,cv,s.studyCourse,s.phoneNumber,i.id FROM matches as m JOIN internship as i on i.id = m.idInternship JOIN publication as p on  p.id = m.idPublication join student as s on s.email = p.student WHERE p.student = ? ;";
+		query = "SELECT p.id as idPublication,s.name,s.email,s.address,cv,s.studyCourse,s.phoneNumber,i.id FROM matches as m JOIN internship as i on i.id = m.idInternship JOIN publication as p on  p.id = m.idPublication right join student as s on s.email = p.student WHERE s.email = ? ;";
 		try {
 			pstatement = connection.prepareStatement(query);
 			pstatement.setString(1, email);
