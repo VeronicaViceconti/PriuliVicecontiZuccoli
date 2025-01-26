@@ -184,10 +184,10 @@ public class ProfileManager extends HttpServlet {
 	//for company
 	private void getOngoingInternships(HttpServletResponse response, String email) throws IOException {
 		InternshipDAO intern = new InternshipDAO(connection);
-		List<Internship> internships = new ArrayList<>();
+		List<Match> matches = new ArrayList<>();
 		try {
-			internships = intern.getOngoingInternships(email);
-			String internString = new Gson().toJson(internships);
+			matches = intern.getOngoingInternships(email);
+			String internString = new Gson().toJson(matches);
 			
 			response.setContentType("application/json");
 			response.getWriter().write(internString);   
@@ -404,18 +404,30 @@ public class ProfileManager extends HttpServlet {
 		CompanyDAO company = null;
 		Internship internship = null;
 		company = new CompanyDAO(connection);
+		Match match = null;
 		
 		 try {
-			internship = company.findTheInternship(Integer.parseInt(request.getParameter("ID")));
-			String internshipString = new Gson().toJson(internship);
-		    // Imposta il tipo di contenuto e invia la risposta
-		       response.setContentType("application/json");
-		       response.getWriter().write(internshipString);       
-		       response.setStatus(HttpServletResponse.SC_OK);
+			 
+			if( request.getParameter("ID") != null) {
+				internship = company.findTheInternship(Integer.parseInt(request.getParameter("ID")));
+				String internshipString = new Gson().toJson(internship);
+			    // Imposta il tipo di contenuto e invia la risposta
+			    response.setContentType("application/json");
+			    response.getWriter().write(internshipString);       
+			    response.setStatus(HttpServletResponse.SC_OK);
+			}else {
+				match = company.getMatchInternshipInfo(Integer.parseInt(request.getParameter("IDMatch")));
+				String internshipString = new Gson().toJson(match);
+			    // Imposta il tipo di contenuto e invia la risposta
+			    response.setContentType("application/json");
+			    response.getWriter().write(internshipString);       
+			    response.setStatus(HttpServletResponse.SC_OK);
+			}
+			
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-			response.getWriter().println("Internal server error, retry later");
+			response.getWriter().println("Internal server errors, retry later");
 		}
 	}
 

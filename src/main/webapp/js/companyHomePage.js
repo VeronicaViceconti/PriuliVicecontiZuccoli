@@ -19,13 +19,14 @@
 					switch (req.status) {
 						case 200: // andato a buon fine
 							var jsonData = JSON.parse(req.responseText);
-							for (const internship of jsonData) {
+							console.log(jsonData);
+							for (const match of jsonData) {
 								createMatchCard(
-									internship.id,
-									internship.student.name,
-									internship.student.studyCourse,
-									internship.roleToCover,
-									internship.startingDate + " - " + internship.endingDate
+									match.id,
+									match.internship.student.name,
+									match.internship.student.studyCourse,
+									match.internship.roleToCover,
+									match.internship.startingDate + " - " + match.internship.endingDate
 								)
 							}
 							break;
@@ -255,13 +256,14 @@
 					switch (req.status) {
 						case 200: // andato a buon fine
 							var jsonData = JSON.parse(req.responseText);
-							for (const internship of jsonData) {
+							console.log(jsonData);
+							for (const match of jsonData) {
 								createMatchCard(
-									internship.id,
-									internship.student.name,
-									internship.student.studyCourse,
-									internship.roleToCover,
-									internship.startingDate + " - " + internship.endingDate
+									match.id,
+									match.internship.student.name,
+									match.internship.student.studyCourse,
+									match.internship.roleToCover,
+									match.internship.startingDate + " - " + match.internship.endingDate
 								)
 							}
 							break;
@@ -296,6 +298,7 @@
 					switch (req.status) {
 						case 200: // andato a buon fine
 							var jsonData = JSON.parse(req.responseText);
+							console.log(jsonData);
 							for (const internship of jsonData) {
 								createCard(
 									internship.id,
@@ -394,7 +397,7 @@
 					break;
 				default:
 					console.log("internshipView");
-					sessionStorage.setItem("internshipID", card.id);
+					sessionStorage.setItem("matchID", card.id);
 					window.location.href = "internshipView_Company.html";
 					break;
 			}

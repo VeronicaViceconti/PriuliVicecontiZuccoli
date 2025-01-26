@@ -13,7 +13,7 @@
 	const openPositions = document.getElementById("internshipOpenPosition");
 
 	const tab = sessionStorage.getItem("tab");
-	const internID = sessionStorage.getItem("internshipID");
+	const IDMatch = sessionStorage.getItem("matchID");
 
 	window.onload = function() {
 
@@ -34,7 +34,7 @@
 				complaintBtn.textContent = "Write Complaint";
 
 				complaintBtn.onclick = function() {
-					session.setItem('idInternship',internID); //controllare se gli devo mandare id match o internship
+					//alert("sto inviando->"+IDMatch);
 					window.location.href = "complainForm.html";
 				}
 
@@ -79,7 +79,7 @@
 				break;
 		}
 
-		loadInternshipInfo(internID);
+		loadInternshipInfo(IDMatch);
 
 	}
 
@@ -91,25 +91,23 @@
 		window.location.href = "companyProfile.html";
 	})
 
-	function loadInternshipInfo(internshipId) {
-		makeCall("GET", "ProfileManager?page=internshipInfo&ID=" + internshipId, null,
+	function loadInternshipInfo(IDMatch) {
+		makeCall("GET", "ProfileManager?page=internshipInfo&IDMatch=" + IDMatch, null,
 			(req) => {
 				if (req.readyState == 4) {
 					switch (req.status) {
 						case 200: // andato a buon fine
-							console.log(req.responseText);
 							var jsonData = JSON.parse(req.responseText);
-							console.log(jsonData);
 							//fill the page							
-							company.innerText = jsonData.company.name;
-							role.innerText = jsonData.roleToCover;
-							location.innerText = jsonData.company.address;
-							period.innerText = jsonData.startingDate + " - " + jsonData.endingDate,
-							openPositions.innerText = jsonData.openSeats;
+							company.innerText = jsonData.internship.company.name;
+							role.innerText = jsonData.internship.roleToCover;
+							location.innerText = jsonData.internship.company.address;
+							period.innerText = jsonData.internship.startingDate + " - " + jsonData.internship.endingDate,
+							openPositions.innerText = jsonData.internship.openSeats;
 
-							jobDesc.innerText = jsonData.jobDescription;
-							if ("workCond" in jsonData) {
-								for (const pref of jsonData.workCond) {
+							jobDesc.innerText = jsonData.internship.jobDescription;
+							if ("preferences" in jsonData.internship) {
+								for (const pref of jsonData.internship.preferences) {
 									workCond.innerText += pref.text + " ";
 								}
 							}

@@ -64,7 +64,7 @@ public class InternshipDAO {
 	//for student
 	public Internship getOngoingInternship(String email) throws SQLException {
 		String query = null;
-			query = "SELECT inter.id,c.name,c.address,inter.startingDate,inter.endingDate,roleToCover FROM interview as i join matches as m on i.idMatch = m.id join publication as p on p.id = m.idPublication join student as s on s.email = p.student join internship as inter on inter.id = m.idInternship join company as c on c.email = inter.company where s.email = ?;";
+		query = "SELECT inter.id,c.name,c.address,inter.startingDate,inter.endingDate,roleToCover FROM interview as i join matches as m on i.idMatch = m.id join publication as p on p.id = m.idPublication join student as s on s.email = p.student join internship as inter on inter.id = m.idInternship join company as c on c.email = inter.company where s.email = ?;";
 		
 		ResultSet result = null;
 		PreparedStatement pstatement2 = null;
@@ -113,14 +113,14 @@ public class InternshipDAO {
 			
 	}
 	
-	//for company 
-		public List<Internship> getOngoingInternships(String email) throws SQLException {
+	//for company, NON DEVO TORNARE UNA LISTA DI INTERNSHIP MA UNA LISTA DI MATCH CON I DATI DELL'INTERNSHIP E NEL JS COMPANYHOMEPAGE DEVO SETTARE ID DEL MATCH E NON ID INTERNSHIP
+		public List<Match> getOngoingInternships(String email) throws SQLException {
 			String query = null;
-			query = "SELECT inter.id as idInter,c.address,c.name companyName,s.name studentName,s.studyCourse,s.email studentEmail,startingDate,endingDate,roleToCover FROM interview as i join matches as m on i.idMatch = m.id join publication as p on p.id = m.idPublication join student as s on s.email = p.student join internship as inter on inter.id = m.idInternship join company as c on c.email = inter.company where c.email = ? AND confirmedYN is true;";			
+			query = "SELECT inter.id as idInter,c.address,c.name companyName,s.name studentName,s.studyCourse,s.email studentEmail,startingDate,endingDate,roleToCover,m.id FROM interview as i join matches as m on i.idMatch = m.id join publication as p on p.id = m.idPublication join student as s on s.email = p.student join internship as inter on inter.id = m.idInternship join company as c on c.email = inter.company where c.email = ? AND confirmedYN is true and current_date() < endingDate;";			
 			ResultSet result = null;
 			PreparedStatement pstatement2 = null;
 			
-			List<Internship> internships = new ArrayList<>();
+			List<Match> matches = new ArrayList<>();
 			try {
 				pstatement2 = connection.prepareStatement(query);
 				pstatement2.setString(1, email);
@@ -130,6 +130,9 @@ public class InternshipDAO {
 				}
 				else { //company
 					while(result.next()) {
+						Match match = new Match();
+						match.setId(result.getInt("id"));
+						
 						Internship internship = new Internship();
 						internship.setId(result.getInt("idInter"));
 						Company company = new Company();
@@ -151,9 +154,10 @@ public class InternshipDAO {
 			            }
 			            internship.setroleToCover(result.getString("roleToCover"));
 			            
-			            internships.add(internship);
+			            match.setInternship(internship);
+			            matches.add(match);
 					}
-		            return internships;
+		            return matches;
 				}
 			} catch(SQLException e) {
 				throw new SQLException("Error while trying to find student publication");

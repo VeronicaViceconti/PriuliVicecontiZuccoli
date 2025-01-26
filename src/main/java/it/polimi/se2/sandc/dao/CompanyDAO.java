@@ -438,4 +438,99 @@ public class CompanyDAO {
 		}
 		return ris;
 	}
+
+	public Match getMatchInternshipInfo(int matchId) throws SQLException {
+		String query = null;
+		query = "SELECT m.id as mId,i.id as idInter,c.name as companyName,c.address as cAdd,startingDate,endingDate,jobDescription,openSeats,roleToCover FROM company as c JOIN internship as i ON c.email = i.company join matches as m on m.idInternship = i.id WHERE m.id = ?";
+		ResultSet result = null;
+		PreparedStatement pstatement = null;
+		Internship internship = new Internship();
+		Match match = new Match();
+	
+		try {
+			pstatement = connection.prepareStatement(query);
+			pstatement.setInt(1, matchId);
+			result = pstatement.executeQuery();
+			if (!result.isBeforeFirst()) {// no results, no internship found
+				return null;
+			}
+			else { //found the internship
+				result.next();
+				match.setId(result.getInt("mId"));
+				internship.setId(result.getInt("idInter"));
+				Company company = new Company();
+	            company.setName(result.getString("companyName"));
+	            company.setaddress(result.getString("cAdd"));
+	            internship.setCompany(company);
+	            
+	            Date sqlDate = result.getDate("startingDate");
+	            if (sqlDate != null) {
+	                internship.setStartingDate(new Date(sqlDate.getTime())); 
+	            }
+	            sqlDate = result.getDate("endingDate");
+	            if (sqlDate != null) {
+	                internship.setEndingDate(new Date(sqlDate.getTime())); 
+	            }
+	            
+	            internship.setjobDescription(result.getString("jobDescription"));
+	            internship.setOpenSeats(result.getInt("openSeats"));
+	            internship.setroleToCover(result.getString("roleToCover"));	
+	            match.setInternship(internship);
+			}
+		} catch(SQLException e) {
+			throw new SQLException("Error while trying to access credentials");
+		}finally {
+			try {
+				result.close(); //Devo chiudere result set
+			}catch(Exception e) {
+				throw new SQLException("Error while trying to close Result Set");
+			}
+			try {
+				pstatement.close();  //devo chiudere prepared statement
+			} catch(Exception e) {
+				throw new SQLException("Error while trying to close prepared statement");
+			}
+		}
+		
+		//need to return all the preferences of that internship
+		query =  "SELECT * FROM internship as i JOIN requirement as r on r.idInternship = i.id JOIN workingpreferences as w ON w.id = r.idWorkingPreference WHERE i.id = ?";
+		result = null;
+		pstatement = null;
+		
+		try {
+			pstatement = connection.prepareStatement(query);
+			
+			pstatement.setInt(1, match.getInternship().getId());
+			result = pstatement.executeQuery();
+			if (!result.isBeforeFirst()) {// no results, internships hasen't got working preferences
+				return match;
+			}
+			else { //found the preferences
+				
+				List<Preferences> preferences = new ArrayList<Preferences>();
+				while(result.next()) {
+					Preferences pref = new Preferences();
+					pref.setId(result.getInt("idWorkingPreference"));
+					pref.setText(result.getString("text"));
+					preferences.add(pref);
+				}
+				internship.setPreferences(preferences);
+				match.setInternship(internship);
+				return match;
+			}
+		} catch(SQLException e) {
+			throw new SQLException("Error while trying to get preferences");
+		}finally {
+			try {
+				result.close(); //Devo chiudere result set
+			}catch(Exception e) {
+				throw new SQLException("Error while trying to close Result Set");
+			}
+			try {
+				pstatement.close();  //devo chiudere prepared statement
+			} catch(Exception e) {
+				throw new SQLException("Error while trying to close prepared statement");
+			}
+		}
+	}
 }
