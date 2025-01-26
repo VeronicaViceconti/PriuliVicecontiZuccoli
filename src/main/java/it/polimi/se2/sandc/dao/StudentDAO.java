@@ -328,4 +328,82 @@ public class StudentDAO {
 		}
 		return ris;
 	}
+
+	public Publication getProfileAndPubPreferences(Integer idMatch) throws SQLException {
+		Student student = new Student();
+		Publication pub = new Publication();
+		
+		String query = null;
+		query = "SELECT * FROM matches as m join publication as p on m.idPublication = p.id join student as s on s.email = p.student WHERE m.id = ?;";
+		
+		ResultSet result = null;
+		PreparedStatement pstatement2 = null;
+		try {
+			pstatement2 = connection.prepareStatement(query);
+			pstatement2.setInt(1, idMatch);
+			result = pstatement2.executeQuery();
+			if (!result.isBeforeFirst()) {// no results 
+				return null;	
+			}
+			else { 
+				result.next();
+	            student.setaddress(result.getString("address"));
+	            if(result.getString("cv") != null)
+	            	student.setCv(result.getString("cv"));
+	            student.setEmail(result.getString("email"));
+	            student.setName(result.getString("name"));
+	            student.setPhoneNumber(result.getString("phoneNumber"));
+	            student.setStudyCourse(result.getString("studyCourse"));
+			}
+		} catch(SQLException e) {
+			throw new SQLException("Error while trying to find student publication");
+		}finally {
+			try {
+				result.close(); //Devo chiudere result set
+			} catch(Exception e) {
+				throw new SQLException("Error while trying to close Result Set");
+			}
+			try {
+				pstatement2.close();  //devo chiudere prepared statement
+			} catch(Exception e) {
+				throw new SQLException("Error while trying to close prepared statement");
+			}
+		}
+		pub.setStudent(student);
+		//find publication and it's preferences
+		query = "SELECT w.text FROM matches as m join publication as p on m.idPublication = p.id left join student as s on s.email = p.student join preference as pr on pr.idPublication = p.id join workingpreferences as w on w.id = pr.idWorkingPreferences WHERE m.id = ?;";
+		ArrayList<Preferences> ris = new ArrayList <Preferences>();
+		PreparedStatement pstatement = null;
+		ResultSet result2 = null;
+		
+		try {
+			pstatement = connection.prepareStatement(query);
+			pstatement.setInt(1, idMatch);
+
+			result2 = pstatement.executeQuery();
+			
+			if (!result2.isBeforeFirst()) {// no results
+				return pub; //only student info because he doesn't have preferences
+			}
+			else { 
+				while(result2.next()) {
+					Preferences tmp = new Preferences();
+					tmp.setText(result2.getString("text"));
+					ris.add(tmp);
+				}
+				
+				pub.setChoosenPreferences(ris);
+				return pub;
+			}
+			
+		} catch(SQLException e) {
+			throw new SQLException("Error while finding infos");
+		}finally {
+			try {
+				pstatement.close(); // devo chiudere prepared statement
+			} catch (Exception e) {
+				throw new SQLException("Error while trying to close prepared statement");
+			}
+		}
+	}
 }

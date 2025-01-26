@@ -86,6 +86,7 @@ public class FeedbackManager extends HttpServlet {
 		
 		try {
 			answer = StringEscapeUtils.escapeJava(request.getParameter("answer"));
+			System.out.println(answer);
 			idMatch = Integer.parseInt(request.getParameter("idMatch"));
 			if(answer == null || idMatch == -1) {
 				throw new Exception();
@@ -114,7 +115,7 @@ public class FeedbackManager extends HttpServlet {
 			}
 			if(!found) {
 				response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-				response.getWriter().println("the student aren't in the internship or has already written a feedback");
+				response.getWriter().println("the student isn't in the internship or has already written a feedback");
 				return;
 			}
 		} else {

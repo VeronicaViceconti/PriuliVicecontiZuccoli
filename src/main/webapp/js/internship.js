@@ -18,7 +18,7 @@
 				window.location.href = "homePageStudente.html";
 				break;
 			case "company":
-				//TOO -> redirect to company homepage
+				window.location.href = "homePageCompany.html";
 				break;
 		}
 	});
@@ -30,7 +30,7 @@
 					window.location.href = "homePageStudente.html";
 					break;
 				case "company":
-					//TOO -> redirect to company homepage
+					window.location.href = "homePageCompany.html";
 					break;
 			}
 		});
@@ -50,7 +50,7 @@
 			            
 			            switch (x.status) {
 			              case 200:  //richiesta andata a buon fine
-			              	console.log("publicato con successo");
+			              	console.log("pubbbblicato con successo");
 							console.log(JSON.parse(x.responseText))
 							sessionStorage.setItem("internshipID", x.responseText);
 			               	window.location.href = "preferencePublication.html";

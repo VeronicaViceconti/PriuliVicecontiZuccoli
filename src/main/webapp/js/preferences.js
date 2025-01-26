@@ -8,7 +8,7 @@
 	const profileBtn = document.getElementById("profileBtn");
 	const tab = sessionStorage.getItem("tab");
 	const user = sessionStorage.getItem("user");
-	const internship = sessionStorage.getItem("internshipID")
+	const internship = sessionStorage.getItem("internshipID");
 	var preferences;
 	
 	window.onload = function () {
@@ -61,13 +61,21 @@
 				window.location.href = "homePageStudente.html";
 				break;
 			case "company":
-				//TOO -> redirect to company homepage
+				window.location.href = "homePageCompany.html";
 				break;
 		}
 	})
 
 	profileBtn.addEventListener("click", () => {
-		window.location.href = "studentProfile.html";
+		switch (user) {
+			case "student":
+				window.location.href = "studentProfile.html";
+				break;
+			case "company":
+				window.location.href = "companyProfile.html";
+				break;
+		}
+		
 	})
 
 	sendBtn.addEventListener("click", (e) => {
@@ -80,9 +88,7 @@
 			            var message = x.responseText;
 			            
 			            switch (x.status) {
-			              case 200:  //richiesta andata a buon fine
-			              	console.log("publicato con successo");
-							
+			              case 200:  //richiesta andata a buon fine							
 			                homeBtn.click();
 			                break;
 			              case 400: // bad request

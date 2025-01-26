@@ -35,7 +35,6 @@
 				loadPubAndWP();
 				applyBtn.onclick = function() {
 					const optionChosen = document.getElementById("options").value;
-					console.log(optionChosen);
 					createMatch(optionChosen);
 					
 				}
@@ -71,7 +70,7 @@
 				complaintBtn.classList.add("brownBtn");
 				complaintBtn.textContent = "Write complaint";
 				complaintBtn.onclick = function() {
-					window.location.href = "generalForm.html";
+					window.location.href = "ComplainForm.html"; //controllare se gli devo passare id internship o match
 				}
 
 				actionBtnsContainer.appendChild(complaintBtn);
@@ -85,7 +84,7 @@
 				feedbackBtn.classList.add("brownBtn");
 				feedbackBtn.textContent = "Write feedback";
 				feedbackBtn.onclick = function() {
-					window.location.href = "generalForm.html";
+					window.location.href = "feedbackForm.html"; //controllare se gli devo passare id internship o match
 				}
 
 				actionBtnsContainer.appendChild(feedbackBtn);
@@ -119,19 +118,21 @@
 					switch (req.status) {
 						case 200: // andato a buon fine
 							var jsonData = JSON.parse(req.responseText);
-							//fill the page							
-							company.innerText = jsonData.company.name;
-							role.innerText = jsonData.roleToCover;
-							location.innerText = jsonData.company.address;
-							period.innerText = jsonData.startingDate + " - " + jsonData.endingDate;
-							openPositions.innerText = jsonData.openSeats;
-
-							jobDesc.innerText = jsonData.jobDescription;
-							if ("preferences" in jsonData) {
-								for (const pref of jsonData.preferences) {
-									workingConditions.innerText += pref.text + " ";
+							if(jsonData != null){
+								company.innerText = jsonData.company.name;
+								role.innerText = jsonData.roleToCover;
+								location.innerText = jsonData.company.address;
+								period.innerText = jsonData.startingDate + " - " + jsonData.endingDate;
+								openPositions.innerText = jsonData.openSeats;
+	
+								jobDesc.innerText = jsonData.jobDescription;
+								if ("preferences" in jsonData) {
+									for (const pref of jsonData.preferences) {
+										workingConditions.innerText += pref.text + " ";
+									}
 								}
-							}
+							}						
+							
 							break;
 						case 403:
 							console.log("errore 403");

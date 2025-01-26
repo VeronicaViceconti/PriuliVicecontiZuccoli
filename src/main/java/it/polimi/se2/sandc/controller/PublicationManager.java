@@ -25,6 +25,7 @@ import org.apache.commons.lang.StringEscapeUtils;
 import com.google.gson.Gson;
 
 import it.polimi.se2.sandc.bean.Internship;
+import it.polimi.se2.sandc.bean.Match;
 import it.polimi.se2.sandc.bean.Preferences;
 import it.polimi.se2.sandc.bean.User;
 import it.polimi.se2.sandc.dao.CompanyDAO;
@@ -111,6 +112,9 @@ public class PublicationManager extends HttpServlet {
 			 	case "proposedInternships":
 			 		getAllCompanyInternships(response, email);
 			 		break;
+			 	case "waitingFeedbackInternships":
+			 		waitingFeedbackInternships(response,email);
+			 		break;
 			 	default:
 			 		response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 			 		response.getWriter().println("page not found");
@@ -120,6 +124,24 @@ public class PublicationManager extends HttpServlet {
 		
 	}
 
+	private void waitingFeedbackInternships(HttpServletResponse response, String email) throws IOException {
+		CompanyDAO company = new CompanyDAO(connection);
+		List<Match> matches = new ArrayList<>();
+		
+		try {
+			matches = company.getMatchWaitingFeedback(email);
+			
+			String matchesString = new Gson().toJson(matches);
+	       response.setContentType("application/json");
+	       response.getWriter().write(matchesString);       
+	       response.setStatus(HttpServletResponse.SC_OK);
+		}catch (Exception e) {
+			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+			response.getWriter().println("something was wrong while getting company internships");
+			return;
+		}	
+		
+	}
 	//return alla the internships of a company 
 	private void getAllCompanyInternships(HttpServletResponse response, String email) throws IOException {
 		InternshipDAO intern = new InternshipDAO(connection);
@@ -182,7 +204,6 @@ public class PublicationManager extends HttpServlet {
 	
 	
 	private void cvPublication(String email, HttpServletRequest request, HttpServletResponse response) throws IOException {
-		System.out.println("saving the pdf");
 		HttpSession session = request.getSession();	
 		Part part = null;
 		
@@ -207,9 +228,7 @@ public class PublicationManager extends HttpServlet {
 		StudentDAO dao = new StudentDAO(connection);
 		try {
 			String path = getServletContext().getInitParameter("pathUploadCv")  + email + ".pdf";
-			System.out.println("saving the pdf");
 			//imageDao.AddImage(username, title, description, path);
-			System.out.println(path);
 			part.write(path);
 			
 			dao.putCv((User) session.getAttribute("user"), path);
@@ -292,7 +311,6 @@ public class PublicationManager extends HttpServlet {
 		for(Preferences x : pref) {
 			
 			if(request.getParameter(x.getText()) != null) {
-				System.out.println(request.getParameter(x.getText()));
 				try {
 					studentdao.addPreference(user,Integer.parseInt(request.getParameter(x.getText())), idpub);
 				} catch (SQLException e) {
@@ -371,7 +389,6 @@ public class PublicationManager extends HttpServlet {
 		for(Preferences x : pref) {
 			
 			if(request.getParameter(x.getText()) != null) {
-				System.out.println(request.getParameter(x.getText()));
 				try {
 					companydao.addRequirement(user, Integer.parseInt(request.getParameter(x.getText())), idInt);
 				} catch (SQLException e) {

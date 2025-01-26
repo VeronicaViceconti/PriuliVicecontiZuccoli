@@ -34,7 +34,8 @@
 				complaintBtn.textContent = "Write Complaint";
 
 				complaintBtn.onclick = function() {
-					alert("complaint for internship " + internID);
+					session.setItem('idInternship',internID); //controllare se gli devo mandare id match o internship
+					window.location.href = "complainForm.html";
 				}
 
 				actionBtnsContainer.appendChild(complaintBtn);
@@ -70,8 +71,8 @@
 				feedbackBtn.classList.add("brownBtn");
 				feedbackBtn.textContent = "Write feedback";
 				feedbackBtn.onclick = function() {
-					alert("feedback for internhip " + internID);
-					//window.location.href = "http://localhost:8080/SandC/generalForm.html";
+					//alert("feedback for internhip " + internID);
+					window.location.href = "feedbackForm.html"; //controllare se gli devo passare id match o internship
 				}
 
 				actionBtnsContainer.appendChild(feedbackBtn);

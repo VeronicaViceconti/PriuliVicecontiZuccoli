@@ -15,7 +15,6 @@
 
 	window.onload = function() {
 		var matchID = sessionStorage.getItem("matchID");
-		console.log(matchID);
 		makeCall("GET", "MatchManager?page=openMatch&IDmatch=" + matchID, null,
 			(req) => {
 				if (req.readyState == 4) {
@@ -23,12 +22,18 @@
 						case 200: // andato a buon fine
 							var jsonData = JSON.parse(req.responseText);
 							if(jsonData != null){
-								studentName.innerText = jsonData.name;
-								studentCourseStudy.innerText = jsonData.studyCourse;
-								studentEmail.innerText = jsonData.email;
-								studentPhone.innerText = jsonData.phoneNumber;
-								studentAddress.innerText = jsonData.address;
-								studentPreferences.innerText = jsonData.publications[0].choosenPreferences[0].text;
+								studentPreferences.innerText = "";
+								studentName.innerText = jsonData.student.name;
+								studentCourseStudy.innerText = jsonData.student.studyCourse;
+								studentEmail.innerText = jsonData.student.email;
+								studentPhone.innerText = jsonData.student.phoneNumber;
+								studentAddress.innerText = jsonData.student.address;
+								if ("choosenPreferences" in jsonData){
+									for(const preference of jsonData.choosenPreferences)
+										studentPreferences.innerText += preference.text+"; ";
+								}else{
+									studentPreferences.innerText += "no preferences";
+								}
 							}
 							break;
 						case 403:

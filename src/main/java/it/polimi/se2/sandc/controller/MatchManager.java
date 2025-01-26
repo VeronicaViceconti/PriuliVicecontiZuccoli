@@ -96,10 +96,35 @@ public class MatchManager extends HttpServlet {
 		 	case "acceptMatch": //when the page need to open one internship
 		 		acceptMatch(response,Integer.parseInt(request.getParameter("IDmatch")),user.getEmail(),userType,Integer.parseInt(request.getParameter("accept")));
 		 		break;
+		 	case "openMatch":
+		 		Integer idMatch = Integer.parseInt(request.getParameter("IDmatch"));
+		 		openMatch(response,idMatch);
+		 		break;
 		 		default:
 		 			response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 		 } 
 		}
+	}
+
+	private void openMatch(HttpServletResponse response, Integer idMatch) throws IOException {
+		StudentDAO studentdao = new StudentDAO(connection);
+		Publication pub = null;
+		
+		try {
+			pub = studentdao.getProfileAndPubPreferences(idMatch);
+			String pubString = new Gson().toJson(pub);
+			
+			// Imposta il tipo di contenuto e invia la risposta
+	       response.setContentType("application/json");
+	       response.getWriter().write(pubString);       
+	       response.setStatus(HttpServletResponse.SC_OK);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+			response.getWriter().println("Error opening infos match, retry later");
+			return;
+		}
+		
 	}
 
 	private void acceptMatch(HttpServletResponse response, int matchID, String email,String userType,int acceptedOrNot) throws IOException {

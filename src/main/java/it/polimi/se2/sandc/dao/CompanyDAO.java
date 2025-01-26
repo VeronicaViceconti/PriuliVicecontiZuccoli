@@ -370,20 +370,26 @@ public class CompanyDAO {
 					c.setEmail(result.getString("c.email"));
 					c.setaddress(result.getString("c.address"));
 					c.setName(result.getString("c.name"));
-					
 					Internship i = new Internship();
 					
 					i.setCompany(c);
 					i.setId(result.getInt("i.id"));
 					i.setOpenSeats(result.getInt("i.openSeats"));
-					i.setStartingDate(result.getDate("i.startingDate"));
-					i.setStartingDate(result.getDate("i.endingDate"));
+					Date sqlDate = result.getDate("startingDate");
+		            if (sqlDate != null) {
+		                i.setStartingDate(new Date(sqlDate.getTime())); 
+		            }
+		            sqlDate = result.getDate("endingDate");
+		            if (sqlDate != null) {
+		                i.setEndingDate(new Date(sqlDate.getTime())); 
+		            }
+					i.setroleToCover(result.getString("roleToCover"));
 					i.setjobDescription(result.getString("i.jobDescription"));
 					
 					Student s = new Student();
 					s.setEmail(result.getString("s.email"));
 					s.setName(result.getString("s.name"));
-					
+					s.setStudyCourse(result.getString("studyCourse"));
 					
 					Publication p = new Publication();
 					

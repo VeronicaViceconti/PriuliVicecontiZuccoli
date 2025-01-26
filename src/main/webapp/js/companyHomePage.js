@@ -333,21 +333,19 @@
 		sessionStorage.setItem('tab', "waitingFeed");
 		internList.innerHTML = null;
 		
-		makeCall("GET", "PublicationManager?page=proposedInternships", null,
+		makeCall("GET", "PublicationManager?page=waitingFeedbackInternships", null,
 			(req) => {
 				if (req.readyState == 4) {
 					switch (req.status) {
 						case 200: // andato a buon fine
 							var jsonData = JSON.parse(req.responseText);
 							for (const internship of jsonData) {
-								createCard(
+								createMatchCard(
 									internship.id,
-									internship.company.name,
-									internship.roleToCover,
-									internship.startingDate,
-									internship.endingDate,
-									internship.company.address,
-									internship.openSeats
+									internship.publication.student.name,
+									internship.publication.student.studyCourse,
+									internship.internship.roleToCover,
+									internship.internship.startingDate + " - " + internship.internship.endingDate
 								)
 							}
 							break;
@@ -366,7 +364,7 @@
 	});
 	
 	newInternship.addEventListener("click", () =>{
-		alert("To page new internship");
+		window.location.href = "InternshipPublication.html";
 	})
 
 	homeBtn.addEventListener("click", () => {
@@ -383,14 +381,24 @@
 		var tab = sessionStorage.getItem("tab");
 		
 		if (card) {
-			if (tab != "matches") {
-				sessionStorage.setItem("internshipID", card.id);
-				window.location.href = "internshipView_Company.html";
+			switch (tab){
+				case "matches":
+					console.log("matches");
+					sessionStorage.setItem("matchID", card.id);
+					window.location.href = "accept_DeclineStudent_Company.html";
+					break;
+				case "waitingFeed":
+					console.log("waitingfeed");
+					sessionStorage.setItem("matchID", card.id);
+					window.location.href = "feedbackForm.html";
+					break;
+				default:
+					console.log("internshipView");
+					sessionStorage.setItem("internshipID", card.id);
+					window.location.href = "internshipView_Company.html";
+					break;
 			}
-			else {
-				sessionStorage.setItem("matchID", card.id);
-				window.location.href = "accept_DeclineStudent_Company.html";
-			}
+				
 		}
 	})
 }
