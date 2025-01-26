@@ -12,6 +12,8 @@
 	const studentEmail = document.getElementById("studentEmail");
 	const studentPhone = document.getElementById("studentPhone");
 	const studentAddress = document.getElementById("studentAddress");
+	
+	const pdf = document.getElementById("pdf-frame");
 
 	window.onload = function() {
 		var matchID = sessionStorage.getItem("matchID");
@@ -33,6 +35,15 @@
 										studentPreferences.innerText += preference.text+"; ";
 								}else{
 									studentPreferences.innerText += "no preferences";
+								}
+								if(jsonData.student.cv != null){
+									var pdfBase64 = jsonData.student.cv;
+							        var pdfArrayBuffer = base64ToArrayBuffer(pdfBase64);
+							        var blob = new Blob([pdfArrayBuffer], { type: 'application/pdf' });
+							        // Crea un URL oggetto per il Blob
+							        var url = URL.createObjectURL(blob);
+							        // Imposta l'URL nell'iframe
+							        pdf.src = url;
 								}
 							}
 							break;
@@ -57,16 +68,59 @@
 	homeBtn.addEventListener("click", () => {
 		window.location.href = "homePageCompany.html";
 	})
-	downloadBtn.addEventListener("click", () => {
-		alert("downloadBtn");
-	})
 
 	acceptBtn.addEventListener("click", () => {
-		alert("acceptBtn");
+		var matchID = sessionStorage.getItem("matchID");
+		makeCall("GET", "MatchManager?page=acceptMatch&accept=1&IDmatch=" + matchID, null,
+					(req) => {
+						if (req.readyState == 4) {
+							switch (req.status) {
+								case 200: // andato a buon fine
+									homeBtn.click();
+									break;
+								case 403:
+									console.log("errore 403");
+									break;
+								case 412:
+									console.log("errore 412");
+									break;
+								case 500:
+									console.log("errore 500");
+									break;
+							}
+						}
+					});
 	})
 	declineBtn.addEventListener("click", () => {
-		alert("declineBtn");
+		var matchID = sessionStorage.getItem("matchID");
+		makeCall("GET", "MatchManager?page=acceptMatch&accept=0&IDmatch=" + matchID, null,
+							(req) => {
+								if (req.readyState == 4) {
+									switch (req.status) {
+										case 200: // andato a buon fine
+											homeBtn.click();
+											break;
+										case 403:
+											console.log("errore 403");
+											break;
+										case 412:
+											console.log("errore 412");
+											break;
+										case 500:
+											console.log("errore 500");
+											break;
+									}
+								}
+							});
 	})
 
-
+	function base64ToArrayBuffer(base64) {
+		            var binaryString = window.atob(base64);
+		            var len = binaryString.length;
+		            var bytes = new Uint8Array(len);
+		            for (var i = 0; i < len; i++) {
+		                bytes[i] = binaryString.charCodeAt(i);
+		            }
+		            return bytes.buffer;
+		        }
 }

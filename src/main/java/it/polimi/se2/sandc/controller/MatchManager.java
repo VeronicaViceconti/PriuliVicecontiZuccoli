@@ -1,9 +1,12 @@
 package it.polimi.se2.sandc.controller;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
 
 import javax.servlet.ServletContext;
@@ -112,6 +115,17 @@ public class MatchManager extends HttpServlet {
 		
 		try {
 			pub = studentdao.getProfileAndPubPreferences(idMatch);
+			
+			if(pub.getStudent().getCv() != null) {
+				File f = new File(pub.getStudent().getCv());
+				if(f.exists()) {
+					byte[] fileContent = new byte[(int) f.length()];
+					try (FileInputStream fileInputStream = new FileInputStream(f)) {
+			            fileInputStream.read(fileContent);
+			        }
+					pub.getStudent().setCv(Base64.getEncoder().encodeToString(fileContent));
+				}
+			}
 			String pubString = new Gson().toJson(pub);
 			
 			// Imposta il tipo di contenuto e invia la risposta

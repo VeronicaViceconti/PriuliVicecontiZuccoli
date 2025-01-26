@@ -308,6 +308,7 @@
 					switch (req.status) {
 						case 200: // andato a buon fine
 							var jsonData = JSON.parse(req.responseText);
+							console.log(jsonData);
 							cleanUp();
 							var pageLocation;
 							for (const internship of jsonData) {

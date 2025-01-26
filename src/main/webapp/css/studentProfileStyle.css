@@ -162,7 +162,8 @@
     left: 47px;
     background-color: #f6f0eb;
     border-radius: 20px;
-    overflow: hidden;
+    overflow-y: scroll;
+    overflow-x: hidden;
   }
   
   .profilo-studente .lucide-square-pen {

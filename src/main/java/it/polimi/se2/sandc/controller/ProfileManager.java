@@ -211,7 +211,8 @@ public class ProfileManager extends HttpServlet {
         
 		if(userType.equalsIgnoreCase("student")) {
 			String stInfo = null;
-			String internInfo = null;
+			String internInfoOnGoing = null;
+			String internInfoFeedback = null;
 			student = new StudentDAO(connection);
 			try {
 				st = student.getProfileInfos(userType,email);
@@ -237,12 +238,17 @@ public class ProfileManager extends HttpServlet {
 			}
 			
 			InternshipDAO intern = new InternshipDAO(connection);
+			
 			Internship internship = null;
+			ArrayList<Match> matches = new ArrayList<Match> ();
 			try {
 				internship = intern.getOngoingInternship(email);
-				internInfo = new Gson().toJson(internship);
+				internInfoOnGoing = new Gson().toJson(internship);
 				
-				combinedJson = "[" + stInfo + "," + internInfo + "]";
+				matches = student.getMatchWaitingFeedback(email);
+				internInfoFeedback = new Gson().toJson(matches);
+				
+				combinedJson = "[" + stInfo + "," + internInfoOnGoing + "," + internInfoFeedback + "]";
 				response.getWriter().write(combinedJson);   
 				
 			    response.setStatus(HttpServletResponse.SC_OK);

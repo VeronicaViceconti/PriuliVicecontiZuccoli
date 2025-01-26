@@ -64,7 +64,7 @@ public class InternshipDAO {
 	//for student
 	public Internship getOngoingInternship(String email) throws SQLException {
 		String query = null;
-		query = "SELECT inter.id,c.name,c.address,inter.startingDate,inter.endingDate,roleToCover FROM interview as i join matches as m on i.idMatch = m.id join publication as p on p.id = m.idPublication join student as s on s.email = p.student join internship as inter on inter.id = m.idInternship join company as c on c.email = inter.company where s.email = ?;";
+			query = "SELECT inter.id,c.name,c.address,inter.startingDate,inter.endingDate,roleToCover FROM interview as i join matches as m on i.idMatch = m.id join publication as p on p.id = m.idPublication join student as s on s.email = p.student join internship as inter on inter.id = m.idInternship join company as c on c.email = inter.company where s.email = ? and endingDate > curdate();";
 		
 		ResultSet result = null;
 		PreparedStatement pstatement2 = null;
@@ -173,8 +173,7 @@ public class InternshipDAO {
 					throw new SQLException("Error while trying to close prepared statement");
 				}
 			}
-				
-		} 
+	} 
 	
 	public void writeFeedback(User user, String student, String company, String answer) throws SQLException {
 		String query;
@@ -262,4 +261,5 @@ public class InternshipDAO {
 		}
 		return intern;
 	}
+	
 }

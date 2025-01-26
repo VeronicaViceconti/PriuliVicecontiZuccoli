@@ -218,13 +218,17 @@
 					switch (req.status) {
 						case 200:
 							var jsonData = JSON.parse(req.responseText);
-							var studentData = jsonData[0];
-							createMatchCard(
-								studentData.id,
-								studentData.publication.student.name,
-								studentData.publication.student.studyCourse,
-								studentData.internship.roleToCover,
-								studentData.internship.startingDate + " - " + studentData.internship.endingDate);							
+							
+							for(let i = 0; i < jsonData.length; i++){
+								var studentData = jsonData[i];
+								createMatchCard(
+									studentData.id,
+									studentData.publication.student.name,
+									studentData.publication.student.studyCourse,
+									studentData.internship.roleToCover,
+									studentData.internship.startingDate + " - " + studentData.internship.endingDate);							
+								
+							}
 							break;
 						case 403:
 							console.log("errore 403");
@@ -342,6 +346,7 @@
 					switch (req.status) {
 						case 200: // andato a buon fine
 							var jsonData = JSON.parse(req.responseText);
+							console.log(jsonData);
 							for (const internship of jsonData) {
 								createMatchCard(
 									internship.id,

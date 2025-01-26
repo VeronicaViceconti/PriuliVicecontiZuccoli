@@ -88,11 +88,13 @@ public class StudentDAO {
 		String query = null;
 		Student user = new Student();
 		
-		query = "SELECT w.text FROM publication as p join student as s on s.email = p.student JOIN preference as pref on pref.idPublication = p.id JOIN workingpreferences as w on w.id = pref.idWorkingPreferences where s.email = ?";
-		ArrayList<Preferences> ris = new ArrayList <Preferences>();
+		query = "SELECT p.id,  w.text \n"
+				+ "FROM publication as p join student as s on s.email = p.student JOIN preference as pref on pref.idPublication = p.id JOIN workingpreferences as w on w.id = pref.idWorkingPreferences \n"
+				+ "where s.email = ?\n"
+				+ "order by p.id asc";
 		PreparedStatement pstatement = null;
 		ResultSet result2 = null;
-		
+		List<Publication> publication = new ArrayList<>();
 		try {
 			pstatement = connection.prepareStatement(query);
 			pstatement.setString(1, email);
@@ -100,14 +102,31 @@ public class StudentDAO {
 			result2 = pstatement.executeQuery();
 			
 			if (!result2.isBeforeFirst()) {// no results, no matches found
-				ris = null;
+				publication = null;
 			}
-			else { 
+			else {
+				Publication p = null;
 				while(result2.next()) {
+					if(p == null) {
+						p = new Publication();
+						p.setId(result2.getInt("id"));
+						p.setChoosenPreferences(new ArrayList<Preferences>());
+					}
+					
+					if(p.getId() != result2.getInt("id")) {
+						publication.add(p);
+						p = new Publication();
+						p.setId(result2.getInt("id"));
+						p.setChoosenPreferences(new ArrayList<Preferences>());
+					}
+					
+					
 					Preferences tmp = new Preferences();
 					tmp.setText(result2.getString("text"));
-					ris.add(tmp);
+					
+					p.getChoosenPreferences().add(tmp);
 				}
+				publication.add(p);
 			}
 			
 		} catch(SQLException e) {
@@ -130,18 +149,16 @@ public class StudentDAO {
 				return null;	
 			}
 			else { 
-					result2.next();
-					Publication pub = new Publication();					
+					result2.next();					
 					user.setName(result2.getString("name"));
 					user.setPhoneNumber(result2.getString("phoneNumber"));
 					user.setStudyCourse(result2.getString("studyCourse"));
 					user.setaddress(result2.getString("address"));
 					user.setEmail(result2.getString("email"));
-					if(result2.getString("cv") != null)
+					if(result2.getString("cv") != null) {
 						user.setCv(result2.getString("cv"));
-					List<Publication> publication = new ArrayList<>();
-					pub.setChoosenPreferences(ris);
-					publication.add(pub);
+					}
+					
 					user.setPublications(publication);
 				return user;	
 			}
@@ -304,8 +321,9 @@ public class StudentDAO {
 					i.setId(result.getInt("i.id"));
 					i.setOpenSeats(result.getInt("i.openSeats"));
 					i.setStartingDate(result.getDate("i.startingDate"));
-					i.setStartingDate(result.getDate("i.endingDate"));
+					i.setEndingDate(result.getDate("i.endingDate"));
 					i.setjobDescription(result.getString("i.jobDescription"));
+					i.setroleToCover(result.getString("i.roleToCover"));
 					
 					Student s = new Student();
 					s.setEmail(result.getString("s.email"));
