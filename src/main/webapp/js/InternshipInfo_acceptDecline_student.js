@@ -70,7 +70,7 @@
 				complaintBtn.classList.add("brownBtn");
 				complaintBtn.textContent = "Write complaint";
 				complaintBtn.onclick = function() {
-					window.location.href = "ComplainForm.html"; //controllare se gli devo passare id internship o match
+					window.location.href = "complainForm.html"; //controllare se gli devo passare id internship o match
 				}
 
 				actionBtnsContainer.appendChild(complaintBtn);

@@ -62,9 +62,9 @@ public class InternshipDAO {
 	}
 	
 	//for student
-	public Internship getOngoingInternship(String email) throws SQLException {
+	public Match getOngoingInternship(String email) throws SQLException {
 		String query = null;
-			query = "SELECT inter.id,c.name,c.address,inter.startingDate,inter.endingDate,roleToCover FROM interview as i join matches as m on i.idMatch = m.id join publication as p on p.id = m.idPublication join student as s on s.email = p.student join internship as inter on inter.id = m.idInternship join company as c on c.email = inter.company where s.email = ? and endingDate > curdate();";
+			query = "SELECT m.id, inter.id,c.name,c.address,inter.startingDate,inter.endingDate,roleToCover FROM interview as i join matches as m on i.idMatch = m.id join publication as p on p.id = m.idPublication join student as s on s.email = p.student join internship as inter on inter.id = m.idInternship join company as c on c.email = inter.company where s.email = ? and endingDate > curdate();";
 		
 		ResultSet result = null;
 		PreparedStatement pstatement2 = null;
@@ -94,7 +94,10 @@ public class InternshipDAO {
 	            }
 	            internship.setroleToCover(result.getString("roleToCover"));
 				
-	            return internship;
+	            Match m = new Match();
+	            m.setId(result.getInt("m.id"));
+	            m.setInternship(internship);
+	            return m;
 			}
 		} catch(SQLException e) {
 			throw new SQLException("Error while trying to find student publication");

@@ -49,6 +49,7 @@
 			sessionStorage.setItem("internshipID", cardId);
 			sessionStorage.setItem("tab", "waitingFeed");
 			sessionStorage.setItem("user", "student");
+			sessionStorage.setItem("matchID", card.getAttribute("idMatch"));
 			window.location.href = "internshipInfo_AcceptDecline_student.html";
 		}
 	})
@@ -90,11 +91,12 @@
 							if(waiting != null){
 								for(var i = 0; i < waiting.length; i++){
 									var tmp = waiting[0].internship
-									createWaitingForFeedBack(tmp.id, tmp.company.name, tmp.roleToCover, tmp.startingDate, tmp.endingDate, tmp.company.address, tmp.openSeats);
+									createWaitingForFeedBack(waiting[0].id, tmp.id, tmp.company.name, tmp.roleToCover, tmp.startingDate, tmp.endingDate, tmp.company.address, tmp.openSeats);
 								}
 							}
 							if(onGoing != null){
-								createOnGoingInternship(onGoing.id, onGoing.company.name, onGoing.roleToCover, onGoing.startingDate, onGoing.endingDate, onGoing.company.address, onGoing.openSeats);								
+								createOnGoingInternship(onGoing.internship.id, onGoing.internship.company.name, onGoing.internship.roleToCover, onGoing.internship.startingDate, onGoing.internship.endingDate, onGoing.internship.company.address, onGoing.internship.openSeats);		
+								sessionStorage.setItem("onGoingMatch", onGoing.id);						
 							}
 							if(studentData.cv != null){
 								var pdfBase64 = studentData.cv;
@@ -136,7 +138,7 @@
 	            return bytes.buffer;
 	        }
 	
-	function createWaitingForFeedBack(internshipId, name, role, startingDate, endingDate, address, seats){
+	function createWaitingForFeedBack(idmatch, internshipId, name, role, startingDate, endingDate, address, seats){
 		let card = document.createElement('div');
 		card.className = "card";
 		card.id = internshipId;
@@ -217,6 +219,7 @@
 		info.appendChild(r);
 				
 		card.appendChild(info);
+		card.setAttribute('idMatch', idmatch);
 		waitingFeed.appendChild(card);
 		
 	}

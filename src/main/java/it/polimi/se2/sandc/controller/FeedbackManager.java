@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.UnavailableException;
+import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -28,6 +29,7 @@ import it.polimi.se2.sandc.bean.Match;
  * Servlet implementation class FeedbackManager
  */
 @WebServlet("/FeedbackManager")
+@MultipartConfig
 public class FeedbackManager extends HttpServlet {
 	private Connection connection = null;
 	private static final long serialVersionUID = 1L;

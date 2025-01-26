@@ -1,4 +1,4 @@
-package it.polimi.se2.sandc.controller;
+	package it.polimi.se2.sandc.controller;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -239,11 +239,11 @@ public class ProfileManager extends HttpServlet {
 			
 			InternshipDAO intern = new InternshipDAO(connection);
 			
-			Internship internship = null;
+			Match m = null;
 			ArrayList<Match> matches = new ArrayList<Match> ();
 			try {
-				internship = intern.getOngoingInternship(email);
-				internInfoOnGoing = new Gson().toJson(internship);
+				m = intern.getOngoingInternship(email);
+				internInfoOnGoing = new Gson().toJson(m);
 				
 				matches = student.getMatchWaitingFeedback(email);
 				internInfoFeedback = new Gson().toJson(matches);

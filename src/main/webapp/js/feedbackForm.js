@@ -2,6 +2,7 @@
  const sendBtn = document.getElementById("form");
  const user = sessionStorage.getItem('user');
  const idMatch = sessionStorage.getItem('matchID');
+ const feedbackMatch = sessionStorage.getItem('feedbackMatch');
  
  sendBtn.addEventListener("click", (e) => {
 	 	e.preventDefault();

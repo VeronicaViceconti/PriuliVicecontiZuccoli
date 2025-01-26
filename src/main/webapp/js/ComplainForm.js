@@ -1,13 +1,14 @@
 const sendBtn = document.getElementById("complainButton");
  const user = sessionStorage.getItem('user');
  const matchID = sessionStorage.getItem('matchID');
+ const onGoingMatch = sessionStorage.getItem("onGoingMatch");
  
  sendBtn.addEventListener("click", (e) => {
 	 	e.preventDefault();
 	 	var form = e.target.closest("form");
 		
 		if(form.checkValidity()){
-			makeCall("POST", "ComplainManager?idMatch="+matchID, form,
+			makeCall("POST",(user == "student")? "ComplainManager?idMatch=" + onGoingMatch: "ComplainManager?idMatch="+ matchID, form,
 				function(x) {
 					if (x.readyState == XMLHttpRequest.DONE) {
 			            var message = x.responseText;
