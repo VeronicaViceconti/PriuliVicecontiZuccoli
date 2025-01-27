@@ -88,7 +88,10 @@
 			            var message = x.responseText;
 			            
 			            switch (x.status) {
-			              case 200:  //richiesta andata a buon fine							
+			              case 200:  //richiesta andata a buon fine
+			              if(message.includes("You already have an equal publication"))	
+			               		alert(message);
+			              else						
 			                homeBtn.click();
 			                break;
 			              case 400: // bad request
@@ -99,6 +102,9 @@
 			                console.log(message);
 			                //this.alert.textContent = message;
 			                break;
+			              case 412:
+							 console.log(message);
+							 break;
 			              case 500: // server error
 			            	console.log(message);
 			            	//this.alert.textContent = message;

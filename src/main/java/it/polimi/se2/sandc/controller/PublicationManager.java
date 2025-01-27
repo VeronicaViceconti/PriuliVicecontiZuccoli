@@ -27,10 +27,12 @@ import com.google.gson.Gson;
 import it.polimi.se2.sandc.bean.Internship;
 import it.polimi.se2.sandc.bean.Match;
 import it.polimi.se2.sandc.bean.Preferences;
+import it.polimi.se2.sandc.bean.Publication;
 import it.polimi.se2.sandc.bean.User;
 import it.polimi.se2.sandc.dao.CompanyDAO;
 import it.polimi.se2.sandc.dao.InternshipDAO;
 import it.polimi.se2.sandc.dao.PreferenceDAO;
+import it.polimi.se2.sandc.dao.PublicationDAO;
 import it.polimi.se2.sandc.dao.StudentDAO;
 import it.polimi.se2.sandc.dao.UserDAO;
 
@@ -168,6 +170,13 @@ public class PublicationManager extends HttpServlet {
 	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		HttpSession s = request.getSession();
 		
+		if (s.getAttribute("user") == null) {
+			response.setStatus(HttpServletResponse.SC_PRECONDITION_FAILED);
+			response.getWriter().println("Utente non trovato..");
+			request.getSession(false).invalidate();
+			return;
+        }
+		
 		String userType = (String) s.getAttribute("userType");
 		String email = ((User) s.getAttribute("user")).getEmail();
 		if(userType.equalsIgnoreCase("student")) { //we want to use student profile -> search company publications
@@ -179,7 +188,13 @@ public class PublicationManager extends HttpServlet {
 			 		cvPublication(email, request, response);
 			 		break;
 			 	case "sendPreferences":
-			 		preferencePublicationStudent(email, request, response);
+						try {
+							preferencePublicationStudent(email, request, response);
+						} catch (IOException | SQLException e) {
+							// TODO Auto-generated catch block
+							response.setStatus(HttpServletResponse.SC_PRECONDITION_FAILED);
+							response.getWriter().println("error while adding new student publication!");
+						}
 			 		break;
 			 	default :
 			 		response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
@@ -284,14 +299,14 @@ public class PublicationManager extends HttpServlet {
 		}
 	}
 	
-	private void preferencePublicationStudent(String email, HttpServletRequest request, HttpServletResponse response) throws IOException {
+	private void preferencePublicationStudent(String email, HttpServletRequest request, HttpServletResponse response) throws IOException, SQLException {
 		PreferenceDAO preferecedao = new PreferenceDAO(connection);
 		StudentDAO studentdao = new StudentDAO(connection);
 		HttpSession session = request.getSession();	
 		User user = (User) session.getAttribute("user");
 		
-		List <Preferences> pref = null;
-		
+		//take all the preferences in the db
+		List <Preferences> pref = null; //all the preferences in the db
 		try {
 			pref = preferecedao.getWorkingPreferences();
 		} catch (SQLException e) {
@@ -299,6 +314,40 @@ public class PublicationManager extends HttpServlet {
 			response.getWriter().println("connection error with the db");
 			return;
 		}
+		
+		//take the ones chosen by the user
+		List<Preferences> prefs = new ArrayList<>(); //new preferences chosen by the user
+		for(Preferences x : pref) {
+			
+			if(request.getParameter(x.getText()) != null) {
+				prefs.add(x);
+			}
+		}
+		
+		//control that there isn't already a publication with the same new preferences
+		PublicationDAO pubDAO = new PublicationDAO(connection);
+		List<Publication> publications = new ArrayList<>();
+		
+		publications = pubDAO.retrieveAllWP(email);
+		
+		for(Publication p : publications) {
+			List<Preferences> preferencesPubp = p.getChoosenPreferences();
+			ArrayList<String> prefText = new ArrayList<>();
+			ArrayList<String> prefTextUser = new ArrayList<>();
+			
+			for(Preferences preff : preferencesPubp)
+				prefText.add(preff.getText());
+			for(Preferences preff : prefs)
+				prefTextUser.add(preff.getText());
+			
+			if(prefText.containsAll(prefTextUser) && preferencesPubp.size() == prefs.size()) { //already exist one with same preferences
+				response.setStatus(HttpServletResponse.SC_OK);
+				response.getWriter().println("You already have an equal publication!");
+				return;
+			}
+		}
+		
+		
 		int idpub;
 		try {
 			idpub = studentdao.createPublication(user);
@@ -308,17 +357,15 @@ public class PublicationManager extends HttpServlet {
 			return;
 		}
 		
-		for(Preferences x : pref) {
-			
-			if(request.getParameter(x.getText()) != null) {
-				try {
-					studentdao.addPreference(user,Integer.parseInt(request.getParameter(x.getText())), idpub);
-				} catch (SQLException e) {
-					response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "cannot add the preferences");
-					return;
-				}
+		for(Preferences x : prefs) {
+			try {
+				studentdao.addPreference(user,Integer.parseInt(request.getParameter(x.getText())), idpub);
+			} catch (SQLException e) {
+				response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "cannot add the preferences");
+				return;
 			}
 		}
+		
 		
 		response.setStatus(HttpServletResponse.SC_OK);
 	}
