@@ -105,7 +105,57 @@
 										internship.startingDate,
 										internship.endingDate,
 										internship.company.address,
-										internship.openSeats
+										internship.openSeats,
+										null
+									);
+								}
+							} else {
+								alert("No internships with the current seach key!");
+							}
+							break;
+						case 403:
+							console.log("errore 403");
+							break;
+						case 412:
+							console.log("errore 412");
+							break;
+						case 500:
+							console.log("errore 500");
+							break;
+					}
+				}
+			});
+
+	})
+
+	searchBtn.addEventListener("click", () => {
+		if (sessionStorage.getItem('tab') == "matches")
+			return;
+		
+		var searchKey = document.getElementById("searchKey").value;
+		if (searchKey === "") {
+			return;
+		}
+		makeCall("GET", "ProfileManager?page=filteredInternships&condition=" + searchKey, null,
+			(req) => {
+				if (req.readyState == 4) {
+					switch (req.status) {
+						case 200: // andato a buon fine
+							var jsonData = JSON.parse(req.responseText);
+							if (jsonData != null && jsonData.length > 0) {
+								cleanUp();
+								for (const internship of jsonData) {
+									console.log(internship);
+									createCard(
+										avail_newMatch_section,
+										internship.id,
+										internship.company.name,
+										internship.roleToCover,
+										internship.startingDate,
+										internship.endingDate,
+										internship.company.address,
+										internship.openSeats,
+										null
 									);
 								}
 							} else {
@@ -159,7 +209,7 @@
 		});
 	}
 
-	function createCard(cardContainer, id, name, role, startDate, endDate, location, openSeats) {
+	function createCard(cardContainer, id, name, role, startDate, endDate, location, openSeats, idMatch) {
 		// Dati della card
 		const cardData = {
 			id: id,
@@ -178,6 +228,7 @@
 		card.className = "card";
 		card.id = cardData.id;
 		card.setAttribute("data-section", cardContainer.id);
+		card.setAttribute("match", idMatch);
 
 		// Aggiungi il nome dell'azienda
 		const companyDiv = document.createElement("div");
@@ -218,7 +269,12 @@
 		//aggiungo click listener alla card
 		card.addEventListener("click", () => {
 			sessionStorage.setItem("internshipID", card.id);
-			sessionStorage.setItem("tab", card.getAttribute("data-section"));
+			if(idMatch != null){
+				sessionStorage.setItem("matchID", idMatch);
+			}
+			if(!(sessionStorage.getItem("tab") == "matches" && card.getAttribute("data-section") == "available/newMatch")){
+				sessionStorage.setItem("tab", card.getAttribute("data-section"));
+			}
 			window.location.href = "internshipInfo_AcceptDecline_student.html";
 		});
 
@@ -243,7 +299,8 @@
 									internship.startingDate,
 									internship.endingDate,
 									internship.company.address,
-									internship.openSeats
+									internship.openSeats,
+									null
 								);
 							}
 							break;
@@ -288,7 +345,8 @@
 									internship.internship.startingDate,
 									internship.internship.endingDate,
 									internship.internship.company.address,
-									internship.internship.openSeats
+									internship.internship.openSeats,
+									internship.id
 								);
 							}
 							}

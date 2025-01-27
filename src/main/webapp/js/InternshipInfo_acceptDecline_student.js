@@ -14,7 +14,8 @@
 
 	const tab = sessionStorage.getItem("tab");
 	const internID = sessionStorage.getItem("internshipID");
-
+	const matchID = sessionStorage.getItem("matchID");
+	
 	window.onload = function() {
 
 		jobDesc.innerText = "";
@@ -53,11 +54,49 @@
 				declineBtn.textContent = "decline";
 
 				acceptBtn.onclick = function() {
-					alert("accept internship " + internID);
+					var matchID = sessionStorage.getItem("matchID");
+					makeCall("GET", "MatchManager?page=acceptMatch&accept=1&IDmatch=" + matchID, null,
+										(req) => {
+											if (req.readyState == 4) {
+												switch (req.status) {
+													case 200: // andato a buon fine
+														homeBtn.click();
+														break;
+													case 403:
+														console.log("errore 403");
+														break;
+													case 412:
+														console.log("errore 412");
+														break;
+													case 500:
+														console.log("errore 500");
+														break;
+												}
+											}
+										});
 				}
 
 				declineBtn.onclick = function() {
-					alert("decline internship " + internID);
+					var matchID = sessionStorage.getItem("matchID");
+							makeCall("GET", "MatchManager?page=acceptMatch&accept=0&IDmatch=" + matchID, null,
+												(req) => {
+													if (req.readyState == 4) {
+														switch (req.status) {
+															case 200: // andato a buon fine
+																homeBtn.click();
+																break;
+															case 403:
+																console.log("errore 403");
+																break;
+															case 412:
+																console.log("errore 412");
+																break;
+															case 500:
+																console.log("errore 500");
+																break;
+														}
+													}
+												});
 				}
 
 				actionBtnsContainer.appendChild(acceptBtn);
