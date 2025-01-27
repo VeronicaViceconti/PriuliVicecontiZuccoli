@@ -59,6 +59,12 @@
 					}
 				}
 			});
+			
+			if(sessionStorage.getItem("MatchType") == "WaitResponse"){
+				a
+				acceptBtn.remove();
+				declineBtn.remove();
+			}
 	}
 
 	profileBtn.addEventListener("click", () => {

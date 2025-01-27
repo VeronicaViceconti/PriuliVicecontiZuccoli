@@ -173,7 +173,7 @@ public class MatchDAO {
 	
 	public List<Match> findCompanyMatches(String emailCompany) throws SQLException {
 		String query = null;
-		query = "SELECT m.id as matchID, i.id as internID, idPublication,acceptedYNStudent,acceptedYNCompany,roleToCover,startingDate,endingDate,c.address,s.name,s.studyCourse from matches as m join internship as i on m.idInternship = i.id join company as c on c.email = i.company join publication as pub on pub.id = m.idPublication join student as s on s.email = pub.student WHERE c.email = ? and m.id not in (select idMatch from interview) and m.acceptedYNCompany is null;";
+		query = "SELECT m.id as matchID, i.id as internID, idPublication,acceptedYNStudent,acceptedYNCompany,roleToCover,startingDate,endingDate,c.address,s.name,s.studyCourse from matches as m join internship as i on m.idInternship = i.id join company as c on c.email = i.company join publication as pub on pub.id = m.idPublication join student as s on s.email = pub.student WHERE c.email = ? and m.id not in (select idMatch from interview);";
 		PreparedStatement pstatement = null;
 		ResultSet result2 = null;
 		List<Match> matches = new ArrayList<>();
