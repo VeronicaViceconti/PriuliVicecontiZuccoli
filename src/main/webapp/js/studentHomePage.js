@@ -264,6 +264,12 @@
 			sectionDiv.appendChild(textDiv);
 			infoDiv.appendChild(sectionDiv);
 		});
+		const first_div = infoDiv.querySelector('div:first-of-type');
+		
+		first_div.style.width = "200px";
+		first_div.querySelector('div:first-of-type').style.overflow = "hidden"; 
+		first_div.querySelector('div:first-of-type').style.textOverflow = "ellipsis";
+		
 
 		// Aggiungi le informazioni al contenitore principale
 		card.appendChild(infoDiv);

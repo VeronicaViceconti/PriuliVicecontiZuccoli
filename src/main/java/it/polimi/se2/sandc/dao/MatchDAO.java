@@ -51,7 +51,7 @@ public class MatchDAO {
 
 	public List<Match> findStudentMatches(String emailStudent) throws SQLException {
 		String query = null;
-		query = "SELECT m.id as matchID, i.id as internID, idPublication,acceptedYNStudent,acceptedYNCompany,roleToCover,startingDate,endingDate,c.name,c.address,jobDescription from matches as m join internship as i on m.idInternship = i.id join company as c on c.email = i.company join publication as pub on pub.id = m.idPublication join student as s on s.email = pub.student WHERE s.email = ? and m.id not in (select idMatch from interview);";
+		query = "SELECT m.id as matchID, i.id as internID, idPublication,acceptedYNStudent,acceptedYNCompany,roleToCover,startingDate,openSeats,endingDate,c.name,c.address,jobDescription from matches as m join internship as i on m.idInternship = i.id join company as c on c.email = i.company join publication as pub on pub.id = m.idPublication join student as s on s.email = pub.student WHERE s.email = ? and m.id not in (select idMatch from interview);";
 		PreparedStatement pstatement = null;
 		ResultSet result2 = null;
 		List<Match> matches = new ArrayList<>();
@@ -88,6 +88,7 @@ public class MatchDAO {
 		            if (sqlDate != null) {
 		                intern.setEndingDate(new Date(sqlDate.getTime())); 
 		            }
+		            intern.setOpenSeats(result2.getInt("openSeats"));
 		            intern.setjobDescription(result2.getString("jobDescription"));
 		            intern.setroleToCover(result2.getString("roleToCover"));
 		            Company company = new Company();
@@ -173,7 +174,8 @@ public class MatchDAO {
 	
 	public List<Match> findCompanyMatches(String emailCompany) throws SQLException {
 		String query = null;
-		query = "SELECT m.id as matchID, i.id as internID, idPublication,acceptedYNStudent,acceptedYNCompany,roleToCover,startingDate,endingDate,c.address,s.name,s.studyCourse from matches as m join internship as i on m.idInternship = i.id join company as c on c.email = i.company join publication as pub on pub.id = m.idPublication join student as s on s.email = pub.student WHERE c.email = ? and m.id not in (select idMatch from interview);";
+		query = "SELECT m.id as matchID, i.id as internID, idPublication,acceptedYNStudent,acceptedYNCompany,roleToCover,startingDate,endingDate,c.address,s.name,s.studyCourse from matches as m join internship as i on m.idInternship = i.id join company as c on c.email = i.company join publication as pub on pub.id = m.idPublication join student as s on s.email = pub.student WHERE c.email = ? and m.id not in (select idMatch from interview) and current_date() < endingDate;";
+
 		PreparedStatement pstatement = null;
 		ResultSet result2 = null;
 		List<Match> matches = new ArrayList<>();

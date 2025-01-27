@@ -73,6 +73,12 @@
 			sectionDiv.appendChild(textDiv);
 			infoDiv.appendChild(sectionDiv);
 		});
+		
+		const first_div = infoDiv.querySelector('div:first-of-type');
+		
+		first_div.style.width = "200px";
+		first_div.querySelector('div:first-of-type').style.overflow = "hidden"; 
+		first_div.querySelector('div:first-of-type').style.textOverflow = "ellipsis";
 
 		// Aggiungi le informazioni al contenitore principale
 		card.appendChild(infoDiv);
@@ -321,13 +327,19 @@
 							var jsonData = JSON.parse(req.responseText);
 							if (jsonData != null) {
 								for (const match of jsonData) {
+<<<<<<< Updated upstream
 									createMatchCard(
 										avail_newMatch_section,
+=======
+									createCard(
+>>>>>>> Stashed changes
 										match.id,
 										match.internship.student.name,
-										match.internship.student.studyCourse,
 										match.internship.roleToCover,
-										match.internship.startingDate + " - " + match.internship.endingDate
+										match.internship.startingDat,
+										match.internship.endingDate,
+										match.internship.company.address,
+										match.internship.openSeats
 									)
 								}
 							}
@@ -419,15 +431,20 @@
 						case 200: // andato a buon fine
 							var jsonData = JSON.parse(req.responseText);
 							console.log(jsonData);
-							for (const internship of jsonData) {
-								createMatchCard(
-									internship.id,
-									internship.publication.student.name,
-									internship.publication.student.studyCourse,
-									internship.internship.roleToCover,
-									internship.internship.startingDate + " - " + internship.internship.endingDate
-								)
+							if(jsonData != null){
+								for (const internship of jsonData) {
+									createCard( 
+										internship.id,
+										internship.publication.student.name,
+										internship.internship.roleToCover,
+										internship.internship.startingDate,
+										internship.internship.endingDate,
+										internship.internship.company.address,
+										internship.internship.openSeats
+									)
+								}
 							}
+							
 							break;
 						case 403:
 							console.log("errore 403");
