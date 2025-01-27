@@ -244,7 +244,8 @@
 									)
 								}
 							} else {
-								alert("No internships/student with the current seach key!");
+								alert("No internship found with that company");
+								askOngoingIntern();
 							}
 							break;
 						case 403:
@@ -307,9 +308,8 @@
 				}
 			});
 	});
-
-	ongoingInternTab.addEventListener("click", () => {
-
+	
+	function askOngoingIntern() {
 		//change tab color
 		ongoingInternTab.style.color = "#a37659";
 		proposedInternTab.style.color = "#2e4057";
@@ -347,6 +347,11 @@
 					}
 				}
 			});
+	}
+
+	ongoingInternTab.addEventListener("click", () => {
+		askOngoingIntern();
+		
 	});
 
 	proposedInternTab.addEventListener("click", () => {
