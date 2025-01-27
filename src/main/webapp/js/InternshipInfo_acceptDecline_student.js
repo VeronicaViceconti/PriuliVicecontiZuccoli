@@ -109,7 +109,7 @@
 				complaintBtn.classList.add("brownBtn");
 				complaintBtn.textContent = "Write complaint";
 				complaintBtn.onclick = function() {
-					window.location.href = "complainForm.html"; //controllare se gli devo passare id internship o match
+					window.location.href = "complainForm.html"; 
 				}
 
 				actionBtnsContainer.appendChild(complaintBtn);
@@ -167,7 +167,7 @@
 								jobDesc.innerText = jsonData.jobDescription;
 								if ("preferences" in jsonData) {
 									for (const pref of jsonData.preferences) {
-										workingConditions.innerText += pref.text + " ";
+										workingConditions.innerHTML += pref.text + ";<br>";
 									}
 								}
 							}						
@@ -196,24 +196,28 @@
 							var jsonData = JSON.parse(req.responseText);
 							//fill the page							
 							const selectorContainer = document.createElement('div');
-							  selectorContainer.id = 'options-container'; // Aggiungi una classe per lo stile (opzionale)
+							  selectorContainer.id = 'options-container'; 
 							
 							  const label = document.createElement('label');
 							  label.textContent = "Choose one publication:";
 							  selectorContainer.appendChild(label);
 							
 							  const select = document.createElement('select');
-							  select.id = "options"; // Imposta il nome per l'invio del form (opzionale)
+							  select.id = "options"; 
+							  select.style.width = "300px";    
+							  select.style.overflow = "hidden";
+							  select.style.textOverflow = "ellipsis";
 								var increment = 1;
 								for(const pub of jsonData){
 									const opzioni = pub.choosenPreferences;	
 									const option = document.createElement('option');
-									option.text = increment+"->";
+									option.innerHTML = increment+"-><br>";
 									increment += 1;	
 									option.value = pub.id;
 								  	opzioni.forEach(opzioneTesto => {
-								    	option.text += opzioneTesto.text+"; "; // Testo visualizzato all'utente  
+								    	option.innerHTML += opzioneTesto.text+"; "; 
 								 	});
+								 	
 								 	select.appendChild(option);
 								}
 							  

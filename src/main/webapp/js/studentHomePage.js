@@ -81,6 +81,17 @@
 		window.location.href = "studentProfile.html";
 	})
 
+
+	searchfiltered.addEventListener("click", () =>{
+  		searchfiltered.placeholder = ''; 
+	});
+	
+	searchfiltered.addEventListener('blur', function() {
+		 if(searchfiltered.value === ''){
+		    searchfiltered.placeholder = 'Search for internships'; 
+		 }
+	});
+
 	searchBtn.addEventListener("click", () => {
 		
 		var searchKey = document.getElementById("searchKey").value;
@@ -90,7 +101,8 @@
 		makeCall("GET", "ProfileManager?page=filteredInternships&condition=" + searchKey, null,
 			(req) => {
 				if (req.readyState == 4) {
-					document.getElementById("searchKey").value = "Search for internships";
+					document.getElementById("searchKey").value = "";
+					document.getElementById("searchKey").placeholder = "Search for internships";
 					switch (req.status) {
 						case 200: // andato a buon fine
 							var jsonData = JSON.parse(req.responseText);
@@ -177,16 +189,6 @@
 
 	})
 	
-	searchfiltered.addEventListener("click", () =>{
-  		searchfiltered.placeholder = ''; 
-	});
-	
-	searchfiltered.addEventListener('blur', function() {
-		 if(searchfiltered.value === ''){
-		    searchfiltered.placeholder = 'Search for internships'; 
-		 }
-	});
-
 	function AddCardsEventListners() {
 		var cards = null;
 		cards = document.querySelectorAll(".card");
