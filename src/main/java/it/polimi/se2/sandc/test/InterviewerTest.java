@@ -36,6 +36,7 @@ import it.polimi.se2.sandc.bean.Interview;
 import it.polimi.se2.sandc.bean.Match;
 import it.polimi.se2.sandc.bean.Preferences;
 import it.polimi.se2.sandc.bean.Publication;
+import it.polimi.se2.sandc.bean.Question;
 import it.polimi.se2.sandc.bean.User;
 import it.polimi.se2.sandc.controller.Interviewer;
 
@@ -123,7 +124,7 @@ class InterviewerTest {
     	query = "delete from question";
     	statement.executeUpdate(query);
     	
-    	query = "insert into Student (email, name, address, phoneNumber, psw, studyCourse) values ('user@mail.com', 'user1', 'via tal dei tali', '1234567890', 'user1', 'computer science')";
+    	query = "insert into Student (email, name, address, phoneNumber, psw, studyCourse) values ('user@mail.com', 'user1', 'via tal dei tali', '1234567890', 'user1', 'computer science'), ('user2@mail.com', 'user2', 'via tal dei tali', '1234567890', 'user2', 'computer science')";
     	statement.executeUpdate(query);
     
     	query = "insert into company (email, name, address, phoneNumber, psw) values ('company@mail.com', 'company', 'via tal dei tali', '1234567890', 'company')";
@@ -491,5 +492,58 @@ class InterviewerTest {
 		verify(response).setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 	}
 	
-	
+	@Test
+	public void getResponseTest() throws SQLException, ServletException, IOException {
+		User user = new User();
+		
+		//create the fake session user
+		user.setEmail("company@mail.com");
+		user.setName("company");
+		user.setWhichUser("company");
+		
+		when(session.getAttribute("user")).thenReturn(user);
+		when(session.getAttribute("userType")).thenReturn("company");
+		
+
+		when(request.getParameter("page")).thenReturn("getResponse");
+		when(request.getParameter("match")).thenReturn("1");
+		
+		Statement statement = connection.createStatement();
+		
+		String query = "insert into form values (1)";
+		statement.executeUpdate(query);
+		
+		query = "insert into question (id, txt, answer, idForm) values (1, 'question 1', 'answer 1' ,1), (2, 'question 2', 'answer 2',1), (3, 'question 3', 'answer 3',1)";
+		statement.executeUpdate(query);
+		
+		query = "insert into interview (id, dat, idMatch, idForm) values (1, curdate(), 1, 1)";
+		statement.executeUpdate(query);
+		
+		interviewer.doGet(request, response);
+		
+		verify(response).setStatus(HttpServletResponse.SC_OK);
+		verify(response).setContentType("application/json");
+		
+		Interview interview = new Gson().fromJson(stringWriter.getBuffer().toString().trim(), Interview.class);
+		for(Question q : interview.getForm().getQuestions()) {
+			switch (q.getText()) {
+			case "question 1":
+				assertTrue(q.getAnswer().equals("answer 1"));
+				break;
+			case "question 2":
+				assertTrue(q.getAnswer().equals("answer 2"));			
+							break;
+			case "question 3":
+				assertTrue(q.getAnswer().equals("answer 3"));
+				break;
+			default:
+				break;
+			}
+		}
+		
+		
+		
+		
+		assertEquals(interview.getData(), Date.valueOf(LocalDate.now()));	
+	}
 }

@@ -89,6 +89,9 @@ public class Interviewer extends HttpServlet {
 			 	case "submitSelection":
 			 		submitSelection(email, request, response);
 			 		break;
+			 	case "getResponse":
+			 		getAnswers(email, request, response);
+			 		break;
 			 	default:
 			 		response.setStatus(HttpServletResponse.SC_NOT_FOUND);
 			 		response.getWriter().println("page not found");
@@ -290,4 +293,57 @@ public class Interviewer extends HttpServlet {
 		
 		response.setStatus(HttpServletResponse.SC_OK);
 	}
+	
+	
+	private void getAnswers(String email, HttpServletRequest request, HttpServletResponse response) throws IOException {
+		
+		MatchDAO matchdao = new MatchDAO(connection);
+		CompanyDAO companydao = new CompanyDAO(connection);
+		HttpSession session = request.getSession();	
+		User user = (User) session.getAttribute("user");
+		
+		
+		
+		int idMatch;
+		try {
+			if(request.getParameter("match") == null) {
+				throw new Exception();
+			}
+			idMatch = Integer.parseInt(request.getParameter("match"));
+		}catch (Exception e) {
+			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+			response.getWriter().println("the match is missing");
+			return;
+		}
+		
+		
+		try {
+			if(!matchdao.controlOwnership(email, idMatch, user.getWhichUser())) {
+				response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+				response.getWriter().println("the company it isn't in the match");
+				return;
+			}
+		} catch (SQLException e) {
+			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+			response.getWriter().println("db problem");
+			return;
+		}
+		
+		try {
+			Interview interview = matchdao.getAnswers(idMatch);
+			if(interview == null) {
+				response.getWriter().write("the student hasn't done the interview");
+				response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+				return;
+			}
+			String result = new Gson().toJson(interview);
+			response.setContentType("application/json");
+			response.getWriter().write(result);
+			response.setStatus(HttpServletResponse.SC_OK);
+		} catch (SQLException e) {
+			response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "db problem cannot create the interview");
+			return;
+		}
+	}
+	
 }

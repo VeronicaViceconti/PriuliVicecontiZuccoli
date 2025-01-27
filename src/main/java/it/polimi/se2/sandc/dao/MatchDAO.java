@@ -441,4 +441,43 @@ public class MatchDAO {
 		
 		return ris;
 	}
+	
+	
+	public Interview getAnswers(int idMatch) throws SQLException{
+		
+		
+		
+		String query = "select * \n"
+				+ "from interview inner join question on interview.idForm = question.idForm\n"
+				+ "where idMatch = ?";
+
+		Form form = new Form();
+		Interview interview = null;
+		try(PreparedStatement statement = connection.prepareStatement(query,Statement.RETURN_GENERATED_KEYS)){
+			statement.setInt(1, idMatch);
+			try(ResultSet result = statement.executeQuery()){
+				boolean setted = false;
+				
+				while(result.next()) {
+					if(!setted) {
+						interview = new Interview();
+						interview.setData(result.getDate("dat"));
+						interview.setId(result.getInt("interview.id"));
+						form.setId(result.getInt("idForm"));
+						form.setQuestions(new ArrayList<Question>());
+						setted = true;
+					}
+					Question tmp = new Question();
+					tmp.setId(result.getInt("question.id"));
+					tmp.setText(result.getString("txt"));
+					tmp.setAnswer(result.getString("answer"));
+					form.getQuestions().add(tmp);
+				}
+				interview.setForm(form);
+			}
+			
+		}
+		return interview;
+	}
+
 }
