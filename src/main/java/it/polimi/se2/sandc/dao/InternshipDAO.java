@@ -64,7 +64,7 @@ public class InternshipDAO {
 	//for student
 	public Match getOngoingInternship(String email) throws SQLException {
 		String query = null;
-			query = "SELECT m.id, inter.id,c.name,c.address,inter.startingDate,inter.endingDate,roleToCover FROM interview as i join matches as m on i.idMatch = m.id join publication as p on p.id = m.idPublication join student as s on s.email = p.student join internship as inter on inter.id = m.idInternship join company as c on c.email = inter.company where s.email = ? and endingDate > curdate();";
+			query = "SELECT m.id, inter.id as idInter,c.name,c.address,inter.startingDate,inter.endingDate,roleToCover FROM interview as i join matches as m on i.idMatch = m.id join publication as p on p.id = m.idPublication join student as s on s.email = p.student join internship as inter on inter.id = m.idInternship join company as c on c.email = inter.company where s.email = ? and endingDate > curdate();";
 		
 		ResultSet result = null;
 		PreparedStatement pstatement2 = null;
@@ -78,7 +78,7 @@ public class InternshipDAO {
 			}
 			else { //company
 				result.next();
-				internship.setId(result.getInt("id"));
+				internship.setId(result.getInt("idInter"));
 				Company company = new Company();
 	            company.setName(result.getString("name"));
 	            company.setaddress(result.getString("address"));

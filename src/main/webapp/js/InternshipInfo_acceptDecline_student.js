@@ -157,6 +157,7 @@
 					switch (req.status) {
 						case 200: // andato a buon fine
 							var jsonData = JSON.parse(req.responseText);
+							console.log(jsonData);
 							if(jsonData != null){
 								company.innerText = jsonData.company.name;
 								role.innerText = jsonData.roleToCover;
