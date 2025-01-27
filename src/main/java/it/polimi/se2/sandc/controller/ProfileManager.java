@@ -91,6 +91,7 @@ public class ProfileManager extends HttpServlet {
 		String userType = (String) s.getAttribute("userType");
 		
 		User user = (User) request.getSession().getAttribute("user");
+		user.setWhichUser(userType);
 		if(userType.equalsIgnoreCase("student")) { //we want to use student profile -> search company publications
 			if(request.getParameter("page") == null)
 				return;
@@ -152,7 +153,7 @@ public class ProfileManager extends HttpServlet {
 			 		break;
 			 	case "filteredInternships": //when the student search internship of a x company
 			 		String x = StringEscapeUtils.escapeJava(request.getParameter("condition"));
-			 		findFilteredInternships(response,x,user.getEmail());
+			 		findFilteredInternships(response,x,user);
 			 		break;
 			 	case "profileInfo":
 			 		findProfileInfo(response,userType,user.getEmail());
@@ -175,6 +176,10 @@ public class ProfileManager extends HttpServlet {
 			     case "openOngoingInternships":
 			    	 getOngoingInternships(response,user.getEmail());
 			    	break;
+			     case "filteredInternships": //when the company search on ongoing internship a student
+			 		String x = StringEscapeUtils.escapeJava(request.getParameter("condition"));
+			 		findFilteredInternships(response,x,user);
+			 		break;
 			      default: 
 			       response.setStatus(HttpServletResponse.SC_UNAUTHORIZED); 
 			    }			
@@ -345,26 +350,45 @@ public class ProfileManager extends HttpServlet {
 		
 	}
 
-	private void findFilteredInternships(HttpServletResponse response, String nameCompany,String emailStudent) throws IOException {
+	private void findFilteredInternships(HttpServletResponse response, String nameToSearch,User user) throws IOException {
 		// TODO Auto-generated method stub
-		//questo metodo deve semplicemente cercare tutte le internshipDAO disponibile dell'azienda nameCompany
 		
-		CompanyDAO company = new CompanyDAO(connection);
-		List<Internship> internships = null;
-		
-		 try {
-			internships = company.searchAvailableInternships(nameCompany, emailStudent);
-			String internshipString = new Gson().toJson(internships);
+		if(user.getWhichUser().equalsIgnoreCase("student")) {
+			CompanyDAO company = new CompanyDAO(connection);
+			List<Internship> internships = null;
 			
-		    // Imposta il tipo di contenuto e invia la risposta
-		       response.setContentType("application/json");
-		       response.getWriter().write(internshipString);       
-		       response.setStatus(HttpServletResponse.SC_OK);
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-			response.getWriter().println("Internal server error while searching internships, retry later");
+			 try {
+				internships = company.searchAvailableInternships(nameToSearch, user.getEmail());
+				String internshipString = new Gson().toJson(internships);
+				
+			    // Imposta il tipo di contenuto e invia la risposta
+			       response.setContentType("application/json");
+			       response.getWriter().write(internshipString);       
+			       response.setStatus(HttpServletResponse.SC_OK);
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+				response.getWriter().println("Internal server error while searching ongoing internships, retry later");
+				return;
+			}
+		}else { //company
+			InternshipDAO intern = new InternshipDAO(connection);
+			List<Match> matches = new ArrayList<>();
+			try {
+				matches = intern.getFilteredOngoingInternships(user.getEmail(), nameToSearch);
+				String internString = new Gson().toJson(matches);
+				
+				response.setContentType("application/json");
+				response.getWriter().write(internString);   
+				response.setStatus(HttpServletResponse.SC_OK);
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+				response.getWriter().println("Internal server error while searching ongoing internships, retry later");
+				return;
+			}
 		}
+		
 		
 	}
 

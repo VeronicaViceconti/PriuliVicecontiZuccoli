@@ -9,6 +9,7 @@
 	const waitingInterview_section = document.getElementById("waitingInterview");
 	const first_subTitle = document.getElementById("first_subTitle");
 	const searchBtn = document.getElementById("searchBtn");
+	const searchfiltered = document.getElementById("searchKey");
 
 	window.onload = function(e) {
 		e.preventDefault();
@@ -56,7 +57,7 @@
 		matchesTab.style.color = "#a37659";
 		addPublicationTab.style.color = "#2e4057";
 		sessionStorage.setItem('tab', "matches");
-		document.getElementById("overlap").style.visibility = "visible";
+		document.getElementById("overlap").style.visibility = "hidden";
 
 
 		first_subTitle.innerText = "New matches";
@@ -81,8 +82,6 @@
 	})
 
 	searchBtn.addEventListener("click", () => {
-		if (sessionStorage.getItem('tab') == "matches")
-			return;
 		
 		var searchKey = document.getElementById("searchKey").value;
 		if (searchKey === "") {
@@ -91,13 +90,13 @@
 		makeCall("GET", "ProfileManager?page=filteredInternships&condition=" + searchKey, null,
 			(req) => {
 				if (req.readyState == 4) {
+					document.getElementById("searchKey").value = "Search for internships";
 					switch (req.status) {
 						case 200: // andato a buon fine
 							var jsonData = JSON.parse(req.responseText);
 							if (jsonData != null && jsonData.length > 0) {
 								cleanUp();
 								for (const internship of jsonData) {
-									console.log(internship);
 									createCard(
 										avail_newMatch_section,
 										internship.id,
@@ -127,54 +126,16 @@
 			});
 
 	})
-
-	searchBtn.addEventListener("click", () => {
-		if (sessionStorage.getItem('tab') == "matches")
-			return;
-		
-		var searchKey = document.getElementById("searchKey").value;
-		if (searchKey === "") {
-			return;
-		}
-		makeCall("GET", "ProfileManager?page=filteredInternships&condition=" + searchKey, null,
-			(req) => {
-				if (req.readyState == 4) {
-					switch (req.status) {
-						case 200: // andato a buon fine
-							var jsonData = JSON.parse(req.responseText);
-							if (jsonData != null && jsonData.length > 0) {
-								cleanUp();
-								for (const internship of jsonData) {
-									console.log(internship);
-									createCard(
-										avail_newMatch_section,
-										internship.id,
-										internship.company.name,
-										internship.roleToCover,
-										internship.startingDate,
-										internship.endingDate,
-										internship.company.address,
-										internship.openSeats
-									);
-								}
-							} else {
-								alert("No internships with the current seach key!");
-							}
-							break;
-						case 403:
-							console.log("errore 403");
-							break;
-						case 412:
-							console.log("errore 412");
-							break;
-						case 500:
-							console.log("errore 500");
-							break;
-					}
-				}
-			});
-
-	})
+	
+	searchfiltered.addEventListener("click", () =>{
+  		searchfiltered.placeholder = ''; 
+	});
+	
+	searchfiltered.addEventListener('blur', function() {
+		 if(searchfiltered.value === ''){
+		    searchfiltered.placeholder = 'Search for internships'; 
+		 }
+	});
 
 	function AddCardsEventListners() {
 		var cards = null;
@@ -308,10 +269,10 @@
 					switch (req.status) {
 						case 200: // andato a buon fine
 							var jsonData = JSON.parse(req.responseText);
-							console.log(jsonData);
 							cleanUp();
 							var pageLocation;
-							for (const internship of jsonData) {
+							if(jsonData != null){
+								for (const internship of jsonData) {
 								pageLocation = avail_newMatch_section;
 								if ("acceptedYNCompany" in internship && "acceptedYNStudent" in internship) {
 									pageLocation = waitingInterview_section
@@ -330,6 +291,8 @@
 									internship.internship.openSeats
 								);
 							}
+							}
+							
 							break;
 						case 403:
 							console.log("errore 403");

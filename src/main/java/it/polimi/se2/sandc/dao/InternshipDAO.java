@@ -116,7 +116,7 @@ public class InternshipDAO {
 			
 	}
 	
-	//for company, NON DEVO TORNARE UNA LISTA DI INTERNSHIP MA UNA LISTA DI MATCH CON I DATI DELL'INTERNSHIP E NEL JS COMPANYHOMEPAGE DEVO SETTARE ID DEL MATCH E NON ID INTERNSHIP
+	//for company
 		public List<Match> getOngoingInternships(String email) throws SQLException {
 			String query = null;
 			query = "SELECT inter.id as idInter,c.address,c.name companyName,s.name studentName,s.studyCourse,s.email studentEmail,startingDate,endingDate,roleToCover,m.id FROM interview as i join matches as m on i.idMatch = m.id join publication as p on p.id = m.idPublication join student as s on s.email = p.student join internship as inter on inter.id = m.idInternship join company as c on c.email = inter.company where c.email = ? AND confirmedYN is true and current_date() < endingDate;";			
@@ -263,6 +263,71 @@ public class InternshipDAO {
 			}
 		}
 		return intern;
+	}
+
+
+	public List<Match> getFilteredOngoingInternships(String email, String nameToSearch) throws SQLException {
+		
+		String query = null;
+		query = "SELECT inter.id as idInter,c.address,c.name companyName,s.name studentName,s.studyCourse,s.email studentEmail,startingDate,endingDate,roleToCover,m.id FROM interview as i join matches as m on i.idMatch = m.id join publication as p on p.id = m.idPublication join student as s on s.email = p.student join internship as inter on inter.id = m.idInternship join company as c on c.email = inter.company where c.email = ? AND confirmedYN is true and current_date() < endingDate and s.name = ?;";			
+		ResultSet result = null;
+		PreparedStatement pstatement2 = null;
+		
+		List<Match> matches = new ArrayList<>();
+		try {
+			pstatement2 = connection.prepareStatement(query);
+			pstatement2.setString(1, email);
+			pstatement2.setString(2,nameToSearch);
+			result = pstatement2.executeQuery();
+			if (!result.isBeforeFirst()) {// no results, no ongoing internships 
+				return null;	
+			}
+			else { //company
+				while(result.next()) {
+					Match match = new Match();
+					match.setId(result.getInt("id"));
+					
+					Internship internship = new Internship();
+					internship.setId(result.getInt("idInter"));
+					Company company = new Company();
+		            company.setName(result.getString("companyName"));
+		            company.setaddress(result.getString("address"));
+		            Student student = new Student();
+		            student.setStudyCourse(result.getString("studyCourse"));
+		            student.setName(result.getString("studentName"));
+		            internship.setCompany(company);
+		            internship.setStudent(student);
+		            
+		            Date sqlDate = result.getDate("startingDate");
+		            if (sqlDate != null) {
+		                internship.setStartingDate(new Date(sqlDate.getTime())); 
+		            }
+		            sqlDate = result.getDate("endingDate");
+		            if (sqlDate != null) {
+		                internship.setEndingDate(new Date(sqlDate.getTime())); 
+		            }
+		            internship.setroleToCover(result.getString("roleToCover"));
+		            
+		            match.setInternship(internship);
+		            matches.add(match);
+				}
+	            return matches;
+			}
+		} catch(SQLException e) {
+			throw new SQLException("Error while trying to find student publication");
+		}finally {
+			try {
+				result.close(); //Devo chiudere result set
+			} catch(Exception e) {
+				throw new SQLException("Error while trying to close Result Set");
+			}
+			try {
+				pstatement2.close();  //devo chiudere prepared statement
+			} catch(Exception e) {
+				throw new SQLException("Error while trying to close prepared statement");
+			}
+		}
+		
 	}
 	
 }

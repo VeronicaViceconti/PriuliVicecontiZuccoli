@@ -216,16 +216,24 @@ body {
 }
 
 .homepage-studente .text-wrapper-8 {
-  position: absolute;
-  top: 15px;
-  left: 20px;
-  font-family: "Inter-Regular", Helvetica;
-  font-weight: 400;
-  color: #2e405780;
-  font-size: 20px;
-  letter-spacing: 0;
-  line-height: normal;
-  white-space: nowrap;
+	position: absolute;
+	top: 15px;
+	left: 20px;
+	font-family: "Inter-Regular", Helvetica;
+	font-weight: 400;
+	color: #2e405780;
+	font-size: 20px;
+	letter-spacing: 0;
+	line-height: normal;
+	white-space: nowrap;
+	
+	border: none; 
+    background: none; 
+    outline: none; 
+    width: calc(100% - 100px);
+    height: 100%; 
+    padding: 0;
+    box-sizing: border-box;
 }
 
 .homepage-studente .barra-superiore {
