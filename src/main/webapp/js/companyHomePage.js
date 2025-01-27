@@ -327,16 +327,11 @@
 							var jsonData = JSON.parse(req.responseText);
 							if (jsonData != null) {
 								for (const match of jsonData) {
-<<<<<<< Updated upstream
-									createMatchCard(
-										avail_newMatch_section,
-=======
 									createCard(
->>>>>>> Stashed changes
 										match.id,
 										match.internship.student.name,
 										match.internship.roleToCover,
-										match.internship.startingDat,
+										match.internship.startingDate,
 										match.internship.endingDate,
 										match.internship.company.address,
 										match.internship.openSeats
@@ -387,7 +382,6 @@
 							console.log(jsonData);
 							for (const internship of jsonData) {
 								createCard(
-									avail_newMatch_section,
 									internship.id,
 									internship.company.name,
 									internship.roleToCover,
