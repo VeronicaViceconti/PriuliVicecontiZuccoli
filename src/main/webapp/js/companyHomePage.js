@@ -19,41 +19,7 @@
 		showMatchesDivFields(false);
 		document.getElementById("overlap").style.visibility = "visible";
 		cleanUp();
-
-		makeCall("GET", "ProfileManager?page=openOngoingInternships", null,
-			(req) => {
-				if (req.readyState == 4) {
-					switch (req.status) {
-						case 200: // andato a buon fine
-							var jsonData = JSON.parse(req.responseText);
-							if (jsonData != null) {
-								for (const match of jsonData) {
-									createMatchCard(
-										avail_newMatch_section,
-										match.id,
-										match.internship.student.name,
-										match.internship.student.studyCourse,
-										match.internship.roleToCover,
-										match.internship.startingDate + " - " + match.internship.endingDate
-									)
-								}
-							}
-							else {
-								internList.innerText = "No ongoing interrmships";
-							}
-							break;
-						case 403:
-							console.log("errore 403");
-							break;
-						case 412:
-							console.log("errore 412");
-							break;
-						case 500:
-							console.log("errore 500");
-							break;
-					}
-				}
-			});
+		askOngoingIntern();
 	}
 
 	function createCard(Id, name, role, startDate, finishDate, location, openSeats) {
@@ -212,9 +178,9 @@
 		card.appendChild(minorInfo);
 
 		card.addEventListener("click", () => {
+			sessionStorage.setItem("matchID", card.id);
 			switch (cardContainer.id) {
 				case "waitingResponse":
-					sessionStorage.setItem("matchID", card.id);
 					sessionStorage.setItem("MatchType", "WaitResponse");
 					window.location.href = "accept_DeclineStudent_Company.html";
 					break;
@@ -356,7 +322,7 @@
 							if (jsonData != null) {
 								for (const match of jsonData) {
 									createMatchCard(
-
+										avail_newMatch_section,
 										match.id,
 										match.internship.student.name,
 										match.internship.student.studyCourse,

@@ -3,8 +3,9 @@
 	const pageTitle = document.getElementById("pageTitle");
 	const formTitle = document.getElementById("formTitle");
 	const homeBtn = document.getElementById("homeBtn");
+	const profileBtn = document.getElementById("profileBtn");
 	const textArea = document.getElementById("textArea");
-	const framelist = document.getElementById("frameList")
+	const framelist = document.getElementById("frameList");
 	
 	const tab = sessionStorage.getItem("tab");
 	const user = sessionStorage.getItem("user");
@@ -12,8 +13,9 @@
 	var interview;
 	
 	window.onload = function () {
-			console.log("laoding...")
-		    makeCall("GET", "Interviewer?page=requestForm&match=2", null, 
+			var matchID = sessionStorage.getItem("matchID");
+			console.log(matchID);
+		    makeCall("GET", "Interviewer?page=requestForm&match=" + matchID  , null, 
 		        function(x) {
 		            if (x.readyState == XMLHttpRequest.DONE) {
 		                var message = x.responseText;
@@ -47,9 +49,13 @@
 				window.location.href = "homePageStudente.html";
 				break;
 			case "company":
-				//TOO -> redirect to company homepage
+				window.location.href = "homePageCompany.html";
 				break;
 		}
+	})
+	
+	profileBtn.addEventListener("click", () =>{
+		window.location.href = "companyProfile.html";
 	})
 
 	sendBtn.addEventListener("click", (e) => {
@@ -60,7 +66,7 @@
 				function(x) {
 					if (x.readyState == XMLHttpRequest.DONE) {
 			            var message = x.responseText;
-			            
+			            console.log(message);
 			            switch (x.status) {
 			              case 200:  //richiesta andata a buon fine
 			              	console.log("publicato con successo");

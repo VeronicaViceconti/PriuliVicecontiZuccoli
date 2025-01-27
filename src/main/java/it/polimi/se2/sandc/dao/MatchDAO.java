@@ -263,12 +263,12 @@ public class MatchDAO {
 				+ "									from ((interview as i1 inner join matches as m1 on i1.idMatch = m1.id)  inner join publication as p1 on m1.idPublication = p1.id) inner join internship on internship.id = m1.idInternship \n"
 				+ "									where confirmedYN is null or (confirmedYN = true and current_date() < endingDate))";
 		
-		
 		try(PreparedStatement statement = connection.prepareStatement(query)){
 			statement.setInt(1, idMatch);
 			
+			
 			try(ResultSet result = statement.executeQuery()){
-				if (result.isBeforeFirst()) {// the student has already an interview
+				if (!result.isBeforeFirst()) {// the student has already an interview
 					return null;	
 				}
 			}
