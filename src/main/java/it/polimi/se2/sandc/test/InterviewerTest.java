@@ -123,7 +123,7 @@ class InterviewerTest {
     	query = "delete from question";
     	statement.executeUpdate(query);
     	
-    	query = "insert into Student (email, name, address, phoneNumber, psw) values ('user@mail.com', 'user1', 'via tal dei tali', '1234567890', 'user1'), ('user2@mail.com', 'user2', 'via tal dei tali', '1234567890', 'user2')";
+    	query = "insert into Student (email, name, address, phoneNumber, psw, studyCourse) values ('user@mail.com', 'user1', 'via tal dei tali', '1234567890', 'user1', 'computer science')";
     	statement.executeUpdate(query);
     
     	query = "insert into company (email, name, address, phoneNumber, psw) values ('company@mail.com', 'company', 'via tal dei tali', '1234567890', 'company')";

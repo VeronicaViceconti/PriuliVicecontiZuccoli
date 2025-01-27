@@ -88,7 +88,7 @@ class LoginManagerTest {
     	
     	statement.executeUpdate(query);
     	
-    	query = "insert into Student (email, name, address, phoneNumber, psw) values ('user@mail.com', 'user1', 'via tal dei tali', '1234567890', 'user1')";
+    	query = "insert into Student (email, name, address, phoneNumber, psw, studyCourse) values ('user@mail.com', 'user1', 'via tal dei tali', '1234567890', 'user1', 'computer science')";
     	
     	statement.executeUpdate(query);
     
