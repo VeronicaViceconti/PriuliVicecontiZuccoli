@@ -9,26 +9,35 @@
 	const profileBtn = document.getElementById("profileBtn");
 	const internList = document.getElementById("internList")
 	const searchfiltered = document.getElementById("searchKey");
+	const avail_newMatch_section = document.getElementById("internList");
+	const waitingResponse_section = document.getElementById("waitingResponse");
+	const waitingInterview_section = document.getElementById("waitingInterview");
 
 	window.onload = function(e) {
 		e.preventDefault();
 		sessionStorage.setItem('tab', "ongoing");
+		showMatchesDivFields(false);
 		document.getElementById("overlap").style.visibility = "visible";
-		
+
 		makeCall("GET", "ProfileManager?page=openOngoingInternships", null,
 			(req) => {
 				if (req.readyState == 4) {
 					switch (req.status) {
 						case 200: // andato a buon fine
 							var jsonData = JSON.parse(req.responseText);
-							for (const match of jsonData) {
-								createMatchCard(
-									match.id,
-									match.internship.student.name,
-									match.internship.student.studyCourse,
-									match.internship.roleToCover,
-									match.internship.startingDate + " - " + match.internship.endingDate
-								)
+							if (jsonData != null) {
+								for (const match of jsonData) {
+									createMatchCard(
+										match.id,
+										match.internship.student.name,
+										match.internship.student.studyCourse,
+										match.internship.roleToCover,
+										match.internship.startingDate + " - " + match.internship.endingDate
+									)
+								}
+							}
+							else {
+								internList.innerText = "No ongoing interrmships";
 							}
 							break;
 						case 403:
@@ -110,7 +119,7 @@
 		//waitingInterview_section.innerHTML = "";
 	}
 
-	function createMatchCard(id, name, courseOfStudies, roleToCover, period) {
+	function createMatchCard(location, id, name, courseOfStudies, roleToCover, period) {
 		// Dati della card
 		const cardData = {
 			id: id,
@@ -119,9 +128,6 @@
 			roleToCover: roleToCover,
 			period: period
 		};
-
-		// Seleziona il contenitore in cui aggiungere la card
-		const internList = document.getElementById("internList");
 
 		// Crea il div principale della card
 		const card = document.createElement("div");
@@ -204,22 +210,21 @@
 		card.appendChild(minorInfo);
 
 		// Inserisci la card nel contenitore
-		internList.appendChild(card);
+		location.appendChild(card);
 	}
-	
-	searchfiltered.addEventListener("click", () =>{
-		alert("clicked");
-  		searchfiltered.placeholder = ''; 
+
+	searchfiltered.addEventListener("click", () => {
+		searchfiltered.placeholder = '';
 	});
-	
+
 	searchfiltered.addEventListener('blur', function() {
-		 if(searchfiltered.value === ''){
-		    searchfiltered.placeholder = 'Search for internships'; 
-		 }
+		if (searchfiltered.value === '') {
+			searchfiltered.placeholder = 'Search for internships';
+		}
 	});
-	
+
 	searchBtn.addEventListener("click", () => {
-		
+
 		var searchKey = document.getElementById("searchKey").value;
 		if (searchKey === "") {
 			return;
@@ -270,10 +275,10 @@
 		waitingFeedInternship.style.color = "#2e4057";
 		matchesTab.style.color = "#a37659";
 
+		showMatchesDivFields(true);
 		sessionStorage.setItem('tab', "matches");
 		document.getElementById("overlap").style.visibility = "hidden";
 		internList.innerHTML = null;
-		
 
 		makeCall("GET", "MatchManager?page=showMatches", null,
 			(req) => {
@@ -281,18 +286,25 @@
 					switch (req.status) {
 						case 200:
 							var jsonData = JSON.parse(req.responseText);
-							if(jsonData != null){
-								for(let i = 0; i < jsonData.length; i++){
-									var studentData = jsonData[i];
+							console.log(jsonData);
+							if (jsonData != null) {
+								for (const match of jsonData) {
+									var pageLocation = avail_newMatch_section;
+									if ("acceptedYNCompany" in match && "acceptedYNStudent" in match) {
+										pageLocation = waitingInterview_section
+									}
+									else if ("acceptedYNStudent" in match) {
+										pageLocation = waitingResponse_section;
+									}
 									createMatchCard(
-										studentData.id,
-										studentData.publication.student.name,
-										studentData.publication.student.studyCourse,
-										studentData.internship.roleToCover,
-										studentData.internship.startingDate + " - " + studentData.internship.endingDate);								
+										pageLocation,
+										match.id,
+										match.publication.student.name,
+										match.publication.student.studyCourse,
+										match.internship.roleToCover,
+										match.internship.startingDate + " - " + match.internship.endingDate);
 								}
 							}
-							
 							break;
 						case 403:
 							console.log("errore 403");
@@ -317,23 +329,30 @@
 		matchesTab.style.color = "#2e4057";
 		sessionStorage.setItem('tab', "ongoing");
 		internList.innerHTML = null;
+		showMatchesDivFields(false);
 		document.getElementById("overlap").style.visibility = "visible";
-		
+
 		makeCall("GET", "ProfileManager?page=openOngoingInternships", null,
 			(req) => {
 				if (req.readyState == 4) {
 					switch (req.status) {
 						case 200: // andato a buon fine
 							var jsonData = JSON.parse(req.responseText);
-							for (const match of jsonData) {
-								createMatchCard(
-									match.id,
-									match.internship.student.name,
-									match.internship.student.studyCourse,
-									match.internship.roleToCover,
-									match.internship.startingDate + " - " + match.internship.endingDate
-								)
+							if (jsonData != null) {
+								for (const match of jsonData) {
+									createMatchCard(
+										match.id,
+										match.internship.student.name,
+										match.internship.student.studyCourse,
+										match.internship.roleToCover,
+										match.internship.startingDate + " - " + match.internship.endingDate
+									)
+								}
 							}
+							else {
+								internList.innerText = "No ongoing interrmships";
+							}
+
 							break;
 						case 403:
 							console.log("errore 403");
@@ -357,8 +376,8 @@
 		waitingFeedInternship.style.color = "#2e4057";
 		matchesTab.style.color = "#2e4057";
 		sessionStorage.setItem('tab', "proposed");
+		showMatchesDivFields(false);
 		document.getElementById("overlap").style.visibility = "hidden";
-
 		internList.innerHTML = null;
 
 		makeCall("GET", "PublicationManager?page=proposedInternships", null,
@@ -402,9 +421,10 @@
 		waitingFeedInternship.style.color = "#a37659";
 		matchesTab.style.color = "#2e4057";
 
+		showMatchesDivFields(false);
 		sessionStorage.setItem('tab', "waitingFeed");
 		internList.innerHTML = null;
-		
+
 		makeCall("GET", "PublicationManager?page=waitingFeedbackInternships", null,
 			(req) => {
 				if (req.readyState == 4) {
@@ -435,8 +455,8 @@
 				}
 			});
 	});
-	
-	newInternship.addEventListener("click", () =>{
+
+	newInternship.addEventListener("click", () => {
 		window.location.href = "InternshipPublication.html";
 	})
 
@@ -452,9 +472,9 @@
 	internList.addEventListener("click", () => {
 		const card = event.target.closest(".card");
 		var tab = sessionStorage.getItem("tab");
-		
+
 		if (card) {
-			switch (tab){
+			switch (tab) {
 				case "matches":
 					console.log("matches");
 					sessionStorage.setItem("matchID", card.id);
@@ -471,7 +491,18 @@
 					window.location.href = "internshipView_Company.html";
 					break;
 			}
-				
+
 		}
 	})
+
+	function showMatchesDivFields(choice) {
+		var visibility = "hidden";
+		if (choice == true) {
+			visibility = "visible";
+		}
+		const matchesElements = document.querySelectorAll('.elenchi [data-tab="matches"]');
+		matchesElements.forEach(element => {
+			element.style.visibility = visibility;
+		});
+	}
 }

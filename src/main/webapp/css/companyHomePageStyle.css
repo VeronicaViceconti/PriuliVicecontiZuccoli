@@ -24,22 +24,11 @@ body {
 }
 
 .sfondo-elenco {
-  position: relative;
-  top: 313px;
-  width: 100%;
-  display: grid;
-  grid-template-columns: auto auto;
-  background-color: #f5e9dd80;
-  border-radius: 20px 20px 0px 0px;
-  padding: 10px;
-}
-
-.sfondo-elenco {
 	width: 100%;
 	display: grid;
 	grid-template-columns: auto auto;
 	background-color: #f5e9dd80;
-	border-radius: 20px 20px 0px 0px;
+	border-radius: 20px;
 	padding: 10px;
 }
 
