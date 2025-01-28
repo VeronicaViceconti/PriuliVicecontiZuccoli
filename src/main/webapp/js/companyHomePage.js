@@ -19,7 +19,29 @@
 		showMatchesDivFields(false);
 		document.getElementById("overlap").style.visibility = "visible";
 		cleanUp();
-		askOngoingIntern();
+		//askOngoingIntern();
+		
+		
+		makeCall("GET", "Interviewer?page=getInterviewInfo&ID="+13, null,
+			(req) => {
+				if (req.readyState == 4) {
+					switch (req.status) {
+						case 200: // andato a buon fine
+							var jsonData = JSON.parse(req.responseText);
+							console.log(jsonData);
+							break;
+						case 403:
+							console.log("errore 403");
+							break;
+						case 412:
+							console.log("errore 412");
+							break;
+						case 500:
+							console.log("errore 500");
+							break;
+					}
+				}
+			});
 	}
 
 	function createCard(Id, name, role, startDate, finishDate, location, openSeats) {

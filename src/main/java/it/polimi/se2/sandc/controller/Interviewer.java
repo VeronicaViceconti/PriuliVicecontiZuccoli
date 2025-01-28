@@ -97,6 +97,10 @@ public class Interviewer extends HttpServlet {
 			 	case "getResponse":
 			 		getAnswers(email, request, response);
 			 		break;
+			 	case "getInterviewInfo":
+			 		Integer id = Integer.parseInt(request.getParameter("ID"));
+			 		selectInterview(response,id);
+			 		break;
 			 	default:
 			 		response.setStatus(HttpServletResponse.SC_NOT_FOUND);
 			 		response.getWriter().println("page not found");
@@ -104,6 +108,23 @@ public class Interviewer extends HttpServlet {
 			 } 
 		}
 		
+	}
+
+	private void selectInterview(HttpServletResponse response,Integer id) throws IOException {
+		
+		InterviewDAO interviewDAO = new InterviewDAO(connection);
+		Interview interview = null;
+		try {
+			interview = interviewDAO.selectInterview(id);
+			String result = new Gson().toJson(interview);
+			response.setContentType("application/json");
+			response.getWriter().write(result);
+			response.setStatus(HttpServletResponse.SC_OK);
+		} catch (SQLException e) {
+			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+			response.getWriter().println("No interview found!");
+			return;
+		}
 	}
 
 	/**

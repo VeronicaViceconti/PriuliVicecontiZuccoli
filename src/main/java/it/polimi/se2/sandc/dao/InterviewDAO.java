@@ -17,6 +17,7 @@ import it.polimi.se2.sandc.bean.Interview;
 import it.polimi.se2.sandc.bean.Match;
 import it.polimi.se2.sandc.bean.Publication;
 import it.polimi.se2.sandc.bean.Question;
+import it.polimi.se2.sandc.bean.Student;
 import it.polimi.se2.sandc.bean.User;
 
 public class InterviewDAO {
@@ -88,5 +89,56 @@ public class InterviewDAO {
 			
 			statement.executeUpdate();
 		}
+	}
+
+	public Interview selectInterview(Integer id) throws SQLException { //match id, need to find the info about the interview
+		String query = "SELECT i.id as intID, dat,f.id as formID,txt,answer FROM matches as m join interview as i on i.idMatch = m.id join form as f on f.id = i.idForm join question as q on q.idForm = f.id where m.id = ?;";
+		PreparedStatement pstatement = null;
+		ResultSet result2 = null;
+		try {
+			pstatement = connection.prepareStatement(query);
+			pstatement.setInt(1, id);
+			result2 = pstatement.executeQuery();
+			
+			if (!result2.isBeforeFirst()) {// no results, no interview found for that match
+				return null;	
+			}
+			else { 
+					result2.next();
+					Interview interview = new Interview();
+					interview.setId(result2.getInt("intID"));
+					Date sqlDate = result2.getDate("dat");
+		            if (sqlDate != null) {
+		            	interview.setData(sqlDate); 
+		            }
+		           Form form = new Form();
+		           form.setId(result2.getInt("formID"));
+		           ArrayList<Question> questions = new ArrayList<>();
+		           Question q = new Question();
+		           q.setText(result2.getString("txt"));
+		           q.setAnswer(result2.getString("answer"));
+		           questions.add(q);
+		           while(result2.next()) {
+		        	   Question q2 = new Question();
+		        	   q2.setText(result2.getString("text"));
+			           q2.setAnswer(result2.getString("answer"));
+			           questions.add(q2);
+		           }
+		           form.setQuestions(questions);
+		           interview.setForm(form);
+		           
+				return interview;	
+			}
+			
+		} catch(SQLException e) {
+			throw new SQLException("Error while finding match");
+		}finally {
+			try {
+				pstatement.close(); // devo chiudere prepared statement
+			} catch (Exception e) {
+				throw new SQLException("Error while trying to close prepared statement");
+			}
+		}
+		
 	}
 }
