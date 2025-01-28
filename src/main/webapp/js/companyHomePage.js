@@ -12,6 +12,7 @@
 	const avail_newMatch_section = document.getElementById("internList");
 	const waitingResponse_section = document.getElementById("waitingResponse");
 	const waitingInterview_section = document.getElementById("waitingInterview");
+	const acceptDeclineInterview_section = document.getElementById("accept/DeclineInterview");
 
 	window.onload = function(e) {
 		e.preventDefault();
@@ -19,29 +20,7 @@
 		showMatchesDivFields(false);
 		document.getElementById("overlap").style.visibility = "visible";
 		cleanUp();
-		//askOngoingIntern();
-		
-		
-		makeCall("GET", "Interviewer?page=getInterviewInfo&ID="+13, null,
-			(req) => {
-				if (req.readyState == 4) {
-					switch (req.status) {
-						case 200: // andato a buon fine
-							var jsonData = JSON.parse(req.responseText);
-							console.log(jsonData);
-							break;
-						case 403:
-							console.log("errore 403");
-							break;
-						case 412:
-							console.log("errore 412");
-							break;
-						case 500:
-							console.log("errore 500");
-							break;
-					}
-				}
-			});
+		askOngoingIntern();
 	}
 
 	function createCard(Id, name, role, startDate, finishDate, location, openSeats) {
@@ -300,11 +279,13 @@
 							if (jsonData != null) {
 								for (const match of jsonData) {
 									var pageLocation = avail_newMatch_section;
-									if ("acceptedYNCompany" in match && "acceptedYNStudent" in match) {
-										pageLocation = waitingInterview_section
+									if("acceptedYNCompany" in match && "acceptedYNStudent" in match && "confirmedYN" in match && "confirmedYN" == 1){
+										pageLocation = acceptDeclineInterview_section;
 									}
-									else if ("acceptedYNCompany" in match) {
+									else if ("acceptedYNCompany" in match && !("acceptedYNStudent" in match)) {
 										pageLocation = waitingResponse_section;
+									}else if ("acceptedYNCompany" in match && "acceptedYNStudent" && "confirmedYN" in match && "confirmedYN" == 0) {
+										pageLocation = waitingInterview_section;
 									}
 									createMatchCard(
 										pageLocation,
