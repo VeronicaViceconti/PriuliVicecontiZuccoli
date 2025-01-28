@@ -268,7 +268,7 @@ public class MatchDAO {
 			
 			
 			try(ResultSet result = statement.executeQuery()){
-				if (!result.isBeforeFirst()) {// the student has already an interview
+				if (result.isBeforeFirst()) {// the student has already an interview
 					return null;	
 				}
 			}
