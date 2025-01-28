@@ -80,5 +80,41 @@
             </div>
         </div>
     </div>
+    <script type="module">
+	    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-app.js";
+	    import { getMessaging, getToken } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-messaging.js";
+	    
+	    const firebaseConfig = {
+	    	    apiKey: "AIzaSyAGyk2tmB0nHL1pLmwen13ojjH8CclCWkc",
+	    	    authDomain: "studentsandcompanies-780ac.firebaseapp.com",
+	    	    projectId: "studentsandcompanies-780ac",
+	    	    storageBucket: "studentsandcompanies-780ac.firebasestorage.app",
+	    	    messagingSenderId: "517678657535",
+	    	    appId: "1:517678657535:web:5c50c910bd2c16c8c181ca",
+	    	    measurementId: "G-8ZRC27SYMV"
+	    	  };
+	    
+	    const app = initializeApp(firebaseConfig);
+	    const messaging = getMessaging(app);
+	    
+	    navigator.serviceWorker.register("sw.js").then(registration => {
+	    	getToken(messaging, { 
+	    		serviceWorkerRegistration: registration,
+	    		vapidKey: 'BBJchtTR2ahynNkWIvrDboxIGbD2gOT2EWzwcrbojvt1UZuvbIQ_fj1Hs9aIFVdHYm1N-1YHvdZIikhVibEGOHw' }).then((currentToken) => {
+		    	  if (currentToken) {
+		    		  console.log("current token is: " + currentToken);
+		    	    // Send the token to your server and update the UI if necessary
+		    	    // ...
+		    	  } else {
+		    	    // Show permission request UI
+		    	    console.log('No registration token available. Request permission to generate one.');
+		    	    // ...
+		    	  }
+		    	}).catch((err) => {
+		    	  console.log('An error occurred while retrieving token. ', err);
+		    	  // ...
+		    	});
+	    });
+    </script>
 </body>
 </html>

@@ -1,47 +1,73 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://xmlns.jcp.org/xml/ns/javaee" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_4_0.xsd" version="4.0">
-  <display-name>SandC</display-name>
-  
-  <context-param>
-    <param-name>dbUrl</param-name>
-    <param-value>jdbc:mysql://localhost:3306/sandc?serverTimezone=UTC</param-value>
-  </context-param>
-  
-  <session-config>
-        <session-timeout>60</session-timeout> <!-- Timeout in minuti -->
-  </session-config>
-  
-  <context-param>
-    <param-name>dbUser</param-name>
-    <param-value>root</param-value>
-  </context-param>
-  
-  <context-param>
-    <param-name>dbPassword</param-name>
-    <param-value>asdqwe123!"£</param-value>
-  </context-param>
-  
-  <context-param>
-    <param-name>dbDriver</param-name>
-    <param-value>com.mysql.cj.jdbc.Driver</param-value>
-  </context-param>
-  <context-param>
-	<param-name>pathUploadCv</param-name>
-	<param-value>C:\\Users\\epriu\\eclipse-workspace\\cv\\</param-value>
-  </context-param>
-  
-  <filter> 
-      <filter-name>LoginChecker</filter-name>
-      <filter-class>it.polimi.se2.sandc.filter.LoginChecker</filter-class> 
- </filter>
-   <filter-mapping> 
-    <filter-name>LoginChecker</filter-name> 
-	<url-pattern>/CvPublication</url-pattern>
- </filter-mapping> 
- 
-  <welcome-file-list>
-    <welcome-file>index.html</welcome-file>
-  </welcome-file-list>
-  
-  
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+	xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_4_0.xsd"
+	version="4.0">
+	<display-name>SandC</display-name>
+
+	<context-param>
+		<param-name>dbUrl</param-name>
+		<param-value>jdbc:mysql://localhost:3306/sandc?serverTimezone=UTC</param-value>
+	</context-param>
+
+	<session-config>
+		<session-timeout>60</session-timeout> <!-- Timeout in minuti -->
+	</session-config>
+
+	<context-param>
+		<param-name>dbUser</param-name>
+		<param-value>root</param-value>
+	</context-param>
+
+	<context-param>
+		<param-name>dbPassword</param-name>
+		<param-value>KKlloopp9900</param-value>
+	</context-param>
+
+	<context-param>
+		<param-name>dbDriver</param-name>
+		<param-value>com.mysql.cj.jdbc.Driver</param-value>
+	</context-param>
+	<context-param>
+		<param-name>pathUploadCv</param-name>
+		<param-value>C:\\Users\\epriu\\eclipse-workspace\\cv\\</param-value>
+	</context-param>
+
+	<filter>
+		<filter-name>LoginChecker</filter-name>
+		<filter-class>it.polimi.se2.sandc.filter.LoginChecker</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>LoginChecker</filter-name>
+		<url-pattern>/CvPublication</url-pattern>
+	</filter-mapping>
+
+	<welcome-file-list>
+		<welcome-file>index.html</welcome-file>
+	</welcome-file-list>
+
+
+	<!-- FOR THE NOTIFICATION -> DO NOT TOUCH -->
+	<servlet-mapping>
+		<servlet-name>Quercus Servlet</servlet-name>
+		<url-pattern>*.htaccess</url-pattern>
+	</servlet-mapping>
+
+	<description>Caucho Technology's PHP Implementation</description>
+
+	<servlet>
+		<servlet-name>Quercus Servlet</servlet-name>
+		<servlet-class>com.caucho.quercus.servlet.QuercusServlet</servlet-class>
+
+		<init-param>
+			<param-name>license-directory</param-name>
+			<param-value>WEB-INF/licenses</param-value>
+		</init-param>
+	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>Quercus Servlet</servlet-name>
+		<url-pattern>*.php</url-pattern>
+	</servlet-mapping>
+
 </web-app>
