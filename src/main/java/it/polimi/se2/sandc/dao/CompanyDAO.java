@@ -453,9 +453,11 @@ public class CompanyDAO {
 			pstatement.setInt(1, matchId);
 			result = pstatement.executeQuery();
 			if (!result.isBeforeFirst()) {// no results, no internship found
+				System.out.println("no internship");
 				return null;
 			}
 			else { //found the internship
+				System.out.println("internship!");
 				result.next();
 				match.setId(result.getInt("mId"));
 				internship.setId(result.getInt("idInter"));

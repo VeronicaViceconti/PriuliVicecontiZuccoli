@@ -74,7 +74,12 @@ public class Interviewer extends HttpServlet {
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		HttpSession s = request.getSession();
 		
-
+		if (s.getAttribute("user") == null) {
+			response.setStatus(HttpServletResponse.SC_PRECONDITION_FAILED);
+			response.getWriter().println("Utente non trovato..");
+			request.getSession(false).invalidate();
+			return;
+        }
 		String email =  ((User) s.getAttribute("user")).getEmail();
 		String userType = (String) s.getAttribute("userType");
 		

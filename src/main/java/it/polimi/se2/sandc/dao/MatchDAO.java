@@ -174,8 +174,7 @@ public class MatchDAO {
 	
 	public List<Match> findCompanyMatches(String emailCompany) throws SQLException {
 		String query = null;
-		query = "SELECT m.id as matchID, i.id as internID, idPublication,acceptedYNStudent,acceptedYNCompany,roleToCover,startingDate,endingDate,c.address,s.name,s.studyCourse from matches as m join internship as i on m.idInternship = i.id join company as c on c.email = i.company join publication as pub on pub.id = m.idPublication join student as s on s.email = pub.student WHERE c.email = ? and m.id not in (select idMatch from interview) and current_date() < endingDate;";
-
+		query = "SELECT m.id as matchID, i.id as internID, idPublication,acceptedYNStudent,acceptedYNCompany,roleToCover,startingDate,endingDate,confirmedYN,c.address,s.name,s.studyCourse FROM matches as m JOIN internship as i on i.id = m.idInternship join company as c on c.email = i.company JOIN publication as p on  p.id = m.idPublication right join student as s on s.email = p.student left join interview on interview.idMatch = m.id where c.email = ? and current_date() < endingDate;";
 		PreparedStatement pstatement = null;
 		ResultSet result2 = null;
 		List<Match> matches = new ArrayList<>();
@@ -197,6 +196,9 @@ public class MatchDAO {
 			        }
 					if(result2.getString("acceptedYNCompany") != null) {
 			            match.setAcceptedCompany(result2.getBoolean("acceptedYNCompany"));
+			        }
+					if(result2.getString("confirmedYN") != null) {
+			            match.setconfirmedYN(result2.getBoolean("confirmedYN"));
 			        }
 					Publication pub = new Publication();
 					pub.setId(result2.getInt("idPublication"));
@@ -323,6 +325,8 @@ public class MatchDAO {
 			try(ResultSet ris = statement.getGeneratedKeys()){
 				if(ris.next()) {
 					interview.setId(ris.getInt(1));
+				}else {
+					return null;
 				}
 			}
 		

@@ -6,6 +6,7 @@ public class Match{
 	private Boolean acceptedYNCompany; 
 	private Publication publication; 
 	private Internship internship;
+	private Boolean confirmedYN;
 	
 	
 	public int getId() {
@@ -23,9 +24,19 @@ public class Match{
 	public Boolean isAcceptedCompany() {
 		return acceptedYNCompany;
 	}
+	
 	public void setAcceptedCompany(Boolean accepted) {
 		this.acceptedYNCompany = accepted;
 	}
+	
+	public void setconfirmedYN(Boolean confirmedYN) {
+		this.confirmedYN = confirmedYN;
+	}
+	public Boolean isconfirmedYN() {
+		return confirmedYN;
+	}
+	
+	
 	public Publication getPublication() {
 		return publication;
 	}

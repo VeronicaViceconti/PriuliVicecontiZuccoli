@@ -109,6 +109,55 @@ delimiter ;
  end//
  
  delimiter //
+ 
+ create trigger oneOngoingForStudent
+ before update on interview
+ for each row
+ begin
+	DECLARE emailStudent varchar(50);
+    SELECT email into emailStudent FROM student as s join publication as p on s.email = p.student join matches as m on m.idPublication = p.id where m.id = new.idMatch;
+	if( new.confirmedYN is true and (SELECT count(*) FROM matches as m JOIN internship as i on i.id = m.idInternship JOIN publication as p on  p.id = m.idPublication right join student as s on s.email = p.student join interview on interview.idMatch = m.id WHERE s.email = emailStudent and interview.confirmedYN = 1 and i.startingDate <= current_date() and i.endingDate >= current_date()) = 1 ) then
+        DELETE from matches where id = new.idMatch;
+        DELETE from form where id = new.idForm;
+	end if;
+ end//
+ 
+ delimiter //
+ 
+ create trigger matchMakerStudents
+ after insert on Preference 
+ for each row    
+ begin 
+  declare num Integer;
+    select count(*) into num
+    from preference
+  where idPublication = new.idPublication;
+    
+  insert into Matches (idPublication, idInternship)  
+    select idPublication, idInternship 
+    from  Preference as p inner join Requirement as r on p.idWorkingPreferences = r.idWorkingPreference
+        where idPublication = new.idPublication and not exists (select * from Matches as m where m.idPublication = p.idPublication and r.idInternship = m.idInternship)
+        group by idPublication, idInternship
+        having count(*) >= (num - 1) or count(*) >= ((select count(*) from requirement where idInternship = r.idInternship) -1) ;
+ end //
+ 
+ create trigger matchMakerCompanies
+ after insert on Requirement 
+ for each row 
+ begin 
+  declare num Integer;
+    select count(*) into num
+    from requirement
+  where idInternship = new.idInternship; 
+
+  insert into Matches (idPublication, idInternship)  
+    select idPublication, idInternship 
+    from  Preference as p inner join Requirement as r on p.idWorkingPreferences = r.idWorkingPreference
+        where idInternship = new.idInternship and not exists (select * from Matches as m where m.idPublication = p.idPublication and r.idInternship)
+        group by idPublication, idInternship
+        having count(*) >= (num - 1) or count(*) >= ((select count(*) from preference where idPublication = p.idPublication) -1) ;
+ end //
+ 
  create trigger deletePubYesInterview
  after update on interview
  for each row
