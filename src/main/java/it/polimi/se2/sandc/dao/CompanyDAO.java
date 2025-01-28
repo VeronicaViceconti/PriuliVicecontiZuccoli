@@ -33,7 +33,7 @@ public class CompanyDAO {
 		List<Internship> internships = new ArrayList<>();
 		String query = null;
 		
-		query = "SELECT * FROM internship AS i JOIN company ON company.email = i.company WHERE NOT EXISTS (SELECT * FROM matches AS m JOIN publication AS p ON m.idPublication = p.id WHERE m.idInternship = i.id AND p.student = ?) AND openSeats > 0 AND name = ?";
+		query = "SELECT * FROM internship AS i JOIN company ON company.email = i.company WHERE NOT EXISTS (SELECT * FROM matches AS m JOIN publication AS p ON m.idPublication = p.id WHERE m.idInternship = i.id AND p.student = ?) AND openSeats > 0 AND name = ? AND current_date() < endingDate";
 	    PreparedStatement statement = connection.prepareStatement(query);
 	    
 	    statement.setString(1, emailStudent);
@@ -89,11 +89,10 @@ public class CompanyDAO {
 		List<Internship> internships = new ArrayList<>();
 		String query = null;
 		//need to find the internships that doesn't have matches with publications of that student
-		query = "SELECT * FROM sandc.internship AS i JOIN company ON i.company = company.email WHERE NOT EXISTS (SELECT * FROM sandc.matches AS m JOIN sandc.publication AS p ON m.idPublication = p.id	WHERE m.idInternship = i.id AND p.student = ? ) AND openSeats > 0;";
-
+		query = "SELECT * FROM sandc.internship AS i JOIN company ON i.company = company.email WHERE NOT EXISTS (SELECT * FROM sandc.matches AS m JOIN sandc.publication AS p ON m.idPublication = p.id	WHERE m.idInternship = i.id AND p.student = ? ) AND openSeats > 0 AND current_date() < endingDate;";
+		
 	    PreparedStatement statement = connection.prepareStatement(query);
 	    statement.setString(1, emailStudent);
-	    
         ResultSet result = statement.executeQuery();
         		
 		try {
@@ -364,6 +363,8 @@ public class CompanyDAO {
 			statement.setString(1, email);
 			
 			try(ResultSet result = statement.executeQuery()){
+				if(result.isBeforeFirst()) //no internship that are waiting feedback
+					return null;
 				while(result.next()) {
 					Company c = new Company();
 					
