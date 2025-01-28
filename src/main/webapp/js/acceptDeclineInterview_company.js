@@ -14,35 +14,34 @@
 	const studentAddress = document.getElementById("studentAddress");
 
 	const pdf = document.getElementById("pdf-frame");
+	var interviewID;
 
 	window.onload = function() {
 		var matchID = sessionStorage.getItem("matchID");
-		
-		printQuestionAndAnswer("mario","rossi");
-		printQuestionAndAnswer("peppino","clandestino")
-		printQuestionAndAnswer("mariolone","bubbarello");
-		
-		makeCall("GET", "Interviewer?page=getResponse&match=" + matchID, null,
+
+
+		// get user info
+		makeCall("GET", "MatchManager?page=openMatch&IDmatch=" + matchID, null,
 			(req) => {
 				if (req.readyState == 4) {
 					switch (req.status) {
 						case 200: // andato a buon fine
 							var jsonData = JSON.parse(req.responseText);
 							console.log(jsonData);
-							/*if(jsonData != null){
+							if (jsonData != null) {
 								studentPreferences.innerText = "";
 								studentName.innerText = jsonData.student.name;
 								studentCourseStudy.innerText = jsonData.student.studyCourse;
 								studentEmail.innerText = jsonData.student.email;
 								studentPhone.innerText = jsonData.student.phoneNumber;
 								studentAddress.innerText = jsonData.student.address;
-								if ("choosenPreferences" in jsonData){
-									for(const preference of jsonData.choosenPreferences)
-										studentPreferences.innerText += preference.text+"; ";
-								}else{
+								if ("choosenPreferences" in jsonData) {
+									for (const preference of jsonData.choosenPreferences)
+										studentPreferences.innerText += preference.text + "; ";
+								} else {
 									studentPreferences.innerText += "no preferences";
 								}
-								if(jsonData.student.cv != null){
+								if (jsonData.student.cv != null) {
 									var pdfBase64 = jsonData.student.cv;
 									var pdfArrayBuffer = base64ToArrayBuffer(pdfBase64);
 									var blob = new Blob([pdfArrayBuffer], { type: 'application/pdf' });
@@ -51,10 +50,7 @@
 									// Imposta l'URL nell'iframe
 									pdf.src = url;
 								}
-							}*/
-
-							//TODO: inserire i bottoni accept decline
-
+							}
 							break;
 						case 403:
 							console.log("errore 403");
@@ -68,6 +64,39 @@
 					}
 				}
 			});
+
+
+
+		// get interview sunUp
+		makeCall("GET", "Interviewer?page=getResponse&match=" + matchID, null,
+			(req) => {
+				if (req.readyState == 4) {
+					switch (req.status) {
+						case 200: // andato a buon fine
+							var jsonData = JSON.parse(req.responseText);
+							console.log(jsonData);
+							if (jsonData != null) {
+								interviewID = jsonData.id;
+								//inserimento interview sumUp
+								for (const question of jsonData.form.questions) {
+									printQuestionAndAnswer(question.text, question.answer);
+								}
+							}
+							break;
+						case 403:
+							console.log("errore 403");
+							break;
+						case 412:
+							console.log("errore 412");
+							break;
+						case 500:
+							console.log("errore 500");
+							break;
+					}
+				}
+			});
+
+
 	}
 
 	profileBtn.addEventListener("click", () => {
@@ -79,9 +108,7 @@
 	})
 
 	acceptBtn.addEventListener("click", () => {
-		alert("accept");
-		/*var matchID = sessionStorage.getItem("matchID");
-		makeCall("GET", "MatchManager?page=acceptMatch&accept=1&IDmatch=" + matchID, null,
+		makeCall("GET", "Interviewer?page=submitSelection&interview=" + interviewID + "&selected=1", null,
 			(req) => {
 				if (req.readyState == 4) {
 					switch (req.status) {
@@ -99,17 +126,15 @@
 							break;
 					}
 				}
-			});*/
+			});
 	})
-	
+
 	declineBtn.addEventListener("click", () => {
-		alert("decline");
-		/*var matchID = sessionStorage.getItem("matchID");
-		makeCall("GET", "MatchManager?page=acceptMatch&accept=0&IDmatch=" + matchID, null,
+		makeCall("GET", "Interviewer?page=submitSelection&interview=" + interviewID + "&selected=0", null,
 			(req) => {
 				if (req.readyState == 4) {
 					switch (req.status) {
-						case 200: // andato a buon fine
+						case 200:
 							homeBtn.click();
 							break;
 						case 403:
@@ -123,7 +148,7 @@
 							break;
 					}
 				}
-			});*/
+			});
 	})
 
 	function base64ToArrayBuffer(base64) {
@@ -146,7 +171,7 @@
 		var answerContainer = document.createElement("div");
 		answerContainer.className = "answer";
 		answerContainer.innerText = answer;
-		
+
 		interviewSumUp.appendChild(questionContainer);
 		interviewSumUp.appendChild(answerContainer);
 	}

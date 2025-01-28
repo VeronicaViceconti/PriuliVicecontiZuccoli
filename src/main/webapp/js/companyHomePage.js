@@ -74,11 +74,11 @@
 			sectionDiv.appendChild(textDiv);
 			infoDiv.appendChild(sectionDiv);
 		});
-		
+
 		const first_div = infoDiv.querySelector('div:first-of-type');
-		
+
 		first_div.style.width = "200px";
-		first_div.querySelector('div:first-of-type').style.overflow = "hidden"; 
+		first_div.querySelector('div:first-of-type').style.overflow = "hidden";
 		first_div.querySelector('div:first-of-type').style.textOverflow = "ellipsis";
 
 		// Aggiungi le informazioni al contenitore principale
@@ -186,13 +186,19 @@
 
 		card.addEventListener("click", () => {
 			sessionStorage.setItem("matchID", card.id);
-			switch (cardContainer.id) {
-				case "waitingResponse":
+			switch (cardContainer) {
+				case avail_newMatch_section:
+					window.location.href = "accept_DeclineStudent_Company.html";
+					break;
+				case waitingResponse_section:
 					sessionStorage.setItem("MatchType", "WaitResponse");
 					window.location.href = "accept_DeclineStudent_Company.html";
 					break;
-				case "waitingInterview":
+				case waitingInterview_section:
 					window.location.href = "interview.html";
+					break;
+				case acceptDeclineInterview_section:
+					window.location.href = "acceptDeclineInterview_company.html";
 					break;
 			}
 		});
@@ -279,12 +285,12 @@
 							if (jsonData != null) {
 								for (const match of jsonData) {
 									var pageLocation = avail_newMatch_section;
-									if("acceptedYNCompany" in match && "acceptedYNStudent" in match && "confirmedYN" in match && "confirmedYN" == 1){
+									if ("acceptedYNCompany" in match && "acceptedYNStudent" in match && "confirmedYN" in match && match.confirmedYN == true) {
 										pageLocation = acceptDeclineInterview_section;
 									}
 									else if ("acceptedYNCompany" in match && !("acceptedYNStudent" in match)) {
 										pageLocation = waitingResponse_section;
-									}else if ("acceptedYNCompany" in match && "acceptedYNStudent" && "confirmedYN" in match && "confirmedYN" == 0) {
+									} else if ("acceptedYNCompany" in match && "acceptedYNStudent" && "confirmedYN" in match && match.confirmedYN == false) {
 										pageLocation = waitingInterview_section;
 									}
 									createMatchCard(
@@ -428,9 +434,9 @@
 						case 200: // andato a buon fine
 							var jsonData = JSON.parse(req.responseText);
 							console.log(jsonData);
-							if(jsonData != null){
+							if (jsonData != null) {
 								for (const internship of jsonData) {
-									createCard( 
+									createCard(
 										internship.id,
 										internship.publication.student.name,
 										internship.internship.roleToCover,
@@ -441,7 +447,7 @@
 									)
 								}
 							}
-							
+
 							break;
 						case 403:
 							console.log("errore 403");
@@ -473,7 +479,7 @@
 	internList.addEventListener("click", () => {
 		const card = event.target.closest(".card");
 		var tab = sessionStorage.getItem("tab");
-		
+
 		sessionStorage.setItem("MatchType", "NewMatch");
 		if (card) {
 			switch (tab) {
