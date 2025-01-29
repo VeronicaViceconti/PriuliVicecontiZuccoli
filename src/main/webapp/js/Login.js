@@ -25,6 +25,26 @@
 		showLogin();
 	});
 
+	document.getElementById("sendBtn").addEventListener('click', (e) => {
+		e.preventDefault;
+		var token = sessionStorage.getItem("notifToken");
+		console.log("nel backend : " + token);
+
+		fetch('https://babbochat.altervista.org/SC_Notifications/php-FCM/send.php', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
+			},
+			body: new URLSearchParams({
+				token: token,
+				notifTitle: "Bella li",
+				notifBody: "Pataterk"
+			})
+		})
+			.then(response => response.text())
+			.then(data => console.log(data));
+	});
+
 	document.getElementById("signinbutton").addEventListener('click', (e) => {
 		e.preventDefault();
 		var form = e.target.closest("form");
@@ -66,7 +86,6 @@
 
 						switch (x.status) {
 							case 200:  //richiesta andata a buon fine
-								document.getElementById("errors").textContent = "FUNZIA TODOS";
 								showLogin();
 								break;
 							case 400: // bad request
@@ -94,7 +113,7 @@
 						var message = x.responseText;
 						switch (x.status) {
 							case 200:  //richiesta andata a buon fine
-								
+
 
 								var jsonData = JSON.parse(message);
 								if (jsonData === "company")

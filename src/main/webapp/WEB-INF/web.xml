@@ -46,28 +46,4 @@
 		<welcome-file>index.html</welcome-file>
 	</welcome-file-list>
 
-
-	<!-- FOR THE NOTIFICATION -> DO NOT TOUCH -->
-	<servlet-mapping>
-		<servlet-name>Quercus Servlet</servlet-name>
-		<url-pattern>*.htaccess</url-pattern>
-	</servlet-mapping>
-
-	<description>Caucho Technology's PHP Implementation</description>
-
-	<servlet>
-		<servlet-name>Quercus Servlet</servlet-name>
-		<servlet-class>com.caucho.quercus.servlet.QuercusServlet</servlet-class>
-
-		<init-param>
-			<param-name>license-directory</param-name>
-			<param-value>WEB-INF/licenses</param-value>
-		</init-param>
-	</servlet>
-
-	<servlet-mapping>
-		<servlet-name>Quercus Servlet</servlet-name>
-		<url-pattern>*.php</url-pattern>
-	</servlet-mapping>
-
 </web-app>

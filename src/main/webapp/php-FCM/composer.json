@@ -1,5 +1,0 @@
-{
-    "require": {
-        "google/auth": "^1.45"
-    }
-}

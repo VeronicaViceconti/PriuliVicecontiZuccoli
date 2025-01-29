@@ -80,6 +80,7 @@
             </div>
         </div>
     </div>
+    <button id="sendBtn">send Notification</button>
     <script type="module">
 	    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-app.js";
 	    import { getMessaging, getToken } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-messaging.js";
@@ -102,7 +103,8 @@
 	    		serviceWorkerRegistration: registration,
 	    		vapidKey: 'BBJchtTR2ahynNkWIvrDboxIGbD2gOT2EWzwcrbojvt1UZuvbIQ_fj1Hs9aIFVdHYm1N-1YHvdZIikhVibEGOHw' }).then((currentToken) => {
 		    	  if (currentToken) {
-		    		  console.log("current token is: " + currentToken);
+		    		  //console.log("current token is: " + currentToken);
+						sessionStorage.setItem("notifToken",currentToken );
 		    	    // Send the token to your server and update the UI if necessary
 		    	    // ...
 		    	  } else {
