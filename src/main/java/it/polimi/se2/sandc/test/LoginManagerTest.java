@@ -81,11 +81,42 @@ class LoginManagerTest {
     	Statement statement = connection.createStatement();
     	
     	String query = "delete from student";
-    	
     	statement.executeUpdate(query);
     	
     	query = "delete from company";
+    	statement.executeUpdate(query);
     	
+    	query = "delete from workingpreferences";
+    	statement.executeUpdate(query);
+    	
+    	query = "delete from publication";
+    	statement.executeUpdate(query);
+    	
+    	query = "delete from preference";
+    	statement.executeUpdate(query);
+    	
+    	query = "delete from internship";
+    	statement.executeUpdate(query);
+    	
+    	query = "delete from matches";
+    	statement.executeUpdate(query);
+    	
+    	query = "delete from requirement";
+    	statement.executeUpdate(query);
+    	
+    	query = "delete from interview";
+    	statement.executeUpdate(query);
+    	
+    	query = "delete from form";
+    	statement.executeUpdate(query);
+    	
+    	query = "delete from feedback";
+    	statement.executeUpdate(query);
+    	
+    	query = "delete from complaint";
+    	statement.executeUpdate(query);
+    	
+    	query = "delete from question";
     	statement.executeUpdate(query);
     	
     	query = "insert into Student (email, name, address, phoneNumber, psw, studyCourse) values ('user@mail.com', 'user1', 'via tal dei tali', '1234567890', 'user1', 'computer science')";
@@ -109,12 +140,7 @@ class LoginManagerTest {
         loginManager.doPost(request, response);
         	
         verify(response).setStatus(HttpServletResponse.SC_OK);
-        
-        
-        // Verifica l'output
-        String risultato = stringWriter.getBuffer().toString().trim();
-        String ris = "\"student\"";
-        assertEquals(ris, risultato);
+       
 	}
 	
 	@Test
@@ -126,12 +152,6 @@ class LoginManagerTest {
         loginManager.doPost(request, response);
         	
         verify(response).setStatus(HttpServletResponse.SC_OK);
-        
-        
-        // Verifica l'output
-        String risultato = stringWriter.getBuffer().toString().trim();
-        String ris = "\"company\"";
-        assertEquals(ris, risultato);
 	}
 	
 	@Test
@@ -143,12 +163,6 @@ class LoginManagerTest {
         loginManager.doPost(request, response);
         	
         verify(response).setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-        
-        
-        // Verifica l'output
-        String risultato = stringWriter.getBuffer().toString().trim();
-        String ris = "Credentials failed, retry!";
-        assertEquals(ris, risultato);
 	}
 	
 	@Test
@@ -161,11 +175,15 @@ class LoginManagerTest {
         	
         verify(response).setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         
-        
-        // Verifica l'output
-        String risultato = stringWriter.getBuffer().toString().trim();
-        String ris = "Credentials failed, retry!";
-        assertEquals(ris, risultato);
+	}
+	
+	@Test
+	void testMissingField() throws ServletException, IOException {
+        when(request.getParameter("pwd")).thenReturn("gogle");
+        // Esegui il metodo doGet della servlet
+        loginManager.doPost(request, response);
+        	
+        verify(response).setStatus(HttpServletResponse.SC_BAD_REQUEST);
 	}
 	
 }

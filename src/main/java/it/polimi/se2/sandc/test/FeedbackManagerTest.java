@@ -119,6 +119,12 @@ class FeedbackManagerTest {
     	query = "delete from feedback";
     	statement.executeUpdate(query);
     	
+    	query = "delete from complaint";
+    	statement.executeUpdate(query);
+    	
+    	query = "delete from question";
+    	statement.executeUpdate(query);
+    	
     	query = "insert into Student (email, name, address, phoneNumber, psw, studyCourse) values ('user@mail.com', 'user1', 'via tal dei tali', '1234567890', 'user1', 'computer science')";
     	statement.executeUpdate(query);
     
@@ -274,6 +280,27 @@ class FeedbackManagerTest {
 		
     	feedbackManager.doPost(request, response);
     	verify(response).setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+    	
+	}
+	
+	@Test
+	public void postAnswerCompanyFailureAnswerNull() throws ServletException, IOException, SQLException {
+		User user = new User();
+		
+		//create the fake session user
+		user.setEmail("user2@mail.com");
+		user.setName("user2");
+		user.setWhichUser("company");
+		
+		when(session.getAttribute("user")).thenReturn(user);
+		when(session.getAttribute("userType")).thenReturn("company");
+		
+		when(request.getParameter("idMatch")).thenReturn("1");
+		
+		Statement statement = connection.createStatement();
+		
+		feedbackManager.doPost(request, response);
+    	verify(response).setStatus(HttpServletResponse.SC_BAD_REQUEST);
     	
 	}
 }

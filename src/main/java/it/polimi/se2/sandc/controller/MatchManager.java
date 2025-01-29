@@ -69,27 +69,22 @@ public class MatchManager extends HttpServlet {
 	public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		HttpSession s = request.getSession();
-				
-		if (s.getAttribute("user") == null) {
-			response.setStatus(HttpServletResponse.SC_PRECONDITION_FAILED);
-			response.getWriter().println("Utente non trovato..");
-			request.getSession(false).invalidate();
-			return;
-        }
-
 		String userType = (String) s.getAttribute("userType");
 		User user = (User) request.getSession().getAttribute("user");
 		if(userType.equalsIgnoreCase("student")) { //we want to use student profile -> search company publications
-			if(request.getParameter("page") == null)
-				return;
-			
 			//the internship exists, now need to find the correspond student's publication
 			 switch (request.getParameter("page").toString()) { //uso lo switch per capire quale azione dobbiamo fare in questa servlet
 			 	case "acceptMatch": //when the page need to open one internship
-			 		acceptMatch(response,Integer.parseInt(request.getParameter("IDmatch")),user.getEmail(),userType,Integer.parseInt(request.getParameter("accept")));
+			 		if(request.getParameter("IDmatch") != null && request.getParameter("accept") != null) {
+			 			acceptMatch(response,Integer.parseInt(request.getParameter("IDmatch")),user.getEmail(),userType,Integer.parseInt(request.getParameter("accept")));
+			 		}else {
+			 			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+						response.getWriter().println("missing values");
+						return;
+			 		}
 			 		break;
-			 		default:
-			 			response.setStatus(HttpServletResponse.SC_UNAUTHORIZED); //401
+			 	default:
+			 			response.setStatus(HttpServletResponse.SC_NOT_FOUND);
 			 } 
 		}else { //we want to use company
 			switch (request.getParameter("page").toString()) { //uso lo switch per capire quale azione dobbiamo fare in questa servlet
@@ -97,14 +92,27 @@ public class MatchManager extends HttpServlet {
 		 		showAllCompanyMatches(response,user.getEmail());
 		 		break;
 		 	case "acceptMatch": //when the page need to open one internship
-		 		acceptMatch(response,Integer.parseInt(request.getParameter("IDmatch")),user.getEmail(),userType,Integer.parseInt(request.getParameter("accept")));
+		 		if(request.getParameter("IDmatch") != null && request.getParameter("accept") != null) {
+		 			acceptMatch(response,Integer.parseInt(request.getParameter("IDmatch")),user.getEmail(),userType,Integer.parseInt(request.getParameter("accept")));
+		 		}else {
+		 			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+					response.getWriter().println("missing values");
+					return;
+		 		}
 		 		break;
 		 	case "openMatch":
-		 		Integer idMatch = Integer.parseInt(request.getParameter("IDmatch"));
-		 		openMatch(response,idMatch);
+		 		if(request.getParameter("IDmatch") != null) {
+		 			Integer idMatch = Integer.parseInt(request.getParameter("IDmatch"));
+			 		openMatch(response,idMatch);
+		 		}else {
+		 			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+					response.getWriter().println("missing values");
+					return;
+		 		}
+		 		
 		 		break;
-		 		default:
-		 			response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+		 	default:
+		 		response.setStatus(HttpServletResponse.SC_NOT_FOUND);
 		 } 
 		}
 	}
@@ -191,13 +199,4 @@ public class MatchManager extends HttpServlet {
 				return;
 			}
 	}
-
-	/**
-	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
-	 */
-	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
-		doGet(request, response);
-	}
-
 }

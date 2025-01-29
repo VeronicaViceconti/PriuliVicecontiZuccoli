@@ -121,6 +121,12 @@ class InterviewerTest {
     	query = "delete from form";
     	statement.executeUpdate(query);
     	
+    	query = "delete from feedback";
+    	statement.executeUpdate(query);
+    	
+    	query = "delete from complaint";
+    	statement.executeUpdate(query);
+    	
     	query = "delete from question";
     	statement.executeUpdate(query);
     	
@@ -393,6 +399,39 @@ class InterviewerTest {
 		
 	}
 	
+	@Test
+	public void submitSelectionAcceptedGet() throws SQLException, ServletException, IOException {
+		
+		User user = new User();
+		
+		//create the fake session user
+		user.setEmail("company@mail.com");
+		user.setName("company");
+		user.setWhichUser("company");
+		
+		when(session.getAttribute("user")).thenReturn(user);
+		when(session.getAttribute("userType")).thenReturn("company");
+		
+
+		when(request.getParameter("page")).thenReturn("submitSelection");
+		when(request.getParameter("interview")).thenReturn("1");
+		when(request.getParameter("selected")).thenReturn("1");
+		
+		Statement statement = connection.createStatement();
+		
+		String query = "insert into form values (1)";
+		statement.executeUpdate(query);
+		
+		query = "insert into interview (id, dat, idMatch, idForm) values (1, curdate(), 1, 1)";
+		statement.executeUpdate(query);
+		interviewer.doGet(request, response);
+		
+		verify(response).setStatus(HttpServletResponse.SC_OK);
+		
+		query = "select * from interview where id = 1 and confirmedYN = 1";
+		statement.execute(query);
+		assertTrue(statement.getResultSet().isBeforeFirst());
+	}
 
 	@Test
 	public void submitSelectionAccepted() throws SQLException, ServletException, IOException {
@@ -493,6 +532,35 @@ class InterviewerTest {
 	}
 	
 	@Test
+	public void submitSelectionInterviewNull() throws SQLException, ServletException, IOException {
+		
+		User user = new User();
+		
+		//create the fake session user
+		user.setEmail("company1@mail.com");
+		user.setName("company");
+		user.setWhichUser("company");
+		
+		when(session.getAttribute("user")).thenReturn(user);
+		when(session.getAttribute("userType")).thenReturn("company");
+		
+
+		when(request.getParameter("page")).thenReturn("submitSelection");
+		when(request.getParameter("selected")).thenReturn("0");
+		
+		Statement statement = connection.createStatement();
+		
+		String query = "insert into form values (1)";
+		statement.executeUpdate(query);
+		
+		query = "insert into interview (id, dat, idMatch, idForm) values (1, curdate(), 1, 1)";
+		statement.executeUpdate(query);
+		interviewer.doPost(request, response);
+		
+		verify(response).setStatus(HttpServletResponse.SC_BAD_REQUEST);
+	}
+
+	@Test
 	public void getResponseTest() throws SQLException, ServletException, IOException {
 		User user = new User();
 		
@@ -540,10 +608,171 @@ class InterviewerTest {
 				break;
 			}
 		}
-		
-		
-		
-		
 		assertEquals(interview.getData(), Date.valueOf(LocalDate.now()));	
 	}
+	
+	@Test
+	public void getResponseTestMatchNull() throws SQLException, ServletException, IOException {
+		User user = new User();
+		
+		//create the fake session user
+		user.setEmail("company@mail.com");
+		user.setName("company");
+		user.setWhichUser("company");
+		
+		when(session.getAttribute("user")).thenReturn(user);
+		when(session.getAttribute("userType")).thenReturn("company");
+		
+
+		when(request.getParameter("page")).thenReturn("getResponse");
+	
+		
+		interviewer.doGet(request, response);
+		
+		verify(response).setStatus(HttpServletResponse.SC_BAD_REQUEST);
+	}
+	
+	@Test
+	public void getResponseTestUnauthorized() throws SQLException, ServletException, IOException {
+		User user = new User();
+		
+		//create the fake session user
+		user.setEmail("company@mail.com");
+		user.setName("company");
+		user.setWhichUser("company");
+		
+		when(session.getAttribute("user")).thenReturn(user);
+		when(session.getAttribute("userType")).thenReturn("company");
+		
+
+		when(request.getParameter("page")).thenReturn("getResponse");
+		when(request.getParameter("match")).thenReturn("2");
+	
+		
+		interviewer.doGet(request, response);
+		
+		verify(response).setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+	}
+	
+	@Test
+	public void getResponseTestNoInterview() throws SQLException, ServletException, IOException {
+		User user = new User();
+		
+		//create the fake session user
+		user.setEmail("company@mail.com");
+		user.setName("company");
+		user.setWhichUser("company");
+		
+		when(session.getAttribute("user")).thenReturn(user);
+		when(session.getAttribute("userType")).thenReturn("company");
+		
+
+		when(request.getParameter("page")).thenReturn("getResponse");
+		when(request.getParameter("match")).thenReturn("1");
+		
+		Statement statement = connection.createStatement();
+		
+		interviewer.doGet(request, response);
+		
+		verify(response).setStatus(HttpServletResponse.SC_BAD_REQUEST);
+		
+	}
+	
+	@Test 
+	public void getAsStudent() throws SQLException, ServletException, IOException {
+		User user = new User();
+		
+		//create the fake session user
+		user.setEmail("user@mail.com");
+		user.setName("user");
+		user.setWhichUser("student");
+		
+		when(session.getAttribute("user")).thenReturn(user);
+		when(session.getAttribute("userType")).thenReturn("student");
+		
+
+		when(request.getParameter("page")).thenReturn("getResponse");
+		when(request.getParameter("match")).thenReturn("1");
+		
+		Statement statement = connection.createStatement();
+		
+		interviewer.doGet(request, response);
+		
+		verify(response).setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+		
+	}
+	
+	@Test 
+	public void postAsStudent() throws SQLException, ServletException, IOException {
+		User user = new User();
+		
+		//create the fake session user
+		user.setEmail("user@mail.com");
+		user.setName("user");
+		user.setWhichUser("student");
+		
+		when(session.getAttribute("user")).thenReturn(user);
+		when(session.getAttribute("userType")).thenReturn("student");
+		
+
+		when(request.getParameter("page")).thenReturn("getResponse");
+		when(request.getParameter("match")).thenReturn("1");
+		
+		Statement statement = connection.createStatement();
+		
+		interviewer.doPost(request, response);
+		
+		verify(response).setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+		
+	}
+	
+	@Test 
+	public void getPageNotFound() throws SQLException, ServletException, IOException {
+		User user = new User();
+		
+		//create the fake session user
+		user.setEmail("user@mail.com");
+		user.setName("user");
+		user.setWhichUser("company");
+		
+		when(session.getAttribute("user")).thenReturn(user);
+		when(session.getAttribute("userType")).thenReturn("company");
+		
+
+		when(request.getParameter("page")).thenReturn("pippo");
+		when(request.getParameter("match")).thenReturn("1");
+		
+		Statement statement = connection.createStatement();
+		
+		interviewer.doGet(request, response);
+		
+		verify(response).setStatus(HttpServletResponse.SC_NOT_FOUND);
+		
+	}
+	
+	@Test 
+	public void postPageNotFound() throws SQLException, ServletException, IOException {
+		User user = new User();
+		
+		//create the fake session user
+		user.setEmail("user@mail.com");
+		user.setName("user");
+		user.setWhichUser("company");
+		
+		when(session.getAttribute("user")).thenReturn(user);
+		when(session.getAttribute("userType")).thenReturn("company");
+		
+
+		when(request.getParameter("page")).thenReturn("getRespon");
+		when(request.getParameter("match")).thenReturn("1");
+		
+		Statement statement = connection.createStatement();
+		
+		interviewer.doPost(request, response);
+		
+		verify(response).setStatus(HttpServletResponse.SC_NOT_FOUND);
+		
+	}
+	
+	
 }

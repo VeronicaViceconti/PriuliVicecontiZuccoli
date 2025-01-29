@@ -57,14 +57,6 @@ public class LoginManager extends HttpServlet {
 			throw new UnavailableException("Couldn't get db connection");
 		}
 	}
-    
-	/**
-	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
-	 */
-	public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		//per convertire caratteri speciali tipo ",\,..
-		response.getWriter().append("Served at: ").append(request.getContextPath());
-	}
 
 	/**
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)

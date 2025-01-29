@@ -485,9 +485,10 @@ public class MatchDAO {
 					tmp.setAnswer(result.getString("answer"));
 					form.getQuestions().add(tmp);
 				}
-				interview.setForm(form);
+				if(interview != null) {
+					interview.setForm(form);
+				}
 			}
-			
 		}
 		return interview;
 	}

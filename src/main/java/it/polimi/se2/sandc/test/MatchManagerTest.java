@@ -31,6 +31,7 @@ import com.google.gson.Gson;
 
 import it.polimi.se2.sandc.bean.Company;
 import it.polimi.se2.sandc.bean.Internship;
+import it.polimi.se2.sandc.bean.Interview;
 import it.polimi.se2.sandc.bean.Match;
 import it.polimi.se2.sandc.bean.Preferences;
 import it.polimi.se2.sandc.bean.Publication;
@@ -78,7 +79,6 @@ class MatchManagerTest {
         try {
 			when(response.getWriter()).thenReturn(writer);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
         when(request.getSession()).thenReturn(session);
@@ -120,6 +120,12 @@ class MatchManagerTest {
     	statement.executeUpdate(query);
     	
     	query = "delete from feedback";
+    	statement.executeUpdate(query);
+    	
+    	query = "delete from complaint";
+    	statement.executeUpdate(query);
+    	
+    	query = "delete from question";
     	statement.executeUpdate(query);
     	
     	query = "insert into Student (email, name, address, phoneNumber, psw, studyCourse) values ('user@mail.com', 'user1', 'via tal dei tali', '1234567890', 'user1', 'computer science'), ('user2@mail.com', 'user2', 'via tal dei tali', '1234567890', 'user2', 'computer science')";
@@ -270,6 +276,30 @@ class MatchManagerTest {
 	}
 	
 	@Test
+	public void acceptAMatchNotOwned() throws ServletException, IOException, SQLException {
+		User user = new User();
+		
+		//create the fake session user
+		user.setEmail("company1@mail.com");
+		user.setName("company1");
+		user.setWhichUser("company");
+		
+		when(session.getAttribute("user")).thenReturn(user);
+		when(session.getAttribute("userType")).thenReturn("company");
+		
+
+		when(request.getParameter("page")).thenReturn("acceptMatch");
+		when(request.getParameter("IDmatch")).thenReturn("1");
+		when(request.getParameter("accept")).thenReturn("1");
+		
+		
+		
+		matchManager.doGet(request, response);
+		
+		verify(response).setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+	}
+	
+	@Test
 	public void showAllCompanyMatchesTest () throws ServletException, IOException, SQLException {
 		User user = new User();
 		
@@ -289,6 +319,9 @@ class MatchManagerTest {
 		String query = "insert into matches (id, idPublication, idInternship) values (2, 2, 1)";
 		statement.executeUpdate(query);
 		
+		query = "update internship set endingDate = '2030-11-12' where id = 1";
+		statement.executeUpdate(query);
+		
 		matchManager.doGet(request, response);
 		
 		ArrayList<Match> list = new ArrayList<Match>();
@@ -301,7 +334,7 @@ class MatchManagerTest {
 		internship.setId(1);
 		internship.setroleToCover("software engeneering");
 		internship.setStartingDate(Date.valueOf("2025-01-01"));
-		internship.setEndingDate(Date.valueOf("2025-01-02"));
+		internship.setEndingDate(Date.valueOf("2030-11-12"));
 		internship.setCompany(company);
 		
 		Student user1 = new Student();
@@ -325,12 +358,13 @@ class MatchManagerTest {
 		m1.setId(1);
 		m1.setInternship(internship);
 		m1.setPublication(pub1);
+		m1.setconfirmedYN(false);
 		
 		Match m2 = new Match();
 		m2.setId(2);
 		m2.setInternship(internship);
 		m2.setPublication(pub2);
-		
+		m2.setconfirmedYN(false);
 		list.add(m1);
 		list.add(m2);
 		
@@ -342,4 +376,147 @@ class MatchManagerTest {
         String result = stringWriter.getBuffer().toString().trim();
         assertEquals(expected, result);
 	}	
+	
+	
+	
+	@Test
+	public void openMatchTest () throws ServletException, IOException, SQLException {
+		User user = new User();
+		
+		//create the fake session user
+		user.setEmail("copmany@mail.com");
+		user.setName("company");
+		user.setWhichUser("company");
+		
+		when(session.getAttribute("user")).thenReturn(user);
+		when(session.getAttribute("userType")).thenReturn("company");
+		
+
+		when(request.getParameter("page")).thenReturn("openMatch");
+		when(request.getParameter("IDmatch")).thenReturn("1");
+		
+		Statement statement = connection.createStatement();
+		String query = "insert into preference values (1, 1), (2,1)";
+		
+		statement.execute(query);
+		
+		matchManager.doGet(request, response);
+
+		verify(response).setStatus(HttpServletResponse.SC_OK);
+		verify(response).setContentType("application/json");
+		
+		Publication pub = new Gson().fromJson(stringWriter.getBuffer().toString().trim(), Publication.class);
+		
+		assertEquals(pub.getStudent().getEmail(), "user@mail.com");
+		
+		assertTrue(pub.getChoosenPreferences().size() == 2);
+		assertTrue(pub.getChoosenPreferences().stream().anyMatch(x -> x.getText().equals("ai")));
+		assertTrue(pub.getChoosenPreferences().stream().anyMatch(x -> x.getText().equals("robotic")));
+	}	
+	
+	@Test
+	public void studentWrongPage () throws ServletException, IOException, SQLException {
+		User user = new User();
+		
+		//create the fake session user
+		user.setEmail("user@mail.com");
+		user.setName("user1");
+		user.setWhichUser("student");
+		
+		when(session.getAttribute("user")).thenReturn(user);
+		when(session.getAttribute("userType")).thenReturn("student");
+		
+
+		when(request.getParameter("page")).thenReturn("openMat");
+		when(request.getParameter("IDmatch")).thenReturn("1");
+		
+		matchManager.doGet(request, response);
+
+		verify(response).setStatus(HttpServletResponse.SC_NOT_FOUND);
+		
+	}	
+	
+	@Test
+	public void companyWrongPage () throws ServletException, IOException, SQLException {
+		User user = new User();
+		
+		//create the fake session user
+		user.setEmail("company@mail.com");
+		user.setName("company");
+		user.setWhichUser("company");
+		
+		when(session.getAttribute("user")).thenReturn(user);
+		when(session.getAttribute("userType")).thenReturn("company");
+		
+
+		when(request.getParameter("page")).thenReturn("openMat");
+		when(request.getParameter("IDmatch")).thenReturn("1");
+		
+		matchManager.doGet(request, response);
+
+		verify(response).setStatus(HttpServletResponse.SC_NOT_FOUND);
+		
+	}	
+
+	@Test 
+	public void companyTestNoMatchAcceptMatch () throws ServletException, IOException{
+		User user = new User();
+		
+		//create the fake session user
+		user.setEmail("company@mail.com");
+		user.setName("company");
+		user.setWhichUser("company");
+		
+		when(session.getAttribute("user")).thenReturn(user);
+		when(session.getAttribute("userType")).thenReturn("company");
+		
+
+		when(request.getParameter("page")).thenReturn("acceptMatch");
+		
+		matchManager.doGet(request, response);
+
+		verify(response).setStatus(HttpServletResponse.SC_BAD_REQUEST);
+	}
+	
+	@Test 
+	public void studentTestNoMatchAcceptMatch () throws ServletException, IOException{
+		User user = new User();
+		
+		//create the fake session user
+		user.setEmail("user@mail.com");
+		user.setName("user1");
+		user.setWhichUser("student");
+		
+		when(session.getAttribute("user")).thenReturn(user);
+		when(session.getAttribute("userType")).thenReturn("student");
+		
+
+		when(request.getParameter("page")).thenReturn("acceptMatch");
+		
+		matchManager.doGet(request, response);
+
+		verify(response).setStatus(HttpServletResponse.SC_BAD_REQUEST);
+	}
+	
+	
+	@Test 
+	public void companyTestNoMatchOpenMatch () throws ServletException, IOException{
+		User user = new User();
+		
+		//create the fake session user
+		user.setEmail("company@mail.com");
+		user.setName("company");
+		user.setWhichUser("company");
+		
+		when(session.getAttribute("user")).thenReturn(user);
+		when(session.getAttribute("userType")).thenReturn("company");
+		
+
+		when(request.getParameter("page")).thenReturn("openMatch");
+		
+		matchManager.doGet(request, response);
+
+		verify(response).setStatus(HttpServletResponse.SC_BAD_REQUEST);
+
+	}
 }

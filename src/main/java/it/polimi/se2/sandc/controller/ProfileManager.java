@@ -76,17 +76,10 @@ public class ProfileManager extends HttpServlet {
 	/**
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		
 		HttpSession s = request.getSession();
-		
-		if (s.getAttribute("user") == null) {
-			response.setStatus(HttpServletResponse.SC_PRECONDITION_FAILED);
-			response.getWriter().println("Utente non trovato..");
-			request.getSession(false).invalidate();
-			return;
-        }
 
 		String userType = (String) s.getAttribute("userType");
 		
@@ -108,6 +101,13 @@ public class ProfileManager extends HttpServlet {
 			 		retrieveAllWP(response, user.getEmail());
 			 		break;
 			 	case "addInternshipThenHomepage": //student want to apply to the internship
+			 		
+			 		if(request.getParameter("IDintern") == null) {
+						response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+						response.getWriter().println("missing values");
+						return;
+					}
+			 		
 			 		Integer ID = Integer.parseInt(request.getParameter("IDintern"));
 			 		CompanyDAO company = null;
 					Internship internship = null;
@@ -129,6 +129,11 @@ public class ProfileManager extends HttpServlet {
 					StudentDAO student = new StudentDAO(connection);
 					Publication pub = new Publication();
 					try {
+						if(request.getParameter("IDpub") == null) {
+							response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+							response.getWriter().println("missing values");
+							return;
+						}
 						pub = student.findStudentPublication(user.getEmail(), Integer.parseInt(request.getParameter("IDpub")));
 					} catch (SQLException e) {
 						// TODO Auto-generated catch block
@@ -159,7 +164,7 @@ public class ProfileManager extends HttpServlet {
 			 		findProfileInfo(response,userType,user.getEmail());
 			 		break;
 			 		default:
-			 			response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+			 			response.setStatus(HttpServletResponse.SC_NOT_FOUND);
 			 } 
 		}else {
 			if(request.getParameter("page") == null) 
@@ -181,7 +186,7 @@ public class ProfileManager extends HttpServlet {
 			 		findFilteredInternships(response,x,user);
 			 		break;
 			      default: 
-			       response.setStatus(HttpServletResponse.SC_UNAUTHORIZED); 
+			       response.setStatus(HttpServletResponse.SC_NOT_FOUND); 
 			    }			
 		}
 	}
@@ -391,7 +396,7 @@ public class ProfileManager extends HttpServlet {
 		
 		
 	}
-
+/*
 	private List<Publication> findStudentPublications(HttpServletResponse response, String email) throws IOException {
 		// TODO Auto-generated method stub
 		StudentDAO student = new StudentDAO(connection);
@@ -407,7 +412,7 @@ public class ProfileManager extends HttpServlet {
 		}
 		return publications;
 	}
-
+*/
 	private void createMatchStudent(HttpServletResponse response,int internID,int pubID) throws IOException {
 		//creare il match tra internship ID e l'utente 
 		MatchDAO match = new MatchDAO(connection);
@@ -421,13 +426,6 @@ public class ProfileManager extends HttpServlet {
 		}
 	}
 
-	/**
-	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
-	 */
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
-		doGet(request, response);
-	}
 	
 	private void findInternshipInfo(HttpServletRequest request,HttpServletResponse response) throws IOException {
 		
@@ -446,6 +444,11 @@ public class ProfileManager extends HttpServlet {
 			    response.getWriter().write(internshipString);       
 			    response.setStatus(HttpServletResponse.SC_OK);
 			}else {
+				if(request.getParameter("IDMatch") ==  null) {
+					response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+					response.getWriter().println("missing values");
+					return;
+				}
 				match = company.getMatchInternshipInfo(Integer.parseInt(request.getParameter("IDMatch")));
 				String internshipString = new Gson().toJson(match);
 			    // Imposta il tipo di contenuto e invia la risposta
@@ -475,10 +478,10 @@ public class ProfileManager extends HttpServlet {
 			       response.setStatus(HttpServletResponse.SC_OK);	
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
+				e.printStackTrace();
 				response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 				response.getWriter().println("Internal");
 				return;
 			}   
 	}
-
 }

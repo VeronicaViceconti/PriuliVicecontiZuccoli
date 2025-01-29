@@ -28,9 +28,11 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import it.polimi.se2.sandc.bean.Company;
 import it.polimi.se2.sandc.bean.Internship;
+import it.polimi.se2.sandc.bean.Match;
 import it.polimi.se2.sandc.bean.Preferences;
 import it.polimi.se2.sandc.bean.User;
 import it.polimi.se2.sandc.controller.PublicationManager;
@@ -87,37 +89,43 @@ class PublicationManagerTest {
     	Statement statement = connection.createStatement();
     	
     	String query = "delete from student";
-    	
     	statement.executeUpdate(query);
     	
     	query = "delete from company";
-    	
     	statement.executeUpdate(query);
     	
     	query = "delete from workingpreferences";
-    	
     	statement.executeUpdate(query);
     	
     	query = "delete from publication";
-    	
     	statement.executeUpdate(query);
     	
     	query = "delete from preference";
-    	
     	statement.executeUpdate(query);
     	
     	query = "delete from internship";
-    	
     	statement.executeUpdate(query);
     	
     	query = "delete from matches";
-    	
     	statement.executeUpdate(query);
     	
     	query = "delete from requirement";
-    	
     	statement.executeUpdate(query);
     	
+    	query = "delete from interview";
+    	statement.executeUpdate(query);
+    	
+    	query = "delete from form";
+    	statement.executeUpdate(query);
+    	
+    	query = "delete from feedback";
+    	statement.executeUpdate(query);
+    	
+    	query = "delete from complaint";
+    	statement.executeUpdate(query);
+    	
+    	query = "delete from question";
+    	statement.executeUpdate(query);
     	
     	query = "insert into Student (email, name, address, phoneNumber, psw) values ('user@mail.com', 'user1', 'via tal dei tali', '1234567890', 'user1')";
     	
@@ -200,6 +208,27 @@ class PublicationManagerTest {
 	}
 	
 	@Test
+	void getAllThePreferencesTestNoType() throws ServletException, IOException {
+		
+		User user = new User();
+		
+		//create the fake session user
+		user.setEmail("user@mail.com");
+		user.setName("user1");
+		user.setWhichUser("student");
+		
+		when(session.getAttribute("user")).thenReturn(user);
+		when(session.getAttribute("userType")).thenReturn("student");
+		
+		when(request.getParameter("page")).thenReturn("getPreferences");
+		
+		
+		publicationManager.doGet(request, response);
+		
+		verify(response).setStatus(HttpServletResponse.SC_BAD_REQUEST);
+	}
+	
+	@Test
 	public void preferencePublicationStudentTest() throws ServletException, IOException, SQLException {
 		User user = new User();
 		
@@ -218,10 +247,12 @@ class PublicationManagerTest {
 		when(request.getParameter("web developement")).thenReturn("5");
 		when(request.getParameter("database")).thenReturn("7");
 		
+		Statement statement = connection.createStatement();
+
+		
 		publicationManager.doPost(request, response);
 		
 		verify(response).setStatus(HttpServletResponse.SC_OK);
-		Statement statement = connection.createStatement();
 		
 		String query = "select id from publication where student = 'user@mail.com'";
 
@@ -264,6 +295,45 @@ class PublicationManagerTest {
 		statement.execute(query);
 		assertTrue(statement.getResultSet().isBeforeFirst());
 		
+		statement.close();
+	}
+	
+	
+	@Test
+	public void preferencePublicationStudentTestFailureSamePreference() throws ServletException, IOException, SQLException {
+		User user = new User();
+		
+		//create the fake session user
+		user.setEmail("user@mail.com");
+		user.setName("user1");
+		user.setWhichUser("student");
+		
+		when(session.getAttribute("user")).thenReturn(user);
+		when(session.getAttribute("userType")).thenReturn("student");
+		
+		when(request.getParameter("page")).thenReturn("sendPreferences");
+		
+		when(request.getParameter("ai")).thenReturn("1");
+		when(request.getParameter("robotic")).thenReturn("2");
+		when(request.getParameter("web developement")).thenReturn("5");
+		when(request.getParameter("database")).thenReturn("7");
+		
+		Statement statement = connection.createStatement();
+
+		String query = "insert into publication values (1, 'user@mail.com')";
+		statement.executeUpdate(query);
+		
+		query = "insert into preference values (1,1), (2,1), (5,1), (7,1)";
+		statement.executeUpdate(query);
+		
+		
+		publicationManager.doPost(request, response);
+		
+		verify(response).setStatus(HttpServletResponse.SC_OK);
+	
+		String expected = "You already have an equal publication!";
+        String result = stringWriter.getBuffer().toString().trim();
+        assertEquals(expected, result);
 		statement.close();
 	}
 	
@@ -462,5 +532,161 @@ class PublicationManagerTest {
 		assertTrue(statement.getResultSet().isBeforeFirst());
 		
 	}
+	
+	
+	@Test
+	public void waitingFeedbackInternshipTest()  throws ServletException, IOException, SQLException {
+		User user = new User();
+		
+		//create the fake session user
+		user.setEmail("company@mail.com");
+		user.setName("company");
+		user.setWhichUser("company");
+		
+		when(session.getAttribute("user")).thenReturn(user);
+		when(session.getAttribute("userType")).thenReturn("company");
+		
+		
+		when(request.getParameter("page")).thenReturn("waitingFeedbackInternships");
+		
+		
+		Statement statement = connection.createStatement();
+		String query = "insert into publication values (1, 'user@mail.com')";
+		statement.executeUpdate(query);
+		
+		query = "insert into internship values (2, 'company@mail.com', 'software engeneering', 2, '2025-01-01', '2025-01-02', 'job description')";
+		statement.executeUpdate(query);
+		
+		query = "insert into matches values (1, 1, 1, 1, 2)";
+		statement.executeUpdate(query);
+		
+		query = "insert into form values (1)";
+		statement.executeUpdate(query);
+
+		query = "insert into interview values (4, '2025-01-01', 1, 1, 1)";
+		statement.executeUpdate(query);
+		
+		
+		publicationManager.doGet(request, response);
+		
+		TypeToken<ArrayList<Match>> token = new TypeToken<ArrayList<Match>>() {};
+		ArrayList<Match> matches = new Gson().fromJson(stringWriter.getBuffer().toString().trim(), token.getType());
+		
+		assertTrue(matches.size() == 1);
+		
+		statement.close();
+	}
+	
+	@Test
+	public void getTestFailurePageNotSended() throws ServletException, IOException, SQLException {
+		User user = new User();
+		
+		//create the fake session user
+		user.setEmail("user@mail.com");
+		user.setName("user1");
+		user.setWhichUser("student");
+		
+		when(session.getAttribute("user")).thenReturn(user);
+		when(session.getAttribute("userType")).thenReturn("student");
+		
+		publicationManager.doGet(request, response);
+		
+		verify(response).setStatus(HttpServletResponse.SC_BAD_REQUEST);
+	}
+	
+	@Test
+	public void getTestFailurePageNotFoundStudent() throws ServletException, IOException, SQLException {
+		User user = new User();
+		
+		//create the fake session user
+		user.setEmail("user@mail.com");
+		user.setName("user1");
+		user.setWhichUser("student");
+		
+		when(session.getAttribute("user")).thenReturn(user);
+		when(session.getAttribute("userType")).thenReturn("student");
+
+		when(request.getParameter("page")).thenReturn("asdfasdf");
+		
+		publicationManager.doGet(request, response);
+		
+		verify(response).setStatus(HttpServletResponse.SC_NOT_FOUND);
+	}
+	
+	@Test
+	public void postTestFailurePageNotFoundStudent() throws ServletException, IOException, SQLException {
+		User user = new User();
+		
+		//create the fake session user
+		user.setEmail("user@mail.com");
+		user.setName("user1");
+		user.setWhichUser("student");
+		
+		when(session.getAttribute("user")).thenReturn(user);
+		when(session.getAttribute("userType")).thenReturn("student");
+		
+
+		when(request.getParameter("page")).thenReturn("asdfasdf");
+		publicationManager.doPost(request, response);
+		
+		verify(response).setStatus(HttpServletResponse.SC_NOT_FOUND);
+	}
+	
+	@Test
+	public void postTestFailurePageNotSended() throws ServletException, IOException, SQLException {
+		User user = new User();
+		
+		//create the fake session user
+		user.setEmail("user@mail.com");
+		user.setName("user1");
+		user.setWhichUser("student");
+		
+		when(session.getAttribute("user")).thenReturn(user);
+		when(session.getAttribute("userType")).thenReturn("student");
+		
+		
+		publicationManager.doPost(request, response);
+		
+		verify(response).setStatus(HttpServletResponse.SC_BAD_REQUEST);
+	}
+	
+	@Test
+	public void getTestFailurePageNotFoundCompany() throws ServletException, IOException, SQLException {
+		User user = new User();
+		
+		//create the fake session user
+		user.setEmail("company@mail.com");
+		user.setName("company");
+		user.setWhichUser("company");
+		
+		when(session.getAttribute("user")).thenReturn(user);
+		when(session.getAttribute("userType")).thenReturn("company");
+
+		when(request.getParameter("page")).thenReturn("asdfasdf");
+		
+		publicationManager.doGet(request, response);
+		
+		verify(response).setStatus(HttpServletResponse.SC_NOT_FOUND);
+	}
+	
+	@Test
+	public void postTestFailurePageNotFoundCompany() throws ServletException, IOException, SQLException {
+		User user = new User();
+		
+		//create the fake session user
+		user.setEmail("company@mail.com");
+		user.setName("company");
+		user.setWhichUser("company");
+		
+		when(session.getAttribute("user")).thenReturn(user);
+		when(session.getAttribute("userType")).thenReturn("company");
+		
+
+		when(request.getParameter("page")).thenReturn("asdfasdf");
+		publicationManager.doPost(request, response);
+		
+		verify(response).setStatus(HttpServletResponse.SC_NOT_FOUND);
+	}
+	
 	
 }

@@ -248,7 +248,6 @@ public class Interviewer extends HttpServlet {
 		try {
 			questions = interviewdao.getQuestions(idInterview);
 		} catch (SQLException e) {
-			e.printStackTrace();
 			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 			response.getWriter().println("db problem");
 			return;
@@ -302,20 +301,12 @@ public class Interviewer extends HttpServlet {
 				response.getWriter().println("the company doesn't owns the intership relative to the interview");
 				return;
 			}
-		} catch (SQLException e) {
-			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-			response.getWriter().println("db problem");
-			return;
-		}
-		
-		try {
 			interviewdao.acceptDeclineInterview(idInterview, (selected >0));
 		} catch (SQLException e) {
 			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 			response.getWriter().println("db problem");
 			return;
 		}
-		
 		response.setStatus(HttpServletResponse.SC_OK);
 	}
 	

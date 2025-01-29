@@ -66,14 +66,6 @@ public class FeedbackManager extends HttpServlet {
     }
 
 	/**
-	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
-	 */
-    public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
-		response.getWriter().append("Served at: ").append(request.getContextPath());
-	}
-
-	/**
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
 	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -110,16 +102,21 @@ public class FeedbackManager extends HttpServlet {
 				return;
 			}
 			Boolean found = false;
-			for(Match i : list) {
-				if(i.getId() == idMatch) {
-					found = true;
-					try {
-						internshipdao.writeFeedback(user, i.getPublication().getStudent().getEmail(), i.getInternship().getCompany().getEmail(), answer);
-					} catch (SQLException e) {
-						e.printStackTrace();
+			if(list != null) {
+				for(Match i : list) {
+					if(i.getId() == idMatch) {
+						found = true;
+						try {
+							internshipdao.writeFeedback(user, i.getPublication().getStudent().getEmail(), i.getInternship().getCompany().getEmail(), answer);
+						} catch (SQLException e) {
+							response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+							response.getWriter().println("db problems");
+							return;
+						}
 					}
 				}
 			}
+			
 			if(!found) {
 				response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 				response.getWriter().println("the student isn't in the internship or has already written a feedback");
@@ -137,16 +134,21 @@ public class FeedbackManager extends HttpServlet {
 				return;
 			}
 			Boolean found = false;
-			for(Match i : list) {
-				if(i.getId() == idMatch) {
-					found = true;
-					try {
-						internshipdao.writeFeedback(user, i.getPublication().getStudent().getEmail(), i.getInternship().getCompany().getEmail(), answer);
-					} catch (SQLException e) {
-						e.printStackTrace();
+			if(list != null) {
+				for(Match i : list) {
+					if(i.getId() == idMatch) {
+						found = true;
+						try {
+							internshipdao.writeFeedback(user, i.getPublication().getStudent().getEmail(), i.getInternship().getCompany().getEmail(), answer);
+						} catch (SQLException e) {
+							response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+							response.getWriter().println("db problems");
+							return;
+						}
 					}
 				}
 			}
+			
 			if(!found) {
 				response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 				response.getWriter().println("the company doesn't own the internship or has already written a feedback");

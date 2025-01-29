@@ -83,26 +83,24 @@ public class PublicationManager extends HttpServlet {
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
 		HttpSession s = request.getSession();
-		if (s.getAttribute("user") == null) {
-			response.setStatus(HttpServletResponse.SC_PRECONDITION_FAILED);
-			response.getWriter().println("Utente non trovato..");
-			request.getSession(false).invalidate();
-			return;
-        }
 		User user = (User) request.getSession().getAttribute("user");
 		String email = user.getEmail();
 		String userType = (String) s.getAttribute("userType");
 		
-		if(userType.equalsIgnoreCase("student")) { //we want to use student profile 
-			if(request.getParameter("page") == null)
-				return;
+		if(request.getParameter("page") == null) {
+			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+			response.getWriter().write("missing values");
+			return;
+		}
 			
+		
+		if(userType.equalsIgnoreCase("student")) { //we want to use student profile 
 			 switch (request.getParameter("page").toString()) { //uso lo switch per capire quale azione dobbiamo fare in questa servlet
 			 	case "getPreferences":
 			 		getPrefereces(email, request, response);
 			 		break;
 			 	default:
-			 		response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+			 		response.setStatus(HttpServletResponse.SC_NOT_FOUND);
 			 		response.getWriter().println("page not found");
 			 		break;
 			 } 
@@ -118,7 +116,7 @@ public class PublicationManager extends HttpServlet {
 			 		waitingFeedbackInternships(response,email);
 			 		break;
 			 	default:
-			 		response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+			 		response.setStatus(HttpServletResponse.SC_NOT_FOUND);
 			 		response.getWriter().println("page not found");
 			 		break;
 			 } 
@@ -170,19 +168,15 @@ public class PublicationManager extends HttpServlet {
 	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		HttpSession s = request.getSession();
 		
-		if (s.getAttribute("user") == null) {
-			response.setStatus(HttpServletResponse.SC_PRECONDITION_FAILED);
-			response.getWriter().println("Utente non trovato..");
-			request.getSession(false).invalidate();
-			return;
-        }
-		
 		String userType = (String) s.getAttribute("userType");
 		String email = ((User) s.getAttribute("user")).getEmail();
+		
+		if(request.getParameter("page") == null) {
+			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+			response.getWriter().write("missing values");
+			return;
+		}
 		if(userType.equalsIgnoreCase("student")) { //we want to use student profile -> search company publications
-			if(request.getParameter("page") == null)
-				return;
-			
 			 switch (request.getParameter("page").toString()) { //uso lo switch per capire quale azione dobbiamo fare in questa servlet
 			 	case "sendCvForm":
 			 		cvPublication(email, request, response);
@@ -197,7 +191,7 @@ public class PublicationManager extends HttpServlet {
 						}
 			 		break;
 			 	default :
-			 		response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+			 		response.setStatus(HttpServletResponse.SC_NOT_FOUND);
 			 		response.getWriter().println("page not found");
 			 		break;
 			 } 
@@ -210,7 +204,7 @@ public class PublicationManager extends HttpServlet {
 			 		requirementPublicationCompany(email, request, response);
 			 		break;
 			 	default:
-			 		response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+			 		response.setStatus(HttpServletResponse.SC_NOT_FOUND);
 			 		response.getWriter().println("page not found");
 			 		break;
 			 } 
@@ -266,14 +260,14 @@ public class PublicationManager extends HttpServlet {
 		
 		PreferenceDAO preferecedao = new PreferenceDAO(connection);
 		
-		String type = StringEscapeUtils.escapeJava(request.getParameter("type"));
-		type = type.trim();
-		
-		if(type == null || type.isEmpty()) {
+		if(request.getParameter("type") == null) {
 			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 			response.getWriter().println("missing values");
 			return;
 		}
+		
+		String type = StringEscapeUtils.escapeJava(request.getParameter("type"));
+		type = type.trim();
 			
 		switch (type) {
 		case "all":
@@ -329,21 +323,22 @@ public class PublicationManager extends HttpServlet {
 		List<Publication> publications = new ArrayList<>();
 		
 		publications = pubDAO.retrieveAllWP(email);
-		
-		for(Publication p : publications) {
-			List<Preferences> preferencesPubp = p.getChoosenPreferences();
-			ArrayList<String> prefText = new ArrayList<>();
-			ArrayList<String> prefTextUser = new ArrayList<>();
-			
-			for(Preferences preff : preferencesPubp)
-				prefText.add(preff.getText());
-			for(Preferences preff : prefs)
-				prefTextUser.add(preff.getText());
-			
-			if(prefText.containsAll(prefTextUser) && preferencesPubp.size() == prefs.size()) { //already exist one with same preferences
-				response.setStatus(HttpServletResponse.SC_OK);
-				response.getWriter().println("You already have an equal publication!");
-				return;
+		if(publications != null) {
+			for(Publication p : publications) {
+				List<Preferences> preferencesPubp = p.getChoosenPreferences();
+				ArrayList<String> prefText = new ArrayList<>();
+				ArrayList<String> prefTextUser = new ArrayList<>();
+				
+				for(Preferences preff : preferencesPubp)
+					prefText.add(preff.getText());
+				for(Preferences preff : prefs)
+					prefTextUser.add(preff.getText());
+				
+				if(prefText.containsAll(prefTextUser) && preferencesPubp.size() == prefs.size()) { //already exist one with same preferences
+					response.setStatus(HttpServletResponse.SC_OK);
+					response.getWriter().println("You already have an equal publication!");
+					return;
+				}
 			}
 		}
 		
