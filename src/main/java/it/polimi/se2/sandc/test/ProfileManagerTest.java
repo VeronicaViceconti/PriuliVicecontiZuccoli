@@ -645,7 +645,7 @@ class ProfileManagerTest {
 		String query = "insert form values (2)";
 		statement.executeUpdate(query);
 		
-		query = "insert into feedback values (1, 1, 2, 'user@mail.com', 'company@mail.com')";
+		query = "insert into feedback values (1, 1, 2, 'user@mail.com', 'company@mail.com', 1)";
 		statement.executeUpdate(query);
 		
 		

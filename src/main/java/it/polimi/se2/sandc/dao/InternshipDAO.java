@@ -26,7 +26,7 @@ public class InternshipDAO {
 	}
 	
 	
-	public void writeComplaint(User user, String student, String company, String answer) throws SQLException {
+	public void writeComplaint(User user, String student, String company, String answer, int idMatch) throws SQLException {
 		String query;
 		
 		query = "insert into Form values ()";
@@ -50,13 +50,14 @@ public class InternshipDAO {
 			statement.executeUpdate();
 		}
 		
-		query = "insert into complaint (studentYn, idForm, studentID, companyID) values (?,?,?,?)";
+		query = "insert into complaint (studentYn, idForm, studentID, companyID, idMatch) values (?,?,?,?,?)";
 		
 		try(PreparedStatement statement = connection.prepareStatement(query)){
 			statement.setBoolean(1, user.getWhichUser().equals("student"));
 			statement.setInt(2, idForm);
 			statement.setString(3, student);
 			statement.setString(4, company);
+			statement.setInt(5, idMatch);
 			statement.executeUpdate();
 		}
 	}
@@ -179,7 +180,7 @@ public class InternshipDAO {
 			}
 	} 
 	
-	public void writeFeedback(User user, String student, String company, String answer) throws SQLException {
+	public void writeFeedback(User user, String student, String company, String answer, int idMatch) throws SQLException {
 		String query;
 		
 		query = "insert into Form values ()";
@@ -203,13 +204,14 @@ public class InternshipDAO {
 			statement.executeUpdate();
 		}
 		
-		query = "insert into feedback (studentYn, idForm, studentID, companyId) values (?,?,?,?)";
+		query = "insert into feedback (studentYn, idForm, studentID, companyId, idMatch) values (?,?,?,?,?)";
 		
 		try(PreparedStatement statement = connection.prepareStatement(query)){
 			statement.setBoolean(1, user.getWhichUser().equals("student"));
 			statement.setInt(2, idForm);
 			statement.setString(3, student);
 			statement.setString(4, company);
+			statement.setInt(5, idMatch);
 			statement.executeUpdate();
 		}
 	}

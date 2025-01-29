@@ -107,7 +107,7 @@ public class FeedbackManager extends HttpServlet {
 					if(i.getId() == idMatch) {
 						found = true;
 						try {
-							internshipdao.writeFeedback(user, i.getPublication().getStudent().getEmail(), i.getInternship().getCompany().getEmail(), answer);
+							internshipdao.writeFeedback(user, i.getPublication().getStudent().getEmail(), i.getInternship().getCompany().getEmail(), answer, idMatch);
 						} catch (SQLException e) {
 							response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 							response.getWriter().println("db problems");
@@ -139,7 +139,7 @@ public class FeedbackManager extends HttpServlet {
 					if(i.getId() == idMatch) {
 						found = true;
 						try {
-							internshipdao.writeFeedback(user, i.getPublication().getStudent().getEmail(), i.getInternship().getCompany().getEmail(), answer);
+							internshipdao.writeFeedback(user, i.getPublication().getStudent().getEmail(), i.getInternship().getCompany().getEmail(), answer, idMatch);
 						} catch (SQLException e) {
 							response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 							response.getWriter().println("db problems");
