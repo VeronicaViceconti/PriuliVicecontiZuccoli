@@ -45,8 +45,8 @@ public class LoginChecker extends HttpFilter implements Filter {
 		System.out.println("cheking credentials");
 		
 		if(session.isNew() || session.getAttribute("user") == null) {
-			String path = req.getContextPath() + "/index.html";
-			res.sendRedirect(path);
+			((HttpServletResponse) response).setStatus(HttpServletResponse.SC_PRECONDITION_FAILED);
+			response.getWriter().println("not logged");
 			return;
 		}
 

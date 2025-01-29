@@ -122,7 +122,7 @@ public class ComplainManager extends HttpServlet {
 		}
 		
 		try {
-			internshipdao.writeComplaint(user, m.getPublication().getStudent().getEmail(), m.getInternship().getCompany().getEmail(), answer);
+			internshipdao.writeComplaint(user, m.getPublication().getStudent().getEmail(), m.getInternship().getCompany().getEmail(), answer, idMatch);
 		} catch (SQLException e) {
 			e.printStackTrace();
 			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
