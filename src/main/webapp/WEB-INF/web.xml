@@ -16,12 +16,12 @@
 
 	<context-param>
 		<param-name>dbUser</param-name>
-		<param-value>root</param-value>
+		<param-value>Elia</param-value>
 	</context-param>
-
+	
 	<context-param>
 		<param-name>dbPassword</param-name>
-		<param-value>KKlloopp9900</param-value>
+		<param-value>Elia</param-value>
 	</context-param>
 
 	<context-param>
@@ -39,7 +39,12 @@
 	</filter>
 	<filter-mapping>
 		<filter-name>LoginChecker</filter-name>
-		<url-pattern>/CvPublication</url-pattern>
+		<url-pattern>/ComplainManager</url-pattern>
+		<url-pattern>/FeedbackManager</url-pattern>
+		<url-pattern>/Interviewer</url-pattern>
+		<url-pattern>/MatchManager</url-pattern>
+		<url-pattern>/ProfileManager</url-pattern>
+		<url-pattern>/PublicationManager</url-pattern>
 	</filter-mapping>
 
 	<welcome-file-list>
