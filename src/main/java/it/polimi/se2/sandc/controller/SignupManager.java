@@ -52,14 +52,6 @@ public class SignupManager extends HttpServlet {
 	}
 
 	/**
-	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
-	 */
-	public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
-		response.getWriter().append("Served at: ").append(request.getContextPath());
-	}
-
-	/**
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
 	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -106,8 +98,7 @@ public class SignupManager extends HttpServlet {
 			response.setCharacterEncoding("UTF-8");
 		} catch (SQLException e) {
 			response.getWriter().println("User already exists");
-			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-			
+			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);		
 			return;
  		}		
 	}

@@ -178,9 +178,11 @@ class ProfileManagerTest {
 		when(request.getParameter("page")).thenReturn("toHomepage");
 		
 		Statement statement = connection.createStatement();
-		String query = "insert into internship values (2, 'company@mail.com', 'software engeneering', 2, '2025-01-01', '2027-01-02', 'job description'),  (3, 'company@mail.com', 'software engeneering', 2, '2025-01-01', '2025-01-02', 'job description')";
+		String query = "insert into internship values (2, 'company@mail.com', 'software engeneering', 2, '2027-01-01', '2027-01-02', 'job description'),  (3, 'company@mail.com', 'software engeneering', 2, '2027-01-01', '2027-01-02', 'job description')";
 		statement.executeUpdate(query);
 		
+		query = "update internship set startingDate = '2026-01-01' where id = 1";
+		statement.executeUpdate(query);
 		profileManager.doGet(request, response);
 		
 		verify(response).setStatus(HttpServletResponse.SC_OK);
@@ -447,6 +449,10 @@ class ProfileManagerTest {
 		Statement statement = connection.createStatement();
 		String query = "insert into internship values (2, 'company@mail.com', 'software engeneering', 2, '2025-01-01', '2025-01-02', 'job description')";
 		statement.executeUpdate(query);
+		
+		query = "update internship set startingDate = '2026-01-01' where id = 1";
+		statement.executeUpdate(query);
+		
 		query = "delete from interview";
     	statement.executeUpdate(query);
 		profileManager.doGet(request, response);
@@ -454,12 +460,13 @@ class ProfileManagerTest {
 		verify(response).setStatus(HttpServletResponse.SC_OK);
 		verify(response).setContentType("application/json");
 
-
+		
 		TypeToken<ArrayList<Match>> token = new TypeToken<ArrayList<Match>>() {};
 		ArrayList<Match> ris = new Gson().fromJson(stringWriter.getBuffer().toString().trim(), token.getType());
 		
 		assertTrue(ris.size() == 1);
 		assertTrue(ris.get(0).getId() == 1);
+		statement.close();
 	}
 	
 	
@@ -479,7 +486,7 @@ class ProfileManagerTest {
 		when(request.getParameter("condition")).thenReturn("company");
 		
 		Statement statement = connection.createStatement();
-		String query = "insert into internship values (2, 'company@mail.com', 'software engeneering', 2, '2025-01-01', '2028-01-30', 'job description')";
+		String query = "insert into internship values (2, 'company@mail.com', 'software engeneering', 2, '2028-01-01', '2028-01-30', 'job description')";
 		statement.executeUpdate(query);
 		
 		profileManager.doGet(request, response);

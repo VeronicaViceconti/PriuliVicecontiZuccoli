@@ -322,6 +322,9 @@ class MatchManagerTest {
 		query = "update internship set endingDate = '2030-11-12' where id = 1";
 		statement.executeUpdate(query);
 		
+		query = "update internship set startingDate = '2030-11-11' where id = 1";
+		statement.executeUpdate(query);
+		
 		matchManager.doGet(request, response);
 		
 		ArrayList<Match> list = new ArrayList<Match>();
@@ -333,7 +336,7 @@ class MatchManagerTest {
 		internship.setCompany(company);
 		internship.setId(1);
 		internship.setroleToCover("software engeneering");
-		internship.setStartingDate(Date.valueOf("2025-01-01"));
+		internship.setStartingDate(Date.valueOf("2030-11-11"));
 		internship.setEndingDate(Date.valueOf("2030-11-12"));
 		internship.setCompany(company);
 		
