@@ -151,7 +151,7 @@
 
 								var jsonData = JSON.parse(message);
 								if (jsonData === "company")
-									window.location.href = "homePageCompany.html";
+									window.location.href = "CompanyHTML/homePageCompany.html";
 								else
 									window.location.href = "homePageStudente.html";
 								sessionStorage.setItem('user', jsonData);  //mi salvo in js il nome dell'utente

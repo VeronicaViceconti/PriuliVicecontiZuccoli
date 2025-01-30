@@ -256,7 +256,7 @@ public class StudentDAO {
 		}
 	}
 	
-	public ArrayList<Internship> getOnGoingInternship(String email) throws SQLException{
+	/*public ArrayList<Internship> getOnGoingInternship(String email) throws SQLException{
 		
 		ArrayList<Internship> ris = new ArrayList<Internship>();
 		
@@ -293,7 +293,7 @@ public class StudentDAO {
 		
 		return ris;
 	}
-	
+	*/
 	public ArrayList<Match> getMatchWaitingFeedback(String email) throws SQLException{
 		
 		ArrayList<Match> ris = new ArrayList<Match>();
