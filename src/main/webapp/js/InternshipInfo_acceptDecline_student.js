@@ -123,13 +123,10 @@
 				feedbackBtn.classList.add("brownBtn");
 				feedbackBtn.textContent = "Write feedback";
 				feedbackBtn.onclick = function() {
-					window.location.href = "feedbackForm.html"; //controllare se gli devo passare id internship o match
+					window.location.href = "feedbackForm.html"; 
 				}
 
 				actionBtnsContainer.appendChild(feedbackBtn);
-				break;
-			case "waitingFeed":
-				pageTitle.innerHTML = "Waiting for response";
 				break;
 			case "waitingInterview":
 				pageTitle.innerHTML = "Waiting for interview";
