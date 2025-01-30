@@ -65,15 +65,18 @@ public class SignupManager extends HttpServlet {
 	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		String email = StringEscapeUtils.escapeJava(request.getParameter("email"));
-		String name = StringEscapeUtils.escapeJava(request.getParameter("name"));
+		String name = StringEscapeUtils.escapeJava(request.getParameter("username"));
 		String pwd = StringEscapeUtils.escapeJava(request.getParameter("pwd"));
+		String pwdSame = StringEscapeUtils.escapeJava(request.getParameter("pwdSame"));
 		String address = StringEscapeUtils.escapeJava(request.getParameter("address"));
-		String userType = request.getParameter("choose");
+		String userType = request.getParameter("isStudent");
     	String  phoneNumber = StringEscapeUtils.escapeJava(request.getParameter("phoneNumber"));
+    	String  studyCourse = StringEscapeUtils.escapeJava(request.getParameter("StudyCourse"));
+    	
 		UserDAO usr = new UserDAO(connection);
-				
-		if (email == null || email.isEmpty() || name == null || name.trim().isEmpty() ||
-				pwd == null || pwd.trim().isEmpty() || address == null || phoneNumber == null) {
+		
+		if (email == null || email.isEmpty() || name == null || name.trim().isEmpty() || pwdSame.trim().isEmpty() || phoneNumber.trim().isEmpty() ||
+				pwd == null || pwd.trim().isEmpty() || address == null || phoneNumber == null || userType == null ) {
 			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 			response.getWriter().println("Credentials can't be empty!");
 			return;
@@ -85,8 +88,18 @@ public class SignupManager extends HttpServlet {
 	       	return;
 	    }
 		
+		if (!pwd.equals(pwdSame) ) {
+			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+			response.getWriter().println("The two password must be the same!");
+	       	return;
+	    }
+		if(userType.equalsIgnoreCase("yes"))
+			userType = "student";
+		else
+			userType = "company";
+		
 		try {
-			usr.registerNewUser(name, email, pwd, address, phoneNumber,userType);
+			usr.registerNewUser(name, email, pwd, address, phoneNumber,studyCourse,userType);
 			//se tutto va bene
 			response.setStatus(HttpServletResponse.SC_OK);
 			response.setContentType("application/json");

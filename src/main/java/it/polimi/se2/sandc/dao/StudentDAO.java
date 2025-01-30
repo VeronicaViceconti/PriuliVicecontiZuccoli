@@ -101,7 +101,7 @@ public class StudentDAO {
 
 			result2 = pstatement.executeQuery();
 			
-			if (!result2.isBeforeFirst()) {// no results, no matches found
+			if (!result2.isBeforeFirst()) {// no results
 				publication = null;
 			}
 			else {
@@ -145,7 +145,7 @@ public class StudentDAO {
 			pstatement.setString(1, email);
 			result2 = pstatement.executeQuery();
 			
-			if (!result2.isBeforeFirst()) {// no results, no matches found
+			if (!result2.isBeforeFirst()) {// no results
 				return null;	
 			}
 			else { 

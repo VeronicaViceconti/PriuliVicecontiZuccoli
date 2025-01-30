@@ -83,30 +83,51 @@ public class UserDAO {
 		}
 	}
 	
-	public void registerNewUser(String name, String email, String psw,String address,String phoneNumber,String userType) throws SQLException {
+	public void registerNewUser(String name, String email, String psw,String address,String phoneNumber,String studyCourse,String userType) throws SQLException {
 		String query = null;
-		if(userType.equals("student"))
-			query = "INSERT into Student (email,name,address,phoneNumber,cv, psw) VALUES(?, ?, ?, ?, null,?)";
-		else
-			query = "INSERT into Company (email,name,address,phoneNumber, psw) VALUES(?, ?, ?, ?, ?)";
 		PreparedStatement pstatement = null;
 		
-		try {
-			pstatement = connection.prepareStatement(query);
-			pstatement.setString(1, email);
-			pstatement.setString(2, name);
-			pstatement.setString(3, address);
-			pstatement.setString(4, phoneNumber);
-			pstatement.setString(5, psw);
-			pstatement.executeUpdate();
-		} catch(SQLException e) {
-			throw new SQLException("Error while creating new user");
-		}finally {
+		if(userType.equalsIgnoreCase("student")) {
+			query = "INSERT into Student (email,name,address,phoneNumber,studyCourse,cv, psw) VALUES(?, ?, ?, ?,?, null,?)";
 			try {
-				pstatement.close();  //devo chiudere prepared statement
-			} catch(Exception e) {
-				throw new SQLException("Error while trying to close prepared statement");
+				pstatement = connection.prepareStatement(query);
+				pstatement.setString(1, email);
+				pstatement.setString(2, name);
+				pstatement.setString(3, address);
+				pstatement.setString(4, phoneNumber);
+				pstatement.setString(5, studyCourse);
+				pstatement.setString(6, psw);
+				pstatement.executeUpdate();
+			} catch(SQLException e) {
+				throw new SQLException("Error while creating new user");
+			}finally {
+				try {
+					pstatement.close();  //devo chiudere prepared statement
+				} catch(Exception e) {
+					throw new SQLException("Error while trying to close prepared statement");
+				}
+			}
+			
+		}else {
+			query = "INSERT into Company (email,name,address,phoneNumber, psw) VALUES(?, ?, ?, ?, ?)";
+			try {
+				pstatement = connection.prepareStatement(query);
+				pstatement.setString(1, email);
+				pstatement.setString(2, name);
+				pstatement.setString(3, address);
+				pstatement.setString(4, phoneNumber);
+				pstatement.setString(5, psw);
+				pstatement.executeUpdate();
+			} catch(SQLException e) {
+				throw new SQLException("Error while creating new user");
+			}finally {
+				try {
+					pstatement.close();  //devo chiudere prepared statement
+				} catch(Exception e) {
+					throw new SQLException("Error while trying to close prepared statement");
+				}
 			}
 		}
+		
 	}
 }
