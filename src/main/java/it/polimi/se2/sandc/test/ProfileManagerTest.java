@@ -664,7 +664,7 @@ class ProfileManagerTest {
 	
 		profileManager.doGet(request, response);
 		
-		
+		System.out.println(stringWriter.getBuffer().toString().trim());
 		
 		verify(response).setStatus(HttpServletResponse.SC_OK);
 		
@@ -701,7 +701,7 @@ class ProfileManagerTest {
 		
 		verify(response).setStatus(HttpServletResponse.SC_OK);
 		
-		System.out.println(stringWriter.getBuffer().toString().trim());
+		
 		
 		TypeToken<ArrayList<Match>> token = new TypeToken<ArrayList<Match>>() {};
 		ArrayList<Match> matches = new Gson().fromJson(stringWriter.getBuffer().toString().trim(), token.getType());

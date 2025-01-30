@@ -239,7 +239,7 @@ public class CompanyDAO {
 	
 	public Company getProfileInfos(String userType, String email) throws SQLException {
 		String query = null;
-		query = "SELECT * FROM sandc.company where email = ?;";
+		query = "SELECT * FROM company where email = ?;";
 		
 		PreparedStatement pstatement2 = null;
 		ResultSet result = null;
