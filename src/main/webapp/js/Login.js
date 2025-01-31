@@ -55,25 +55,6 @@
 			});
 	}
 
-	document.getElementById("sendBtn").addEventListener('click', (e) => {
-		e.preventDefault;
-		var token = document.getElementById("token").innerText;
-
-		fetch('https://babbochat.altervista.org/SC_Notifications/php-FCM/send.php', {
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
-			},
-			body: new URLSearchParams({
-				token: token,
-				notifTitle: "Bella li",
-				notifBody: "Pataterk"
-			})
-		})
-			.then(response => response.text())
-			.then(data => console.log(data));
-	});
-
 	document.getElementById("signinbutton").addEventListener('click', (e) => {
 		e.preventDefault();
 		var form = e.target.closest("form");
