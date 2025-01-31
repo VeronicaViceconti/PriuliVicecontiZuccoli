@@ -14,19 +14,25 @@
 		                switch (x.status) {
 		                    case 200:  
 								interview = JSON.parse(x.responseText);
-								document.getElementById("question1").name = interview.form.questions[0].id;
-								document.getElementById("question2").name = interview.form.questions[1].id;
-								document.getElementById("question3").name = interview.form.questions[2].id;
-		                        
+								if(interview != null){
+									document.getElementById("question1").name = interview.form.questions[0].id;
+									document.getElementById("question2").name = interview.form.questions[1].id;
+									document.getElementById("question3").name = interview.form.questions[2].id;	
+									interview = interview.id;
+								}
 		                        break;
 		                    case 400: // bad request
-		                        document.getElementById("serverResponse").textContent = message;
+		                        alert(message);
+		                        window.location.href = "homePageCompany.html";
 		                        break;
 		                    case 401: // unauthorized
-		                        document.getElementById("serverResponse").textContent = message;
+		                   	case 412: // not logged
+		                        alert(message);
+		                        window.location.href = "index.html";
+		                        sessionStorage.removeItem("user");
 		                        break;
 		                    case 500: // server error
-		                        document.getElementById("serverResponse").textContent = message;
+		                        alert(message);
 		                        break;
 		                }
 		            }
@@ -55,24 +61,26 @@
 		e.preventDefault();
 		let form = e.target.closest("form");
 		if(form.checkValidity()){
-			makeCall("POST", "Interviewer?page=submitInterview&interview=" + interview.id, form,
+			makeCall("POST", "Interviewer?page=submitInterview&interview=" + interview, form,
 				function(x) {
 					if (x.readyState == XMLHttpRequest.DONE) {
 			            var message = x.responseText;
-			            console.log(message);
 			            switch (x.status) {
 			              case 200:  
-			              	alert("publicato con successo");
+			              	alert("successfully published");
 			                window.location.href = "homePageCompany.html";
 			                break;
 			              case 400: // bad request
-			                console.log(message);
+			                alert(message);
 			                break;
+			              case 412: // not logged
 			              case 401: // unauthorized
-			                console.log(message);
+			                alert(message);
+			                window.location.href = "index.html";
+			                sessionStorage.removeItem("user");
 			                break;
 			              case 500: // server error
-			            	console.log(message);
+			            	alert(message);
 			                break;
 			            }
 			          }

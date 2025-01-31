@@ -313,6 +313,7 @@ public class MatchDAO {
 	public Interview createInterview(int idMatch) throws SQLException{
 		
 		//control if the student has already an active interview
+		Boolean remove = false;
 		String query = "select * \n"
 				+ "from publication as p inner join matches as m on p.id = m.idPublication\n"
 				+ "where m.id = ? and p.student in (select student\n"
@@ -325,9 +326,30 @@ public class MatchDAO {
 			
 			try(ResultSet result = statement.executeQuery()){
 				if (result.isBeforeFirst()) {// the student has already an interview
-					return null;	
+					//remove the current match 
+					remove = true;
 				}
 			}
+		}
+		if(remove) {
+			query = "DELETE from matches where id = ?";
+			PreparedStatement pstatement2 = null;
+			try {
+				pstatement2 = connection.prepareStatement(query);
+				pstatement2.setInt(1, idMatch);
+				pstatement2.executeUpdate();
+			} catch(SQLException e) {
+				throw new SQLException("Error while trying to find interview");
+			}finally {
+				try {
+					if (pstatement2 != null) {
+		                pstatement2.close();
+		            } 
+				} catch(Exception e) {
+					throw new SQLException("Error while trying to close prepared statement");
+				}
+			}
+			return null;
 		}
 		
 		//create the new form

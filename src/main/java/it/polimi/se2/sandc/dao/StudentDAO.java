@@ -349,6 +349,8 @@ public class StudentDAO {
 			statement.setString(1, email);
 			
 			try(ResultSet result = statement.executeQuery()){
+				if(result.isBeforeFirst())
+					return null;
 				while(result.next()) {
 					Company c = new Company();
 					

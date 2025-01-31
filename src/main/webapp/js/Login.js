@@ -42,6 +42,7 @@
 	});
 
 	function saveFCMToken(token) {
+		
 		makeCall("POST", 'MatchManager?page=saveToken&token=' + token, null,
 			function(x) { // X è UN OGGETTO XMLHttpRequest
 				if (x.readyState == XMLHttpRequest.DONE) {

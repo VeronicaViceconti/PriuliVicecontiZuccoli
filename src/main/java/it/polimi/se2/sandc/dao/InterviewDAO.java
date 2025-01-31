@@ -164,7 +164,7 @@ public class InterviewDAO {
 			}
 			
 		} catch(SQLException e) {
-			throw new SQLException("Error while finding match");
+			throw new SQLException("Error while finding interview info");
 		}finally {
 			try {
 				pstatement.close(); 

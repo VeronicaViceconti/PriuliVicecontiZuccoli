@@ -77,6 +77,7 @@ public class MatchManager extends HttpServlet {
 		switch (request.getParameter("page").toString()) {
 		case "saveToken":
 			if (request.getParameter("token") != null) {
+				
 				saveFCMToken(response, request.getParameter("token"), user.getEmail(), userType);
 			} else {
 				response.setStatus(HttpServletResponse.SC_BAD_REQUEST);

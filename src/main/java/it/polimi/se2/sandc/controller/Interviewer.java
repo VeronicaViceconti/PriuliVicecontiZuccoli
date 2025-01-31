@@ -235,7 +235,7 @@ public class Interviewer extends HttpServlet {
 			idInterview = Integer.parseInt(request.getParameter("interview"));
 		}catch (Exception e) {
 			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-			response.getWriter().println("the match is missing");
+			response.getWriter().println("the interview is missing");
 			return;
 		}
 		

@@ -46,6 +46,7 @@
 			              case 412:
 							 alert(message);
 							 window.location.href = "index.html";
+							 sessionStorage.removeItem("user");
 							 break;
 			              case 500: // server error
 			            	alert(message);

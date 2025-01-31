@@ -113,6 +113,7 @@
 						case 412:
 							alert(req.responseText);
 							window.location.href = "index.html";
+							sessionStorage.removeItem("user");
 							break;
 						case 500:
 							alert(req.responseText);

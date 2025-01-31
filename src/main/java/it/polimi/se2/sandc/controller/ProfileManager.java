@@ -262,7 +262,6 @@ public class ProfileManager extends HttpServlet {
 			try { //find the ongoing internship
 				m = intern.getOngoingInternship(email);
 				internInfoOnGoing = new Gson().toJson(m);
-				
 				matches = student.getMatchWaitingFeedback(email);
 				internInfoFeedback = new Gson().toJson(matches);
 				
@@ -272,7 +271,7 @@ public class ProfileManager extends HttpServlet {
 			    response.setStatus(HttpServletResponse.SC_OK);
 			} catch (SQLException e) {
 				response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-				response.getWriter().println("Error finding ongoing internship, retry later");
+				response.getWriter().println("Error finding ongoing internship or waiting match, retry later");
 				return;
 			}
 		}else { //company

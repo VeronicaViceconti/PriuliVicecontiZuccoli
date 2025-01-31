@@ -108,7 +108,7 @@
 									jobDesc.innerText = jsonData.jobDescription;
 									if ("preferences" in jsonData) {
 										for (const pref of jsonData.preferences) {
-											workCond.innerText += pref.text + " ";
+											workCond.innerHTML += pref.text + ";<br>";
 										}
 									}
 									break;
@@ -117,6 +117,8 @@
 									break;
 								case 412:
 									alert(req.responseText);
+									window.location.href = "index.html";
+									sessionStorage.removeItem("user");
 									break;
 								case 500:
 									alert(req.responseText);
@@ -152,6 +154,7 @@
 								case 412:
 									alert(req.responseText);
 									window.location.href = "index.html";
+									sessionStorage.removeItem("user");
 									break;
 								case 500:
 									alert(req.responseText);
