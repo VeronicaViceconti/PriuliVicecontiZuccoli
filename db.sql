@@ -7,7 +7,8 @@ create table Student(
     phoneNumber varchar(20),
     studyCourse varchar(100),
     cv varchar(1000),
-    psw varchar(100) not null
+    psw varchar(100) not null,
+    token varchar(150)
 );
 
 create table Company(
@@ -15,7 +16,8 @@ create table Company(
     name varchar(20) not null,
     address varchar(20) not null,
     phoneNumber varchar(20),
-    psw varchar(100) not null
+    psw varchar(100) not null,
+    token varchar(150)
 );
 
 create table Publication (
