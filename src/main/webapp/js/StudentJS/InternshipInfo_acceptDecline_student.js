@@ -271,7 +271,6 @@
 	}
 
 	function sendNotif(title, body, recipientToken) {
-		console.log("mario");
 		fetch('https://babbochat.altervista.org/SC_Notifications/php-FCM/send.php', {
 			method: 'POST',
 			headers: {

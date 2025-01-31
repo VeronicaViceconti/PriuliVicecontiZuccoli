@@ -49,7 +49,7 @@ IF EXISTS (SELECT * FROM Student WHERE email = NEW.email)
 	insert into Matches (idPublication, idInternship)  
 		select idPublication, idInternship 
 		from  Preference as p inner join Requirement as r on p.idWorkingPreferences = r.idWorkingPreference
-        where idInternship = new.idInternship and not exists (select * from Matches as m where m.idPublication = p.idPublication and r.idInternship)
+        where idInternship = new.idInternship and not exists (select * from Matches as m where m.idPublication = p.idPublication and r.idInternship = m.idInternship)
         group by idPublication, idInternship
         having count(*) >= (num - 1) or count(*) >= ((select count(*) from preference where idPublication = p.idPublication) -1) ;
  end //

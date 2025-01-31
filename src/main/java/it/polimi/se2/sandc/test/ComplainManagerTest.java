@@ -66,8 +66,8 @@ class ComplainManagerTest {
        
 		String driver = "com.mysql.cj.jdbc.Driver";
 		String url = "jdbc:mysql://localhost:3306/testsandc?serverTimezone=UTC";
-		String user = "Elia";
-		String password = "Elia";
+		String user = "root";
+		String password = "KKlloopp9900";
 		Class.forName(driver);
 		connection = DriverManager.getConnection(url, user, password);
         

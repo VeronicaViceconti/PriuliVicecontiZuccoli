@@ -3,7 +3,6 @@ const sendBtn = document.getElementById("complainButton");
  const matchID = sessionStorage.getItem('matchID');
  const onGoingMatch = sessionStorage.getItem("onGoingMatch");
  
- //send complain form
  sendBtn.addEventListener("click", (e) => {
 	 	e.preventDefault();
 	 	var form = e.target.closest("form");
@@ -15,7 +14,7 @@ const sendBtn = document.getElementById("complainButton");
 			            var message = x.responseText;
 			            
 			            switch (x.status) {
-			              case 200:  
+			              case 200:  //richiesta andata a buon fine		
 			              		switch (user) {
 									case "student":
 										window.location.href = "homePageStudente.html";
@@ -26,13 +25,16 @@ const sendBtn = document.getElementById("complainButton");
 								}
 			                break;
 			              case 400: // bad request
-			                alert(message);
+			                console.log(message);
+			                //this.alert.textContent = message;
 			                break;
 			              case 401: // unauthorized
-			                alert(message);
+			                console.log(message);
+			                //this.alert.textContent = message;
 			                break;
 			              case 500: // server error
-			            	alert(message);
+			            	console.log(message);
+			            	//this.alert.textContent = message;
 			                break;
 			            }
 			          }

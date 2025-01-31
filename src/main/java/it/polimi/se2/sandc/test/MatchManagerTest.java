@@ -70,8 +70,8 @@ class MatchManagerTest {
        
 		String driver = "com.mysql.cj.jdbc.Driver";
 		String url = "jdbc:mysql://localhost:3306/testsandc?serverTimezone=UTC";
-		String user = "Elia";
-		String password = "Elia";
+		String user = "root";
+		String password = "KKlloopp9900";
 		Class.forName(driver);
 		connection = DriverManager.getConnection(url, user, password);
         
@@ -521,5 +521,51 @@ class MatchManagerTest {
 
 		verify(response).setStatus(HttpServletResponse.SC_BAD_REQUEST);
 
+	}
+	
+	@Test 
+	public void saveFCMTokenTest_Company() throws ServletException, IOException, SQLException{
+		User user = new User();
+		
+		user.setEmail("company@mail.com");
+		user.setName("company");
+		user.setWhichUser("company");
+		
+		when(session.getAttribute("user")).thenReturn(user);
+		when(session.getAttribute("userType")).thenReturn("company");
+		
+		when(request.getParameter("page")).thenReturn("saveToken");	
+		when(request.getParameter("token")).thenReturn("TestToken");
+		
+		matchManager.doPost(request, response);
+		
+		Statement statement = connection.createStatement();
+		String query = "select * from company where email = 'company@mail.com' and token='TestToken' " ;
+		
+		statement.execute(query);		
+		assertTrue(statement.getResultSet().isBeforeFirst());
+	}
+	
+	@Test
+	public void saveFCMTokenTest_Student() throws ServletException, IOException, SQLException{
+		User user = new User();
+		
+		user.setEmail("user@mail.com");
+		user.setName("mario");
+		user.setWhichUser("student");
+		
+		when(session.getAttribute("user")).thenReturn(user);
+		when(session.getAttribute("userType")).thenReturn("student");
+		
+		when(request.getParameter("page")).thenReturn("saveToken");	
+		when(request.getParameter("token")).thenReturn("TestToken");
+		
+		matchManager.doPost(request, response);
+		
+		Statement statement = connection.createStatement();
+		String query = "select * from student where email = 'user@mail.com' and token='TestToken'";
+		
+		statement.execute(query);		
+		assertTrue(statement.getResultSet().isBeforeFirst());
 	}
 }
