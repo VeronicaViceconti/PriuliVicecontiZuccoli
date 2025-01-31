@@ -236,6 +236,8 @@ body {
 	height: 52px;
 	top: 17px;
 	left: 1368px;
+	border-radius: 50%;
+	object-fit: cover;
 }
 
 .homepage-studente .titolo {

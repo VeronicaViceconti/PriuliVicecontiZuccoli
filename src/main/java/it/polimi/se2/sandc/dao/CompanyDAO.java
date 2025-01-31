@@ -165,6 +165,7 @@ public class CompanyDAO {
 				Company company = new Company();
 	            company.setName(result.getString("name"));
 	            company.setaddress(result.getString("address"));
+	            company.setToken(result.getString("token"));
 	            internship.setCompany(company);
 	            
 	            Date sqlDate = result.getDate("startingDate");

@@ -25,10 +25,22 @@
 		showLogin();
 	});
 
+
+	function saveFCMToken(token) {
+		makeCall("POST", 'MatchManager?page=saveToken&token=' + token, null,
+			function(x) { // X è UN OGGETTO XMLHttpRequest
+				if (x.readyState == XMLHttpRequest.DONE) {
+					if (x.status === 200) return;
+					
+					const errorMessage = x.responseText;
+					document.getElementById("errors").textContent = errorMessage;
+				}
+			});
+	}
+
 	document.getElementById("sendBtn").addEventListener('click', (e) => {
 		e.preventDefault;
-		var token = sessionStorage.getItem("notifToken");
-		console.log("nel backend : " + token);
+		var token = document.getElementById("token").innerText;
 
 		fetch('https://babbochat.altervista.org/SC_Notifications/php-FCM/send.php', {
 			method: 'POST',
@@ -106,6 +118,7 @@
 
 	document.getElementById("loginbutton").addEventListener('click', (e) => {
 		var form = e.target.closest("form");
+		document.getElementById("userEmail").innerText = form.elements["email"].value;
 		if (form.checkValidity()) {
 			makeCall("POST", 'LoginManager?page=toHomepage', form,
 				function(x) { // X è UN OGGETTO XMLHttpRequest
@@ -114,13 +127,15 @@
 						switch (x.status) {
 							case 200:  //richiesta andata a buon fine
 
-
 								var jsonData = JSON.parse(message);
+								sessionStorage.setItem('user', jsonData);  //mi salvo in js il nome dell'utente
+								saveFCMToken(document.getElementById("token").innerText);
+
 								if (jsonData === "company")
 									window.location.href = "homePageCompany.html";
 								else
 									window.location.href = "homePageStudente.html";
-								sessionStorage.setItem('user', jsonData);  //mi salvo in js il nome dell'utente
+
 								break;
 							case 400: // bad request
 								document.getElementById("errors").textContent = message;

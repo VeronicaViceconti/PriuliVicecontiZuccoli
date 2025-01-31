@@ -19,6 +19,7 @@
 		cleanUp();
 		showMatchesDivFields(false);
 		loadAvailableInternships();
+
 	}
 
 	availableInternTab.addEventListener("click", () => {
@@ -35,17 +36,17 @@
 		showMatchesDivFields(false);
 		loadAvailableInternships();
 	});
-	
-	addPublicationTab.addEventListener("click",()=>{
+
+	addPublicationTab.addEventListener("click", () => {
 		document.getElementById("overlap").style.visibility = "hidden";
 		availableInternTab.style.color = "#2e4057";
 		matchesTab.style.color = "#2e4057";
 		addPublicationTab.style.color = "#a37659";
 		sessionStorage.setItem('tab', "addPublication");
 		first_subTitle.innerText = "";
-		
+
 		window.location.href = "preferencePublication.html";
-		
+
 		cleanUp();
 		showMatchesDivFields(false);
 	});
@@ -64,7 +65,7 @@
 		cleanUp();
 		showMatchesDivFields(true);
 		loadMatchInternships();
-
+		
 	});
 
 	function cleanUp() {
@@ -82,18 +83,18 @@
 	})
 
 
-	searchfiltered.addEventListener("click", () =>{
-  		searchfiltered.placeholder = ''; 
+	searchfiltered.addEventListener("click", () => {
+		searchfiltered.placeholder = '';
 	});
-	
+
 	searchfiltered.addEventListener('blur', function() {
-		 if(searchfiltered.value === ''){
-		    searchfiltered.placeholder = 'Search for internships'; 
-		 }
+		if (searchfiltered.value === '') {
+			searchfiltered.placeholder = 'Search for internships';
+		}
 	});
 
 	searchBtn.addEventListener("click", () => {
-		
+
 		var searchKey = document.getElementById("searchKey").value;
 		if (searchKey === "") {
 			return;
@@ -143,7 +144,7 @@
 	searchBtn.addEventListener("click", () => {
 		if (sessionStorage.getItem('tab') == "matches")
 			return;
-		
+
 		var searchKey = document.getElementById("searchKey").value;
 		if (searchKey === "") {
 			return;
@@ -188,7 +189,7 @@
 			});
 
 	})
-	
+
 	function AddCardsEventListners() {
 		var cards = null;
 		cards = document.querySelectorAll(".card");
@@ -264,12 +265,12 @@
 			sectionDiv.appendChild(textDiv);
 			infoDiv.appendChild(sectionDiv);
 		});
-		const first_div = infoDiv.querySelector('div:first-of-type');
-		
+		/*const first_div = infoDiv.querySelector('div:first-of-type');
+
 		first_div.style.width = "200px";
-		first_div.querySelector('div:first-of-type').style.overflow = "hidden"; 
-		first_div.querySelector('div:first-of-type').style.textOverflow = "ellipsis";
-		
+		first_div.querySelector('div:first-of-type').style.overflow = "hidden";
+		first_div.querySelector('div:first-of-type').style.textOverflow = "ellipsis";*/
+
 
 		// Aggiungi le informazioni al contenitore principale
 		card.appendChild(infoDiv);
@@ -277,10 +278,10 @@
 		//aggiungo click listener alla card
 		card.addEventListener("click", () => {
 			sessionStorage.setItem("internshipID", card.id);
-			if(idMatch != null){
+			if (idMatch != null) {
 				sessionStorage.setItem("matchID", idMatch);
 			}
-			if(!(sessionStorage.getItem("tab") == "matches" && card.getAttribute("data-section") == "available/newMatch")){
+			if (!(sessionStorage.getItem("tab") == "matches" && card.getAttribute("data-section") == "available/newMatch")) {
 				sessionStorage.setItem("tab", card.getAttribute("data-section"));
 			}
 			window.location.href = "internshipInfo_AcceptDecline_student.html";
@@ -336,29 +337,29 @@
 							var jsonData = JSON.parse(req.responseText);
 							cleanUp();
 							var pageLocation;
-							if(jsonData != null){
+							if (jsonData != null) {
 								for (const internship of jsonData) {
-								pageLocation = avail_newMatch_section;
-								if ("acceptedYNCompany" in internship && "acceptedYNStudent" in internship) {
-									pageLocation = waitingInterview_section
+									pageLocation = avail_newMatch_section;
+									if ("acceptedYNCompany" in internship && "acceptedYNStudent" in internship) {
+										pageLocation = waitingInterview_section
+									}
+									else if ("acceptedYNStudent" in internship) {
+										pageLocation = waitingResponse_section;
+									}
+									createCard(
+										pageLocation,
+										internship.internship.id,
+										internship.internship.company.name,
+										internship.internship.roleToCover,
+										internship.internship.startingDate,
+										internship.internship.endingDate,
+										internship.internship.company.address,
+										internship.internship.openSeats,
+										internship.id
+									);
 								}
-								else if ("acceptedYNStudent" in internship) {
-									pageLocation = waitingResponse_section;
-								}
-								createCard(
-									pageLocation,
-									internship.internship.id,
-									internship.internship.company.name,
-									internship.internship.roleToCover,
-									internship.internship.startingDate,
-									internship.internship.endingDate,
-									internship.internship.company.address,
-									internship.internship.openSeats,
-									internship.id
-								);
 							}
-							}
-							
+
 							break;
 						case 403:
 							console.log("errore 403");

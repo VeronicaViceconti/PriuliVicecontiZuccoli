@@ -7,6 +7,7 @@ public class Company {
 	private String name;
 	private String address;
 	private String phoneNumber;
+	private String token;
 	
 	public String getEmail() {
 		return email;
@@ -34,4 +35,11 @@ public class Company {
 	public void setPhoneNumber(String PhoneNumber) {
 		this.phoneNumber = PhoneNumber;
 	}
+	public String getToken() {
+		return token;
+	}
+	public void setToken(String token) {
+		this.token = token;
+	}
+	
 }

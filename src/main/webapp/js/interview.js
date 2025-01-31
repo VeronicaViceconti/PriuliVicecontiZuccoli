@@ -20,8 +20,9 @@
 		            if (x.readyState == XMLHttpRequest.DONE) {
 		                var message = x.responseText;
 		                switch (x.status) {
-		                    case 200:  //richiesta andata a buon fineù
+		                    case 200:  //richiesta andata a buon fine
 								interview = JSON.parse(x.responseText);
+								console.log("intervista: " + interview);
 								document.getElementById("question1").name = interview.form.questions[0].id;
 								document.getElementById("question2").name = interview.form.questions[1].id;
 								document.getElementById("question3").name = interview.form.questions[2].id;
