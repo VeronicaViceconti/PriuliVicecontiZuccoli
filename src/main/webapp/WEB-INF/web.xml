@@ -21,16 +21,17 @@
 	
 	<context-param>
 		<param-name>dbPassword</param-name>
-		<param-value>KKlloopp9900</param-value>
+		<param-value>asdqwe123!"£</param-value>
 	</context-param>
 
 	<context-param>
 		<param-name>dbDriver</param-name>
 		<param-value>com.mysql.cj.jdbc.Driver</param-value>
 	</context-param>
+	
 	<context-param>
 		<param-name>pathUploadCv</param-name>
-		<param-value>C:\\Users\\epriu\\eclipse-workspace\\cv\\</param-value>
+		<param-value>C://Users//Huawei//OneDrive//Desktop//CV//</param-value>
 	</context-param>
 
 	<filter>

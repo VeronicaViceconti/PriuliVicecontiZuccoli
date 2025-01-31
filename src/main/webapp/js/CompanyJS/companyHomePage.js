@@ -235,12 +235,14 @@
 							if (jsonData != null && jsonData.length > 0) {
 								cleanUp();
 								for (const match of jsonData) { //create matches found
-									createMatchCard(
+									createCard(
 										match.id,
 										match.internship.student.name,
-										match.internship.student.studyCourse,
 										match.internship.roleToCover,
-										match.internship.startingDate + " - " + match.internship.endingDate
+										match.internship.startingDate,
+										match.internship.endingDate,
+										match.internship.company.address,
+										match.internship.openSeats
 									)
 								}
 							} else {

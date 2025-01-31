@@ -322,7 +322,7 @@ public class InternshipDAO {
 	public List<Match> getFilteredOngoingInternships(String email, String nameToSearch) throws SQLException {
 		
 		String query = null;
-		query = "SELECT inter.id as idInter,c.address,c.name companyName,s.name studentName,s.studyCourse,s.email studentEmail,startingDate,endingDate,roleToCover,m.id FROM interview as i join matches as m on i.idMatch = m.id join publication as p on p.id = m.idPublication join student as s on s.email = p.student join internship as inter on inter.id = m.idInternship join company as c on c.email = inter.company where c.email = ? AND confirmedYN is true and current_date() < endingDate and s.name = ?;";			
+		query = "SELECT inter.id as idInter,c.address,c.name companyName,s.name studentName,s.studyCourse,s.email studentEmail,startingDate,openSeats,endingDate,roleToCover,m.id FROM interview as i join matches as m on i.idMatch = m.id join publication as p on p.id = m.idPublication join student as s on s.email = p.student join internship as inter on inter.id = m.idInternship join company as c on c.email = inter.company where c.email = ? AND confirmedYN is true and current_date() < endingDate and s.name = ?;";			
 		ResultSet result = null;
 		PreparedStatement pstatement2 = null;
 		
@@ -359,6 +359,7 @@ public class InternshipDAO {
 		            if (sqlDate != null) {
 		                internship.setEndingDate(new Date(sqlDate.getTime())); 
 		            }
+		            internship.setOpenSeats(result.getShort("openSeats"));
 		            internship.setroleToCover(result.getString("roleToCover"));
 		            
 		            match.setInternship(internship);
