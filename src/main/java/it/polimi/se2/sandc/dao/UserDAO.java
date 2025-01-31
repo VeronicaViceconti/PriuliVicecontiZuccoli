@@ -13,6 +13,13 @@ public class UserDAO {
 		this.connection = conn;
 	}
 	
+	/**
+	 * verify if the given email and password and return the user
+	 * @param email 
+	 * @param psw
+	 * @return the user with the given credentials or null
+	 * @throws SQLException
+	 */
 	public User sendFormLogin(String email, String psw) throws SQLException {
 		String query = "SELECT name, email  FROM student  WHERE email = ? AND psw = ?";
 		String query2 = "SELECT name, email  FROM company  WHERE email = ? AND psw = ?";
@@ -39,12 +46,12 @@ public class UserDAO {
 			throw new SQLException("Error while trying to access credentials");
 		}finally {
 			try {
-				result.close(); //Devo chiudere result set
+				result.close();
 			} catch(Exception e) {
 				throw new SQLException("Error while trying to close Result Set");
 			}
 			try {
-				pstatement.close();  //devo chiudere prepared statement
+				pstatement.close();  
 			} catch(Exception e) {
 				throw new SQLException("Error while trying to close prepared statement");
 			}
@@ -71,18 +78,30 @@ public class UserDAO {
 			throw new SQLException("Error while trying to access credentials");
 		}finally {
 			try {
-				result2.close(); //Devo chiudere result set
+				result2.close();
 			} catch(Exception e) {
 				throw new SQLException("Error while trying to close Result Set");
 			}
 			try {
-				pstatement2.close();  //devo chiudere prepared statement
+				pstatement2.close(); 
 			} catch(Exception e) {
 				throw new SQLException("Error while trying to close prepared statement");
 			}
 		}
 	}
 	
+	
+	/**
+	 * Add the new user in the db
+	 * @param name username
+	 * @param email email of the user
+	 * @param psw the password
+	 * @param address the address 
+	 * @param phoneNumber the fon number
+	 * @param studyCourse the course of study
+	 * @param userType the type of user ("student" or "company")
+	 * @throws SQLException
+	 */
 	public void registerNewUser(String name, String email, String psw,String address,String phoneNumber,String studyCourse,String userType) throws SQLException {
 		String query = null;
 		PreparedStatement pstatement = null;
@@ -102,7 +121,7 @@ public class UserDAO {
 				throw new SQLException("Error while creating new user");
 			}finally {
 				try {
-					pstatement.close();  //devo chiudere prepared statement
+					pstatement.close(); 
 				} catch(Exception e) {
 					throw new SQLException("Error while trying to close prepared statement");
 				}
@@ -122,7 +141,7 @@ public class UserDAO {
 				throw new SQLException("Error while creating new user");
 			}finally {
 				try {
-					pstatement.close();  //devo chiudere prepared statement
+					pstatement.close(); 
 				} catch(Exception e) {
 					throw new SQLException("Error while trying to close prepared statement");
 				}

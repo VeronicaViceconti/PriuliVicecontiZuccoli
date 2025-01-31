@@ -27,13 +27,20 @@ public class CompanyDAO {
 	public CompanyDAO(Connection conn) {
 		this.connection = conn;
 	}
-	
-	//like the otehr one but this time we are filtering on the internships of ONE company
+	/**
+	 * return the available Internship for the student 
+	 * @param companyName name of the company where search the internships 
+	 * @param emailStudent email of the student to search the internships 
+	 * @return a list of internship
+	 * @throws SQLException
+	 */
 	public List<Internship> searchAvailableInternships(String companyName,String emailStudent) throws SQLException{
 		List<Internship> internships = new ArrayList<>();
 		String query = null;
 		
-		query = "SELECT * FROM internship AS i JOIN company ON company.email = i.company WHERE NOT EXISTS (SELECT * FROM matches AS m JOIN publication AS p ON m.idPublication = p.id WHERE m.idInternship = i.id AND p.student = ?) AND openSeats > 0 AND name = ? AND current_date() < startingDate and current_date() <= endingDate";
+		query = "SELECT * "
+				+ "FROM internship AS i JOIN company ON company.email = i.company "
+				+ "WHERE NOT EXISTS (SELECT * FROM matches AS m JOIN publication AS p ON m.idPublication = p.id WHERE m.idInternship = i.id AND p.student = ?) AND openSeats > 0 AND name = ? AND current_date() < startingDate and current_date() <= endingDate";
 	    PreparedStatement statement = connection.prepareStatement(query);
 	    
 	    statement.setString(1, emailStudent);
@@ -71,12 +78,12 @@ public class CompanyDAO {
 			throw new SQLException("Error while trying to access credentials");
 		}finally {
 			try {
-				result.close(); //Devo chiudere result set
+				result.close(); 
 			} catch(Exception e) {
 				throw new SQLException("Error while trying to close Result Set");
 			}
 			try {
-				statement.close();  //devo chiudere prepared statement
+				statement.close();
 			} catch(Exception e) {
 				throw new SQLException("Error while trying to close prepared statement");
 			}
@@ -84,7 +91,12 @@ public class CompanyDAO {
 		return internships;
 	}
 	
-	//search all the internships but not the ones that has already a match with that publication (so with that student)
+	/**
+	 * search all the internships but not the ones that has already a match with that publication (so with that student)
+	 * @param emailStudent 
+	 * @return list of internship
+	 * @throws SQLException
+	 */
 	public List<Internship> searchAllInternships(String emailStudent) throws SQLException{
 		List<Internship> internships = new ArrayList<>();
 		String query = null;
@@ -133,12 +145,12 @@ public class CompanyDAO {
 			throw new SQLException("Error while trying to access credentials");
 		}finally {
 			try {
-				result.close(); //Devo chiudere result set
+				result.close(); 
 			} catch(Exception e) {
 				throw new SQLException("Error while trying to close Result Set");
 			}
 			try {
-				statement.close();  //devo chiudere prepared statement
+				statement.close(); 
 			} catch(Exception e) {
 				throw new SQLException("Error while trying to close prepared statement");
 			}
@@ -146,6 +158,12 @@ public class CompanyDAO {
 		return internships;
 	}
 	
+	/**
+	 * return the internship with the given id with the relative requirements 
+	 * @param ID: the id of the internship
+	 * @return the internship
+	 * @throws SQLException
+	 */
 	public Internship findTheInternship(int ID) throws SQLException {
 		String query =  "SELECT * FROM company JOIN internship as i ON company.email = i.company LEFT JOIN requirement as r on r.idInternship = i.id LEFT JOIN workingpreferences as w ON w.id = r.idWorkingPreference WHERE i.id = ?";
 		ResultSet result = null;
@@ -185,12 +203,12 @@ public class CompanyDAO {
 			throw new SQLException("Error while trying to access credentials");
 		}finally {
 			try {
-				result.close(); //Devo chiudere result set
+				result.close(); 
 			}catch(Exception e) {
 				throw new SQLException("Error while trying to close Result Set");
 			}
 			try {
-				pstatement.close();  //devo chiudere prepared statement
+				pstatement.close();  
 			} catch(Exception e) {
 				throw new SQLException("Error while trying to close prepared statement");
 			}
@@ -224,12 +242,12 @@ public class CompanyDAO {
 			throw new SQLException("Error while trying to get preferences");
 		}finally {
 			try {
-				result.close(); //Devo chiudere result set
+				result.close(); 
 			}catch(Exception e) {
 				throw new SQLException("Error while trying to close Result Set");
 			}
 			try {
-				pstatement.close();  //devo chiudere prepared statement
+				pstatement.close();  
 			} catch(Exception e) {
 				throw new SQLException("Error while trying to close prepared statement");
 			}
@@ -237,6 +255,15 @@ public class CompanyDAO {
 		
 		return internship;
 	}
+	
+	
+	/**
+	 * return the profile info of the given company
+	 * @param userType 
+	 * @param email 
+	 * @return the company
+	 * @throws SQLException
+	 */
 	
 	public Company getProfileInfos(String userType, String email) throws SQLException {
 		String query = null;
@@ -264,12 +291,12 @@ public class CompanyDAO {
 			throw new SQLException("Error while trying to access profile infos");
 		}finally {
 			try {
-				result.close(); //Devo chiudere result set
+				result.close(); 
 			} catch(Exception e) {
 				throw new SQLException("Error while trying to close Result Set");
 			}
 			try {
-				pstatement2.close();  //devo chiudere prepared statement
+				pstatement2.close();  
 			} catch(Exception e) {
 				throw new SQLException("Error while trying to close prepared statement");
 			}
@@ -304,6 +331,14 @@ public class CompanyDAO {
 		
 	}
 	
+	
+	/**
+	 * Given the company add the given preference to the given internship
+	 * @param user the company 
+	 * @param idPref id of the preference
+	 * @param idInt id of the internship of the company
+	 * @throws SQLException
+	 */
 	public void addRequirement(User user, int idPref, int idInt) throws SQLException {
 		String query = "insert into Requirement (idWorkingPreference, idInternship) values (?, ?)";
 		if(user.getWhichUser().equals("student")) {
@@ -356,6 +391,13 @@ public class CompanyDAO {
 		return ris;
 	}
 	*/
+	
+	/**
+	 * return the company match which are waiting for feedbacks
+	 * @param email the email of the company
+	 * @return an arrayList of the matches
+	 * @throws SQLExceptions
+	 */
 	public ArrayList<Match> getMatchWaitingFeedback(String email) throws SQLException{
 		
 		ArrayList<Match> ris = new ArrayList<Match>();
@@ -416,7 +458,14 @@ public class CompanyDAO {
 		return ris;
 	}
 	
-	//return all feedbacks made to a company
+	
+	/**
+	 * return all feedbacks made to a company
+	 * @param email of the company
+	 * @return a list of feedback
+	 * @throws SQLException
+	 */
+	
 	public List<Feedback> getFeedbacks(String email) throws SQLException {
 		List<Feedback> ris = new ArrayList<Feedback>();
 		
@@ -447,6 +496,12 @@ public class CompanyDAO {
 		return ris;
 	}
 
+	/**
+	 * return the internship info about the given matchW
+	 * @param matchId the match used to search the internship
+	 * @return the match containing the internship 
+	 * @throws SQLException
+	 */
 	public Match getMatchInternshipInfo(int matchId) throws SQLException {
 		String query = null;
 		query = "SELECT m.id as mId,i.id as idInter,c.name as companyName,c.address as cAdd,startingDate,endingDate,jobDescription,openSeats,roleToCover FROM company as c JOIN internship as i ON c.email = i.company join matches as m on m.idInternship = i.id WHERE m.id = ?";
@@ -489,12 +544,12 @@ public class CompanyDAO {
 			throw new SQLException("Error while trying to access credentials");
 		}finally {
 			try {
-				result.close(); //Devo chiudere result set
+				result.close();
 			}catch(Exception e) {
 				throw new SQLException("Error while trying to close Result Set");
 			}
 			try {
-				pstatement.close();  //devo chiudere prepared statement
+				pstatement.close();
 			} catch(Exception e) {
 				throw new SQLException("Error while trying to close prepared statement");
 			}
@@ -530,12 +585,12 @@ public class CompanyDAO {
 			throw new SQLException("Error while trying to get preferences");
 		}finally {
 			try {
-				result.close(); //Devo chiudere result set
+				result.close(); 
 			}catch(Exception e) {
 				throw new SQLException("Error while trying to close Result Set");
 			}
 			try {
-				pstatement.close();  //devo chiudere prepared statement
+				pstatement.close(); 
 			} catch(Exception e) {
 				throw new SQLException("Error while trying to close prepared statement");
 			}

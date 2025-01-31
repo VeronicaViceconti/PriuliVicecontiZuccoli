@@ -24,6 +24,13 @@ public class StudentDAO {
 		this.connection = conn;
 	}
 	
+	/**
+	 * the function add the path to the pdf file of the cv of the given user
+	 * @param user user to add the path
+	 * @param path path to add
+	 * @return
+	 * @throws SQLException
+	 */
 	public boolean putCv(User user, String path) throws SQLException {
 		String email = user.getEmail();
 		String query = "update Student set cv = ? where email = ?";
@@ -69,6 +76,13 @@ public class StudentDAO {
 		
 	}
 	
+	/**
+	 * add a new preferences fot the given user 
+	 * @param user student to add the preference
+	 * @param idPref the preference to add
+	 * @param idPub the publication where to add the preference
+	 * @throws SQLException
+	 */
 	public void addPreference(User user, int idPref, int idPub) throws SQLException {
 		String query = "insert into preference (idWorkingPreferences, idPublication) values (?, ?)";
 		if(user.getWhichUser().equals("company")) {
@@ -84,6 +98,13 @@ public class StudentDAO {
 		
 	}
 	
+	/**
+	 * return the info of the given student
+	 * @param userType the type of the user
+	 * @param email the email of the user
+	 * @return the student 
+	 * @throws SQLException
+	 */
 	public Student getProfileInfos(String userType, String email) throws SQLException {
 		String query = null;
 		Student user = new Student();
@@ -133,7 +154,7 @@ public class StudentDAO {
 			throw new SQLException("Error while finding infos");
 		}finally {
 			try {
-				pstatement.close(); // devo chiudere prepared statement
+				pstatement.close(); 
 			} catch (Exception e) {
 				throw new SQLException("Error while trying to close prepared statement");
 			}
@@ -167,13 +188,19 @@ public class StudentDAO {
 			throw new SQLException("Error while finding publications");
 		}finally {
 			try {
-				pstatement.close(); // devo chiudere prepared statement
+				pstatement.close(); 
 			} catch (Exception e) {
 				throw new SQLException("Error while trying to close prepared statement");
 			}
 		}
 	}
 	
+	/**
+	 * return the list of the publication of the given student
+	 * @param email of the student
+	 * @return a list of publication
+	 * @throws SQLException
+	 */
 	public List<Publication> findStudentPublications(String email) throws SQLException {
 		String query2 = null;
 		query2 = "SELECT * from publication WHERE student = ?";
@@ -204,18 +231,25 @@ public class StudentDAO {
 			throw new SQLException("Error while trying to find publications student");
 		}finally {
 			try {
-				result2.close(); //Devo chiudere result set
+				result2.close(); 
 			} catch(Exception e) {
 				throw new SQLException("Error while trying to close Result Set");
 			}
 			try {
-				pstatement2.close();  //devo chiudere prepared statement
+				pstatement2.close(); 
 			} catch(Exception e) {
 				throw new SQLException("Error while trying to close prepared statement");
 			}
 		}
 	}
 	
+	/**
+	 * return the publication info of the given student with the given id
+	 * @param email of the student
+	 * @param idP publication to retrieves
+	 * @return the publication
+	 * @throws SQLException
+	 */
 	//find THAT specific publication of a student
 	public Publication findStudentPublication(String email,Integer idP) throws SQLException {
 		String query2 = null;
@@ -244,12 +278,12 @@ public class StudentDAO {
 			throw new SQLException("Error while trying to find student publication");
 		}finally {
 			try {
-				result2.close(); //Devo chiudere result set
+				result2.close();
 			} catch(Exception e) {
 				throw new SQLException("Error while trying to close Result Set");
 			}
 			try {
-				pstatement2.close();  //devo chiudere prepared statement
+				pstatement2.close(); 
 			} catch(Exception e) {
 				throw new SQLException("Error while trying to close prepared statement");
 			}
@@ -294,6 +328,13 @@ public class StudentDAO {
 		return ris;
 	}
 	*/
+	
+	/**
+	 * return the matches that are waiting for feedback of the given student
+	 * @param email the student to retrieve the matches
+	 * @return an arraylist of matches
+	 * @throws SQLException
+	 */
 	public ArrayList<Match> getMatchWaitingFeedback(String email) throws SQLException{
 		
 		ArrayList<Match> ris = new ArrayList<Match>();
@@ -347,6 +388,12 @@ public class StudentDAO {
 		return ris;
 	}
 
+	/**
+	 * return the publication containing the student information and preferences of the give match
+	 * @param idMatch match to retrieve the student
+	 * @return the publication
+	 * @throws SQLException
+	 */
 	public Publication getProfileAndPubPreferences(Integer idMatch) throws SQLException {
 		Student student = new Student();
 		Publication pub = new Publication();
@@ -377,12 +424,12 @@ public class StudentDAO {
 			throw new SQLException("Error while trying to find student publication");
 		}finally {
 			try {
-				result.close(); //Devo chiudere result set
+				result.close(); 
 			} catch(Exception e) {
 				throw new SQLException("Error while trying to close Result Set");
 			}
 			try {
-				pstatement2.close();  //devo chiudere prepared statement
+				pstatement2.close(); 
 			} catch(Exception e) {
 				throw new SQLException("Error while trying to close prepared statement");
 			}
@@ -418,7 +465,7 @@ public class StudentDAO {
 			throw new SQLException("Error while finding infos");
 		}finally {
 			try {
-				pstatement.close(); // devo chiudere prepared statement
+				pstatement.close(); 
 			} catch (Exception e) {
 				throw new SQLException("Error while trying to close prepared statement");
 			}

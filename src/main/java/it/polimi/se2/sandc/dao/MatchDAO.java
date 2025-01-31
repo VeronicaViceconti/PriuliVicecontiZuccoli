@@ -28,6 +28,12 @@ public class MatchDAO {
 		this.connection = conn;
 	}
 
+	/**
+	 * the method insert a new match with the gived publication and the given idInternship
+	 * @param pubID the publication of the student
+	 * @param IDinternship the internship to enroll
+	 * @throws SQLException
+	 */
 	public void createMatchFromStudent(int pubID, int IDinternship) throws SQLException {
 		String query = null;
 		query = "INSERT into matches (acceptedYNStudent, idPublication, idInternship) VALUES(true,?, ?)";
@@ -42,13 +48,19 @@ public class MatchDAO {
 			throw new SQLException("Error while creating match");
 		} finally {
 			try {
-				pstatement.close(); // devo chiudere prepared statement
+				pstatement.close(); 
 			} catch (Exception e) {
 				throw new SQLException("Error while trying to close prepared statement");
 			}
 		}
 	}
 
+	/**
+	 * find all the current match of the given student 
+	 * @param emailStudent the student to retrieve the matches
+	 * @return a list of matches
+	 * @throws SQLException
+	 */
 	public List<Match> findStudentMatches(String emailStudent) throws SQLException {
 		String query = null;
 		query = "SELECT m.id as matchID, i.id as internID, idPublication,acceptedYNStudent,acceptedYNCompany,roleToCover,startingDate,openSeats,endingDate,c.name,c.address,jobDescription from matches as m join internship as i on m.idInternship = i.id join company as c on c.email = i.company join publication as pub on pub.id = m.idPublication join student as s on s.email = pub.student WHERE current_date() < startingDate and s.email = ? and m.id not in (select idMatch from interview);";
@@ -105,13 +117,20 @@ public class MatchDAO {
 			throw new SQLException("Error while finding student match");
 		}finally {
 			try {
-				pstatement.close();  //devo chiudere prepared statement
+				pstatement.close();  
 			} catch(Exception e) {
 				throw new SQLException("Error while trying to close prepared statement");
 			}
 		}
 	}
 
+	/**
+	 * update the given match to accept it 
+	 * @param matchID the match to accept
+	 * @param userType the type used to accept as a student or as a company
+	 * @param acceptedOrNot true or false to accept or decline
+	 * @throws SQLException
+	 */
 	public void updateMatchAccepted(int matchID,String userType,int acceptedOrNot) throws SQLException {
 		String query = null;
 		if(userType.equalsIgnoreCase("student"))
@@ -129,13 +148,21 @@ public class MatchDAO {
 			throw new SQLException("Error while updating match");
 		} finally {
 			try {
-				pstatement.close(); // devo chiudere prepared statement
+				pstatement.close(); 
 			} catch (Exception e) {
 				throw new SQLException("Error while trying to close prepared statement");
 			}
 		}
 	}
-
+		
+	/**
+	 * the function check if the given student/company owns the given match
+	 * @param email of the student or company
+	 * @param matchID the id of the match to check
+	 * @param userType indicate if the given email is of a student or a company, can be "student" or "company"
+	 * @return a boolean true if the check is successful false otherwise
+	 * @throws SQLException
+	 */
 	//control student ownership
 	public Boolean controlOwnership(String email,int matchID,String userType) throws SQLException {
 		String query = null;
@@ -164,13 +191,19 @@ public class MatchDAO {
 			throw new SQLException("Error while controlling ownership");
 		}finally {
 			try {
-				pstatement.close();  //devo chiudere prepared statement
+				pstatement.close();  
 			} catch(Exception e) {
 				throw new SQLException("Error while trying to close prepared statement");
 			}
 		}
 	}
 	
+	/**
+	 * return all the match of the company with the starting date < current date
+	 * @param emailCompany company to retrieve the matches
+	 * @return a list of match
+	 * @throws SQLException
+	 */
 	
 	public List<Match> findCompanyMatches(String emailCompany) throws SQLException {
 		String query = null;
@@ -237,13 +270,18 @@ public class MatchDAO {
 			throw new SQLException("Error while finding match");
 		}finally {
 			try {
-				pstatement.close(); // devo chiudere prepared statement
+				pstatement.close();
 			} catch (Exception e) {
 				throw new SQLException("Error while trying to close prepared statement");
 			}
 		}
 	}
 
+	/**
+	 * the function delete from matches the given match 
+	 * @param matchID id of the match
+	 * @throws SQLException
+	 */
 	public void deleteMatch(int matchID) throws SQLException {
 		String query = null;
 		query = "DELETE from matches WHERE id = ?;";
@@ -258,15 +296,23 @@ public class MatchDAO {
 			throw new SQLException("Error while deleting match");
 		}finally {
 			try {
-				pstatement.close();  //devo chiudere prepared statement
+				pstatement.close();  
 			} catch(Exception e) {
 				throw new SQLException("Error while trying to close prepared statement");
 			}
 		}
 	}
 	
+	
+	/**
+	 * the function create new interview with empty answer for the given match
+	 * @param idMatch the match to add the interview
+	 * @return the added interview
+	 * @throws SQLException
+	 */
 	public Interview createInterview(int idMatch) throws SQLException{
 		
+		//control if the student has already an active interview
 		String query = "select * \n"
 				+ "from publication as p inner join matches as m on p.id = m.idPublication\n"
 				+ "where m.id = ? and p.student in (select student\n"
@@ -284,6 +330,7 @@ public class MatchDAO {
 			}
 		}
 		
+		//create the new form
 		Interview interview = new Interview();
 		
 		query = "insert into Form values ()";
@@ -297,6 +344,7 @@ public class MatchDAO {
 			}
 		}
 		
+		//create the new questions
 		query = "insert into question (txt, idForm) values (?,?)";
 		ArrayList<Question> questions = new ArrayList<Question>();
 		
@@ -322,6 +370,7 @@ public class MatchDAO {
 		form.setQuestions(questions);
 		interview.setForm(form);
 		
+		//insert the interview and return it
 		query = "insert into interview (dat, idMatch, idForm) values (curdate(), ?, ?)";
 		
 		try(PreparedStatement statement = connection.prepareStatement(query,Statement.RETURN_GENERATED_KEYS)){
@@ -340,7 +389,13 @@ public class MatchDAO {
 		interview.setData(new Date(System.currentTimeMillis()));
 		return interview;
 	}
-
+	
+	/**
+	 * return the student information for the given match
+	 * @param matchID the match to retrieve
+	 * @return the student information
+	 * @throws SQLException
+	 */
 	public Student openMatch(int matchID) throws SQLException {
 		String query = "SELECT w.text FROM matches as m JOIN internship as i on i.id = m.idInternship JOIN publication as p on  p.id = m.idPublication join student as s on s.email = p.student JOIN preference as pref on pref.idPublication = p.id JOIN workingpreferences as w on w.id = pref.idWorkingPreferences WHERE m.id = ?;";
 		ArrayList<Preferences> ris = new ArrayList <Preferences>();
@@ -368,7 +423,7 @@ public class MatchDAO {
 			throw new SQLException("Error while finding match");
 		}finally {
 			try {
-				pstatement.close(); // devo chiudere prepared statement
+				pstatement.close(); 
 			} catch (Exception e) {
 				throw new SQLException("Error while trying to close prepared statement");
 			}
@@ -407,13 +462,19 @@ public class MatchDAO {
 			throw new SQLException("Error while finding match");
 		}finally {
 			try {
-				pstatement.close(); // devo chiudere prepared statement
+				pstatement.close(); 
 			} catch (Exception e) {
 				throw new SQLException("Error while trying to close prepared statement");
 			}
 		}
 	}
 	
+	/**
+	 * return the information of the given match
+	 * @param id of the match
+	 * @return a match 
+	 * @throws SQLException
+	 */
 	public Match getMatch(int id) throws SQLException {
 		Match ris = new Match();
 		
@@ -454,10 +515,14 @@ public class MatchDAO {
 		return ris;
 	}
 	
+	/**
+	 * return the interview with the questions of the given match
+	 * @param idMatch match to retrieve the interview
+	 * @return the interview
+	 * @throws SQLException
+	 */
 	
 	public Interview getAnswers(int idMatch) throws SQLException{
-		
-		
 		
 		String query = "select * \n"
 				+ "from interview inner join question on interview.idForm = question.idForm\n"

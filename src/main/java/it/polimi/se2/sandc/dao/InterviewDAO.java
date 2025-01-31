@@ -28,6 +28,13 @@ public class InterviewDAO {
 		this.connection = conn;
 	}
 	
+	
+	/**
+	 * return the question of the given interview
+	 * @param idInterview id of the interview 
+	 * @return an arrayList of questions
+	 * @throws SQLException
+	 */
 	public ArrayList<Question> getQuestions(int idInterview) throws SQLException{
 		ArrayList<Question> list = new ArrayList<Question>();
 		
@@ -55,6 +62,11 @@ public class InterviewDAO {
 		return list;
 	}
 	
+	/**
+	 * update the given question by setting the new answer
+	 * @param q the question 
+	 * @throws SQLException
+	 */
 	public void setAnswer(Question q) throws SQLException {
 		String query = "update question set answer = ? where id = ?";
 		
@@ -64,6 +76,14 @@ public class InterviewDAO {
 			statement.executeUpdate();
 		}
 	}
+	
+	/**
+	 * the function check if the interview is owned by a match of the given internship 
+	 * @param company the company to check
+	 * @param idInterview the id of the interview
+	 * @return true if the check is correct false otherwise 
+	 * @throws SQLException
+	 */
 	
 	public boolean checkOwnerShip(String company, int idInterview) throws SQLException {
 		
@@ -80,6 +100,13 @@ public class InterviewDAO {
 		}
 	}
 	
+	
+	/**
+	 * the function update the interview to set the confirmYN as given
+	 * @param idInterview the id of the interview to update 
+	 * @param accept boolean for accept or decline
+	 * @throws SQLException
+	 */
 	public void acceptDeclineInterview(int idInterview, boolean accept) throws SQLException {
 		String query = "update interview set confirmedYN = ? where id = ?";
 		
@@ -91,6 +118,12 @@ public class InterviewDAO {
 		}
 	}
 
+	/**
+	 * return the interview with the given id
+	 * @param id of the interview
+	 * @return the interview
+	 * @throws SQLException
+	 */
 	public Interview selectInterview(Integer id) throws SQLException { //match id, need to find the info about the interview
 		String query = "SELECT i.id as intID, dat,f.id as formID,txt,answer FROM matches as m join interview as i on i.idMatch = m.id join form as f on f.id = i.idForm join question as q on q.idForm = f.id where m.id = ?;";
 		PreparedStatement pstatement = null;
@@ -134,7 +167,7 @@ public class InterviewDAO {
 			throw new SQLException("Error while finding match");
 		}finally {
 			try {
-				pstatement.close(); // devo chiudere prepared statement
+				pstatement.close(); 
 			} catch (Exception e) {
 				throw new SQLException("Error while trying to close prepared statement");
 			}

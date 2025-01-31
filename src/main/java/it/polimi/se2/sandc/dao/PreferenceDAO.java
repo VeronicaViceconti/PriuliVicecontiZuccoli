@@ -18,7 +18,11 @@ public class PreferenceDAO {
 		this.connection = conn;
 	}
 	
-	//return all the working preferences 
+	/**
+	 * return all the working preferences 
+	 * @return an arrayList of the Preferences
+	 * @throws SQLException
+	 */
 	public ArrayList<Preferences> getWorkingPreferences() throws SQLException {
 		String query = "select * from workingpreferences";
 		ArrayList<Preferences> ris = new ArrayList <Preferences>();

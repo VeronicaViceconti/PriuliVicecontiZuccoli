@@ -18,6 +18,12 @@ public class PublicationDAO {
 		this.connection = conn;
 	}
 	
+	/**
+	 * the function retrieve all the working preferences and relative publication of the given student
+	 * @param emailStudent student to retrieve the preferences
+	 * @return a list of publication
+	 * @throws SQLException
+	 */
 	//student working preferences 
 	public List<Publication> retrieveAllWP(String emailStudent) throws SQLException{
 		String query = "select * from publication as pu join preference as pr on pu.id = pr.idPublication join workingpreferences as w on w.id = pr.idWorkingPreferences where pu.student = ? order by pu.id;";
@@ -63,12 +69,12 @@ public class PublicationDAO {
 			throw new SQLException("Error while trying to retrieve working preferences");
 		}finally {
 			try {
-				result2.close(); //Devo chiudere result set
+				result2.close(); 
 			} catch(Exception e) {
 				throw new SQLException("Error while trying to close Result Set");
 			}
 			try {
-				pstatement2.close();  //devo chiudere prepared statement
+				pstatement2.close(); 
 			} catch(Exception e) {
 				throw new SQLException("Error while trying to close prepared statement");
 			}

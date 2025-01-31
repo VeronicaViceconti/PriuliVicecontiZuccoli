@@ -21,26 +21,37 @@ IF EXISTS (SELECT * FROM Student WHERE email = NEW.email)
  
  create trigger matchMakerStudents
  after insert on Preference 
- for each row 
+ for each row  	
  begin 
+	declare num Integer;
+    select count(*) into num
+    from preference
+	where idPublication = new.idPublication;
+    
 	insert into Matches (idPublication, idInternship)  
 		select idPublication, idInternship 
 		from  Preference as p inner join Requirement as r on p.idWorkingPreferences = r.idWorkingPreference
-        where idPublication = new.idPublication and not exists (select * from Matches as m where m.idPublication = p.idPublication and r.idInternship)
+        where idPublication = new.idPublication and not exists (select * from Matches as m where m.idPublication = p.idPublication and r.idInternship = m.idInternship)
         group by idPublication, idInternship
-        having count(*) >= 5;
+        having count(*) >= (num - 1) or count(*) >= ((select count(*) from requirement where idInternship = r.idInternship) -1) ;
  end //
  
+ delimiter //
  create trigger matchMakerCompanies
  after insert on Requirement 
  for each row 
  begin 
+	declare num Integer;
+    select count(*) into num
+    from requirement
+	where idInternship = new.idInternship; 
+
 	insert into Matches (idPublication, idInternship)  
 		select idPublication, idInternship 
 		from  Preference as p inner join Requirement as r on p.idWorkingPreferences = r.idWorkingPreference
         where idInternship = new.idInternship and not exists (select * from Matches as m where m.idPublication = p.idPublication and r.idInternship)
         group by idPublication, idInternship
-        having count(*) >= 5;
+        having count(*) >= (num - 1) or count(*) >= ((select count(*) from preference where idPublication = p.idPublication) -1) ;
  end //
 
 delimiter //  
@@ -121,42 +132,6 @@ delimiter ;
         DELETE from form where id = new.idForm;
 	end if;
  end//
- 
- delimiter //
- 
- create trigger matchMakerStudents
- after insert on Preference 
- for each row    
- begin 
-  declare num Integer;
-    select count(*) into num
-    from preference
-  where idPublication = new.idPublication;
-    
-  insert into Matches (idPublication, idInternship)  
-    select idPublication, idInternship 
-    from  Preference as p inner join Requirement as r on p.idWorkingPreferences = r.idWorkingPreference
-        where idPublication = new.idPublication and not exists (select * from Matches as m where m.idPublication = p.idPublication and r.idInternship = m.idInternship)
-        group by idPublication, idInternship
-        having count(*) >= (num - 1) or count(*) >= ((select count(*) from requirement where idInternship = r.idInternship) -1) ;
- end //
- 
- create trigger matchMakerCompanies
- after insert on Requirement 
- for each row 
- begin 
-  declare num Integer;
-    select count(*) into num
-    from requirement
-  where idInternship = new.idInternship; 
-
-  insert into Matches (idPublication, idInternship)  
-    select idPublication, idInternship 
-    from  Preference as p inner join Requirement as r on p.idWorkingPreferences = r.idWorkingPreference
-        where idInternship = new.idInternship and not exists (select * from Matches as m where m.idPublication = p.idPublication and r.idInternship)
-        group by idPublication, idInternship
-        having count(*) >= (num - 1) or count(*) >= ((select count(*) from preference where idPublication = p.idPublication) -1) ;
- end //
  
  create trigger deletePubYesInterview
  after update on interview

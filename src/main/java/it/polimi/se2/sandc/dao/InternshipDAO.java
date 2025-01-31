@@ -26,9 +26,19 @@ public class InternshipDAO {
 	}
 	
 	
+	/**
+	 * insert in the database a complaint with the given data
+	 * @param user who write the complaints
+	 * @param student the student in the match who refer the complaint
+	 * @param company the email of the company who refer the complaint 
+	 * @param answer the text of the complaint
+	 * @param idMatch the referred match
+	 * @throws SQLException
+	 */
 	public void writeComplaint(User user, String student, String company, String answer, int idMatch) throws SQLException {
 		String query;
 		
+		//create a new form
 		query = "insert into Form values ()";
 		int idForm = -1;
 		try(PreparedStatement statement = connection.prepareStatement(query,Statement.RETURN_GENERATED_KEYS)){
@@ -42,6 +52,8 @@ public class InternshipDAO {
 		if(idForm == -1) {
 			throw new SQLException();
 		}
+		
+		//insert the response of the question in the db, referred to the id
 		query = "insert into question (txt, answer, idForm) values ('complaint form',?,?)";
 		try(PreparedStatement statement = connection.prepareStatement(query)){
 			statement.setString(1, answer);
@@ -50,6 +62,7 @@ public class InternshipDAO {
 			statement.executeUpdate();
 		}
 		
+		//insert the complaint in the table
 		query = "insert into complaint (studentYn, idForm, studentID, companyID, idMatch) values (?,?,?,?,?)";
 		
 		try(PreparedStatement statement = connection.prepareStatement(query)){
@@ -62,7 +75,12 @@ public class InternshipDAO {
 		}
 	}
 	
-	//for student
+	/**
+	 * return the match relative to the on going internship for the given student
+	 * @param email the email of the student
+	 * @return the match or null if there isn't 
+	 * @throws SQLException
+	 */
 	public Match getOngoingInternship(String email) throws SQLException {
 		String query = null;
 			query = "SELECT m.id, inter.id as idInter,c.name,c.address,inter.startingDate,inter.endingDate,roleToCover FROM interview as i join matches as m on i.idMatch = m.id join publication as p on p.id = m.idPublication join student as s on s.email = p.student join internship as inter on inter.id = m.idInternship join company as c on c.email = inter.company where s.email = ? and endingDate > curdate();";
@@ -104,12 +122,12 @@ public class InternshipDAO {
 			throw new SQLException("Error while trying to find student publication");
 		}finally {
 			try {
-				result.close(); //Devo chiudere result set
+				result.close(); 
 			} catch(Exception e) {
 				throw new SQLException("Error while trying to close Result Set");
 			}
 			try {
-				pstatement2.close();  //devo chiudere prepared statement
+				pstatement2.close();  
 			} catch(Exception e) {
 				throw new SQLException("Error while trying to close prepared statement");
 			}
@@ -117,7 +135,12 @@ public class InternshipDAO {
 			
 	}
 	
-	//for company
+	/**
+	 * return the matches relative to the on going internships for the given company
+	 * @param email the email of the company
+	 * @return a list of match
+	 * @throws SQLException
+	 */
 		public List<Match> getOngoingInternships(String email) throws SQLException {
 			String query = null;
 			query = "SELECT inter.id as idInter,c.address,c.name companyName,s.name studentName,s.studyCourse,s.email studentEmail,openSeats,startingDate,endingDate,roleToCover,m.id FROM interview as i join matches as m on i.idMatch = m.id join publication as p on p.id = m.idPublication join student as s on s.email = p.student join internship as inter on inter.id = m.idInternship join company as c on c.email = inter.company where c.email = ? AND confirmedYN is true and current_date() < endingDate;";			
@@ -168,21 +191,33 @@ public class InternshipDAO {
 				throw new SQLException("Error while trying to find student publication");
 			}finally {
 				try {
-					result.close(); //Devo chiudere result set
+					result.close(); 
 				} catch(Exception e) {
 					throw new SQLException("Error while trying to close Result Set");
 				}
 				try {
-					pstatement2.close();  //devo chiudere prepared statement
+					pstatement2.close();  
 				} catch(Exception e) {
 					throw new SQLException("Error while trying to close prepared statement");
 				}
 			}
 	} 
 	
+		
+	/**
+	 * 
+	 * insert in the database a feedback with the given data
+	 * @param user who write the feedback
+	 * @param student the student in the match who refer the feedback
+	 * @param company the email of the company who refer the feedback 
+	 * @param answer the text of the feedback
+	 * @param idMatch the referred match
+	 * @throws SQLException
+	 */
 	public void writeFeedback(User user, String student, String company, String answer, int idMatch) throws SQLException {
 		String query;
 		
+		//create the new form in the db
 		query = "insert into Form values ()";
 		int idForm = -1;
 		try(PreparedStatement statement = connection.prepareStatement(query,Statement.RETURN_GENERATED_KEYS)){
@@ -196,6 +231,8 @@ public class InternshipDAO {
 		if(idForm == -1) {
 			throw new SQLException();
 		}
+		
+		//insert the answer of the question
 		query = "insert into question (txt, answer, idForm) values ('feedback form',?,?)";
 		try(PreparedStatement statement = connection.prepareStatement(query)){
 			statement.setString(1, answer);
@@ -204,6 +241,8 @@ public class InternshipDAO {
 			statement.executeUpdate();
 		}
 		
+		
+		//insert the feedback in the db
 		query = "insert into feedback (studentYn, idForm, studentID, companyId, idMatch) values (?,?,?,?,?)";
 		
 		try(PreparedStatement statement = connection.prepareStatement(query)){
@@ -216,7 +255,12 @@ public class InternshipDAO {
 		}
 	}
 
-
+	/**
+	 * return all the internship of the given company
+	 * @param email the email of the company
+	 * @return a list of internship
+	 * @throws SQLException
+	 */
 	public List<Internship> getAllICompanyInternships(String email) throws SQLException {
 		String query = null;
 		query = "SELECT * FROM internship AS i JOIN company ON i.company = company.email WHERE company = ?;";
@@ -260,7 +304,7 @@ public class InternshipDAO {
 			throw new SQLException("Error while getting company internships");
 		}finally {
 			try {
-				pstatement.close();  //devo chiudere prepared statement
+				pstatement.close();  
 			} catch(Exception e) {
 				throw new SQLException("Error while trying to close prepared statement");
 			}
@@ -268,7 +312,13 @@ public class InternshipDAO {
 		return intern;
 	}
 
-
+	/**
+	 * return the list of the ongoing internship of the given company with the given student name
+	 * @param email of the company
+	 * @param nameToSearch name of the student to search
+	 * @return a list of match
+	 * @throws SQLException
+	 */
 	public List<Match> getFilteredOngoingInternships(String email, String nameToSearch) throws SQLException {
 		
 		String query = null;
@@ -320,12 +370,12 @@ public class InternshipDAO {
 			throw new SQLException("Error while trying to find student publication");
 		}finally {
 			try {
-				result.close(); //Devo chiudere result set
+				result.close(); 
 			} catch(Exception e) {
 				throw new SQLException("Error while trying to close Result Set");
 			}
 			try {
-				pstatement2.close();  //devo chiudere prepared statement
+				pstatement2.close(); 
 			} catch(Exception e) {
 				throw new SQLException("Error while trying to close prepared statement");
 			}
