@@ -3,11 +3,14 @@
  */
 (function() {
 	const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+	const studentRadios = document.querySelectorAll('input[name="isStudent"]');
 
 	showSignIn = function() {
 		document.getElementById("login").style.display = 'none';
 		document.getElementById("Signin").style.display = 'block';
 		document.getElementById("signInError").textContent = "";
+		document.getElementById("showIfStudent").style.display = 'none';
+		document.getElementById("showIfStudent").style.display = 'none';
 	}
 
 	showLogin = function() {
@@ -16,6 +19,20 @@
 		document.getElementById("Signin").style.display = 'none';
 		document.getElementById("errors").textContent = "";
 	}
+	
+	
+	studentRadios.forEach(radio => {
+	  radio.addEventListener('change', function() {  
+	    if (this.checked) {
+	
+	      if (this.value === "yes") {
+	        document.getElementById("showIfStudent").style.display = 'block';
+	      } else {
+	        document.getElementById("showIfStudent").style.display = 'none';
+	      }
+	    }
+	  });
+	});
 
 	document.getElementById("link-signin").addEventListener('click', (e) => {
 		showSignIn();
@@ -63,14 +80,20 @@
 
 		var password = form.querySelector("[name='pwd']").value;
 		var email = form.querySelector("[name='email']").value;
-		var name = form.querySelector("[name='name']").value;
+		var name = form.querySelector("[name='username']").value;
 		var address = form.querySelector("[name='address']").value;
-		var phoneNumber = form.querySelector("[name='phoneNumber']").value;
-
+		var phoneNumber = form.querySelector("[name='phoneNumber']").value; 
+		var studyCourse = form.querySelector("[name='StudyCourse']").value;
+		const regexTel = /^[0-9]{10}$/;
 
 		//controllo che l'utente inserisca una mail : somenthing@something.something
 		if (!regex.test(email)) {
 			document.getElementById("signInError").textContent = "This is not a real email!";
+			return;
+		}
+		
+		if (!regexTel.test(phoneNumber)) {
+			document.getElementById("signInError").textContent = "This is not a real telephone number!";
 			return;
 		}
 
@@ -87,7 +110,18 @@
 			document.getElementById("signInError").textContent = "You can't send an empty password!";
 			return;
 		}
-
+		if (address.trim() === "") {
+			document.getElementById("signInError").textContent = "You can't send an empty address!";
+			return;
+		}
+		if (phoneNumber.trim() === "") {
+			document.getElementById("signInError").textContent = "You can't send an empty phone number!";
+			return;
+		}
+		if (studentRadios === 'yes' && studyCourse.trim() === "") {
+			document.getElementById("signInError").textContent = "You can't send an empty study course!";
+			return;
+		}
 
 		if (form.checkValidity()) {
 			//metodo post della servlet CheckLogin
@@ -132,7 +166,7 @@
 								saveFCMToken(document.getElementById("token").innerText);
 
 								if (jsonData === "company")
-									window.location.href = "homePageCompany.html";
+									window.location.href = "CompanyHTML/homePageCompany.html";
 								else
 									window.location.href = "homePageStudente.html";
 

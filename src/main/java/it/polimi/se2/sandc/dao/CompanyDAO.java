@@ -33,7 +33,7 @@ public class CompanyDAO {
 		List<Internship> internships = new ArrayList<>();
 		String query = null;
 		
-		query = "SELECT * FROM internship AS i JOIN company ON company.email = i.company WHERE NOT EXISTS (SELECT * FROM matches AS m JOIN publication AS p ON m.idPublication = p.id WHERE m.idInternship = i.id AND p.student = ?) AND openSeats > 0 AND name = ? AND current_date() < endingDate";
+		query = "SELECT * FROM internship AS i JOIN company ON company.email = i.company WHERE NOT EXISTS (SELECT * FROM matches AS m JOIN publication AS p ON m.idPublication = p.id WHERE m.idInternship = i.id AND p.student = ?) AND openSeats > 0 AND name = ? AND current_date() < startingDate and current_date() <= endingDate";
 	    PreparedStatement statement = connection.prepareStatement(query);
 	    
 	    statement.setString(1, emailStudent);
@@ -91,7 +91,7 @@ public class CompanyDAO {
 		//need to find the internships that doesn't have matches with publications of that student
 		query = "	SELECT * \n"
 				+ "	FROM internship AS i JOIN company ON i.company = company.email \n"
-				+ "	WHERE NOT EXISTS (SELECT * \n"
+				+ "	WHERE current_date() <= startingDate and current_date() <= endingDate and NOT EXISTS (SELECT * \n"
 				+ "						FROM matches AS m JOIN publication AS p ON m.idPublication = p.id	\n"
 				+ "						WHERE m.idInternship = i.id AND p.student = ? ) AND openSeats > (select count(*) \n"
 				+ "																										from matches inner join interview on matches.id = interview.idMatch \n"
@@ -240,7 +240,7 @@ public class CompanyDAO {
 	
 	public Company getProfileInfos(String userType, String email) throws SQLException {
 		String query = null;
-		query = "SELECT * FROM sandc.company where email = ?;";
+		query = "SELECT * FROM company where email = ?;";
 		
 		PreparedStatement pstatement2 = null;
 		ResultSet result = null;
@@ -319,7 +319,7 @@ public class CompanyDAO {
 		
 	}
 	
-	public ArrayList<Internship> getOnGoingInternship(String email) throws SQLException {
+	/*public ArrayList<Internship> getOnGoingInternship(String email) throws SQLException {
 		ArrayList<Internship> ris = new ArrayList<Internship>();
 		
 		String query = "select i.*, c.*\n"
@@ -355,7 +355,7 @@ public class CompanyDAO {
 		
 		return ris;
 	}
-	
+	*/
 	public ArrayList<Match> getMatchWaitingFeedback(String email) throws SQLException{
 		
 		ArrayList<Match> ris = new ArrayList<Match>();
@@ -460,11 +460,9 @@ public class CompanyDAO {
 			pstatement.setInt(1, matchId);
 			result = pstatement.executeQuery();
 			if (!result.isBeforeFirst()) {// no results, no internship found
-				System.out.println("no internship");
 				return null;
 			}
 			else { //found the internship
-				System.out.println("internship!");
 				result.next();
 				match.setId(result.getInt("mId"));
 				internship.setId(result.getInt("idInter"));

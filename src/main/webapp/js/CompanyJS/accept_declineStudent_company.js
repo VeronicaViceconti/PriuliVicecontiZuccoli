@@ -17,11 +17,12 @@
 
 	window.onload = function() {
 		var matchID = sessionStorage.getItem("matchID");
+		//first thing to visualize is the match clicked by the user
 		makeCall("GET", "MatchManager?page=openMatch&IDmatch=" + matchID, null,
 			(req) => {
 				if (req.readyState == 4) {
 					switch (req.status) {
-						case 200: // andato a buon fine
+						case 200: 
 							var jsonData = JSON.parse(req.responseText);
 							if(jsonData != null){
 								studentPreferences.innerText = "";

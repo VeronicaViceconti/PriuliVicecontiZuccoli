@@ -299,19 +299,22 @@
 					switch (req.status) {
 						case 200: // andato a buon fine
 							var jsonData = JSON.parse(req.responseText);
-							for (const internship of jsonData) {
-								createCard(
-									avail_newMatch_section,
-									internship.id,
-									internship.company.name,
-									internship.roleToCover,
-									internship.startingDate,
-									internship.endingDate,
-									internship.company.address,
-									internship.openSeats,
-									null
-								);
+							if(jsonData != null){
+								for (const internship of jsonData) {
+									createCard(
+										avail_newMatch_section,
+										internship.id,
+										internship.company.name,
+										internship.roleToCover,
+										internship.startingDate,
+										internship.endingDate,
+										internship.company.address,
+										internship.openSeats,
+										null
+									);
+								}
 							}
+							
 							break;
 						case 403:
 							console.log("errore 403");

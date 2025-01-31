@@ -34,7 +34,6 @@
 				complaintBtn.textContent = "Write Complaint";
 
 				complaintBtn.onclick = function() {
-					//alert("sto inviando->"+IDMatch);
 					window.location.href = "complainForm.html";
 				}
 
@@ -71,8 +70,7 @@
 				feedbackBtn.classList.add("brownBtn");
 				feedbackBtn.textContent = "Write feedback";
 				feedbackBtn.onclick = function() {
-					//alert("feedback for internhip " + internID);
-					window.location.href = "feedbackForm.html"; //controllare se gli devo passare id match o internship
+					window.location.href = "feedbackForm.html"; 
 				}
 
 				actionBtnsContainer.appendChild(feedbackBtn);

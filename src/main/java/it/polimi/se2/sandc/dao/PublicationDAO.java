@@ -24,7 +24,7 @@ public class PublicationDAO {
 		ArrayList<Preferences> ris = new ArrayList <Preferences>();
 		ResultSet result2 = null;
 		PreparedStatement pstatement2 = null;
-		List<Publication> publication = new ArrayList();
+		List<Publication> publication = new ArrayList<Publication>();
 		
 		try {
 			pstatement2 = connection.prepareStatement(query);

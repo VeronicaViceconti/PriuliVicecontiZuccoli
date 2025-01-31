@@ -1,4 +1,4 @@
-	package it.polimi.se2.sandc.controller;
+package it.polimi.se2.sandc.controller;
 
 import java.io.File;
 import java.io.FileInputStream;

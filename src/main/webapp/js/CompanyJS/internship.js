@@ -22,18 +22,6 @@
 				break;
 		}
 	});
-
-	homeBtn.addEventListener("click", () => {
-
-			switch (user) {
-				case "student":
-					window.location.href = "homePageStudente.html";
-					break;
-				case "company":
-					window.location.href = "homePageCompany.html";
-					break;
-			}
-		});
 		
 	sendBtn.addEventListener("click", (e) => {
 		e.preventDefault();
