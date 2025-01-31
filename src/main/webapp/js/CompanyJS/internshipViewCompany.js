@@ -144,7 +144,7 @@
 									jobDesc.innerText = jsonData.internship.jobDescription;
 									if ("preferences" in jsonData.internship) {
 										for (const pref of jsonData.internship.preferences) {
-											workCond.innerText += pref.text + " ";
+											workCond.innerHTML += pref.text + ";<br>";
 										}
 									}
 									break;

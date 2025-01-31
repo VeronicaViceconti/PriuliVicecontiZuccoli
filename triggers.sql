@@ -29,9 +29,11 @@ IF EXISTS (SELECT * FROM Student WHERE email = NEW.email)
 	where idPublication = new.idPublication;
     
 	insert into Matches (idPublication, idInternship)  
-		select idPublication, idInternship 
+		select idPublication, idInternship as internship
 		from  Preference as p inner join Requirement as r on p.idWorkingPreferences = r.idWorkingPreference
-        where idPublication = new.idPublication and not exists (select * from Matches as m where m.idPublication = p.idPublication and r.idInternship = m.idInternship)
+        where idPublication = new.idPublication and not exists (select * from Matches as m where m.idPublication = p.idPublication and r.idInternship = m.idInternship) 
+			and  (select count(*) from internship inner join matches on internship.id = matches.idInternship inner join interview on matches.id = interview.idMatch
+					where interview.confirmedYN = 1 and internship.id = r.idInternship) < (select openSeats from internship where internship.id = r.idInternship) and current_date() < (select startingDate from internship where internship.id = r.idInternship)
         group by idPublication, idInternship
         having count(*) >= (num - 1) or count(*) >= ((select count(*) from requirement where idInternship = r.idInternship) -1) ;
  end //
@@ -49,7 +51,8 @@ IF EXISTS (SELECT * FROM Student WHERE email = NEW.email)
 	insert into Matches (idPublication, idInternship)  
 		select idPublication, idInternship 
 		from  Preference as p inner join Requirement as r on p.idWorkingPreferences = r.idWorkingPreference
-        where idInternship = new.idInternship and not exists (select * from Matches as m where m.idPublication = p.idPublication and r.idInternship = m.idInternship)
+        where idInternship = new.idInternship and not exists (select * from Matches as m where m.idPublication = p.idPublication and r.idInternship = m.idInternship) 
+			and not exists (select * from matches as m1 inner join interview as i on m1.id = i.idMatch where i.confirmedYN = 1 and m1.idPublication = p.idPublication)
         group by idPublication, idInternship
         having count(*) >= (num - 1) or count(*) >= ((select count(*) from preference where idPublication = p.idPublication) -1) ;
  end //
@@ -71,11 +74,24 @@ begin
 	if( old.id = new.id AND exists (SELECT 1 FROM matches WHERE old.acceptedYNCompany is not null AND id = new.id)) then
 		 set new.acceptedYNCompany = old.acceptedYNCompany;
 	end if;
-ends
+end//
  
 delimiter ;
  
  delimiter //
+ create trigger updateOpenSeats
+ after update on interview
+ for each row
+ begin
+	declare internToUpdate int;
+    select inter.id into internToUpdate from interview as i join matches as m on i.idMatch = m.id join internship as inter on inter.id = m.idInternship where m.id = new.idMatch;
+	if new.confirmedYN is true then
+		update internship set openSeats = openSeats - 1 where id = internToUpdate;
+	end if;
+ end //
+ 
+ 
+ 
  create trigger deleteMatchWhenNoMoreAvailableSeats 
  after update on interview
  for each row 
@@ -93,11 +109,9 @@ delimiter ;
     select count(*) into occupied
     from matches as m inner join interview as i on i.idMatch = m.id
     where confirmedYN = true and m.idInternship = intId;
- 
-	if new.confirmedYN <> old.confirmedYN then
-		if seats = occupied then
-			create temporary table temp_match as 
-            select m.id
+ 	if seats = occupied then
+		create temporary table temp_match as 
+           select m.id
 			from matches as m inner join interview as i on  i.idMatch = m.id
 			where i.confirmedYN = true and m.idInternship = intId;
             
@@ -105,7 +119,6 @@ delimiter ;
             
             drop temporary table temp_match;
         end if;
-	end if;
  end//
   
   
