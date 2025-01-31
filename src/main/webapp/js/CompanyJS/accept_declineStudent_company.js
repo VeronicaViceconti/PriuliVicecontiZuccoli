@@ -1,7 +1,6 @@
 {
 	const homeBtn = document.getElementById("homeBtn");
 	const profileBtn = document.getElementById("profileBtn");
-	const downloadBtn = document.getElementById("downloadBtn");
 	const acceptBtn = document.getElementById("acceptBtn");
 	const declineBtn = document.getElementById("declineBtn");
 	const studentPreferences = document.getElementById("studentPreferences");
@@ -24,7 +23,7 @@
 					switch (req.status) {
 						case 200: 
 							var jsonData = JSON.parse(req.responseText);
-							if(jsonData != null){
+							if(jsonData != null){ //set all the student info of that match
 								studentPreferences.innerText = "";
 								studentName.innerText = jsonData.student.name;
 								studentCourseStudy.innerText = jsonData.student.studyCourse;
@@ -41,26 +40,26 @@
 									var pdfBase64 = jsonData.student.cv;
 							        var pdfArrayBuffer = base64ToArrayBuffer(pdfBase64);
 							        var blob = new Blob([pdfArrayBuffer], { type: 'application/pdf' });
-							        // Crea un URL oggetto per il Blob
 							        var url = URL.createObjectURL(blob);
-							        // Imposta l'URL nell'iframe
 							        pdf.src = url;
 								}
 							}
 							break;
 						case 403:
-							console.log("errore 403");
+							alert(req.responseText);
 							break;
 						case 412:
-							console.log("errore 412");
+							alert(req.responseText);
+							window.location.href = "index.html";
 							break;
 						case 500:
-							console.log("errore 500");
+							alert(req.responseText);
 							break;
 					}
 				}
 			});
 			
+			//if in waiting response section, the match can't be accepted (already accepted)
 			if(sessionStorage.getItem("MatchType") == "WaitResponse"){
 				acceptBtn.remove();
 				declineBtn.remove();
@@ -85,41 +84,45 @@
 									homeBtn.click();
 									break;
 								case 403:
-									console.log("errore 403");
+									alert(req.responseText);
 									break;
 								case 412:
-									console.log("errore 412");
+									alert(req.responseText);
+									window.location.href = "index.html";
 									break;
 								case 500:
-									console.log("errore 500");
+									alert(req.responseText);
 									break;
 							}
 						}
 					});
 	})
+	
+	//match not accepted, send the updated data
 	declineBtn.addEventListener("click", () => {
 		var matchID = sessionStorage.getItem("matchID");
 		makeCall("GET", "MatchManager?page=acceptMatch&accept=0&IDmatch=" + matchID, null,
 							(req) => {
 								if (req.readyState == 4) {
 									switch (req.status) {
-										case 200: // andato a buon fine
+										case 200: 
 											homeBtn.click();
 											break;
 										case 403:
-											console.log("errore 403");
+											alert(req.responseText);
 											break;
 										case 412:
-											console.log("errore 412");
+											alert(req.responseText);
 											break;
 										case 500:
-											console.log("errore 500");
+											alert(req.responseText);
 											break;
 									}
 								}
 							});
 	})
 
+	
 	function base64ToArrayBuffer(base64) {
 		            var binaryString = window.atob(base64);
 		            var len = binaryString.length;

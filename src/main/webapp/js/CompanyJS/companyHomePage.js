@@ -14,7 +14,7 @@
 	const waitingInterview_section = document.getElementById("waitingInterview");
 	const acceptDeclineInterview_section = document.getElementById("accept/DeclineInterview");
 
-	window.onload = function(e) {
+	window.onload = function(e) { //view ongoing internships
 		e.preventDefault();
 		sessionStorage.setItem('tab', "ongoing");
 		showMatchesDivFields(false);
@@ -23,8 +23,8 @@
 		askOngoingIntern();
 	}
 
+	//this function create the internship card with basic info (internship info)
 	function createCard(Id, name, role, startDate, finishDate, location, openSeats) {
-		// Dati della card
 		const cardData = {
 			id: Id,
 			company: name,
@@ -34,25 +34,24 @@
 			positions: openSeats
 		};
 
-		// Seleziona il contenitore in cui aggiungere la card
 		const internList = document.getElementById("internList");
 
-		// Crea il div principale
+		// Create principle div
 		const card = document.createElement("div");
 		card.className = "card";
 		card.id = cardData.id;
 
-		// Aggiungi il nome dell'azienda
+		// company name
 		const companyDiv = document.createElement("div");
 		companyDiv.className = "card-company";
 		companyDiv.textContent = cardData.company;
 		card.appendChild(companyDiv);
 
-		// Aggiungi il contenitore delle informazioni
+		// div container
 		const infoDiv = document.createElement("div");
 		infoDiv.className = "internship-info";
 
-		// Aggiungi ogni sezione di informazioni
+		//each section
 		const sections = [
 			{ img: "img/InternRole.png", text: cardData.role },
 			{ img: "img/internPeriod.png", text: cardData.period },
@@ -60,6 +59,7 @@
 			{ img: "img/internOpenPositions.png", text: cardData.positions }
 		];
 
+		//create sections
 		sections.forEach(section => {
 			const sectionDiv = document.createElement("div");
 			sectionDiv.className = "card-info";
@@ -81,10 +81,10 @@
 		first_div.querySelector('div:first-of-type').style.overflow = "hidden";
 		first_div.querySelector('div:first-of-type').style.textOverflow = "ellipsis";
 
-		// Aggiungi le informazioni al contenitore principale
+		// add info to contenitor
 		card.appendChild(infoDiv);
 
-		// Inserisci la card nel DOM
+		// add card to the dom
 		internList.appendChild(card);
 	}
 
@@ -94,8 +94,8 @@
 		waitingInterview_section.innerHTML = "";
 	}
 
+	//this function create the match card with basic info (student info)
 	function createMatchCard(cardContainer, id, name, courseOfStudies, roleToCover, period) {
-		// Dati della card
 		const cardData = {
 			id: id,
 			studentName: name,
@@ -104,19 +104,18 @@
 			period: period
 		};
 
-		// Crea il div principale della card
 		const card = document.createElement("div");
 		card.className = "card";
 		card.id = cardData.id;
 
-		// Aggiungi il titolo della card (nome studente)
+		//student name
 		const cardTitle1 = document.createElement("div");
 		cardTitle1.className = "card-title";
 
 		const profilePic = document.createElement("img");
 		profilePic.className = "studentProfilePic";
 		profilePic.id = "studentProfilePic";
-		profilePic.src = "img/profilePic.png"; // Immagine del profilo
+		profilePic.src = "img/profilePic.png"; 
 
 		const nameDiv = document.createElement("div");
 		nameDiv.className = "card-company";
@@ -126,12 +125,12 @@
 		cardTitle1.appendChild(profilePic);
 		cardTitle1.appendChild(nameDiv);
 
-		// Aggiungi il secondo titolo (corso di studi)
+		//study course
 		const cardTitle2 = document.createElement("div");
 		cardTitle2.className = "card-title";
 
 		const courseImg = document.createElement("img");
-		courseImg.src = "img/CourseOfStudies.png"; // Icona del corso
+		courseImg.src = "img/CourseOfStudies.png"; 
 
 		const courseDiv = document.createElement("div");
 		courseDiv.id = "courseOfStudies";
@@ -141,16 +140,16 @@
 		cardTitle2.appendChild(courseImg);
 		cardTitle2.appendChild(courseDiv);
 
-		// Crea la sezione minor-info
+		
 		const minorInfo = document.createElement("div");
 		minorInfo.className = "minor-info";
 
-		// Aggiungi informazioni università
+		// internship role
 		const minorInfoTitle1 = document.createElement("div");
 		minorInfoTitle1.className = "card-title";
 
 		const uniImg = document.createElement("img");
-		uniImg.src = "img/InternRole.png"; // Icona dell'università
+		uniImg.src = "img/InternRole.png"; 
 
 		const uniDiv = document.createElement("div");
 		uniDiv.id = "roleToCover";
@@ -160,12 +159,12 @@
 		minorInfoTitle1.appendChild(uniImg);
 		minorInfoTitle1.appendChild(uniDiv);
 
-		// Aggiungi informazioni indirizzo
+		//internship period
 		const minorInfoTitle2 = document.createElement("div");
 		minorInfoTitle2.className = "card-title";
 
 		const addrImg = document.createElement("img");
-		addrImg.src = "img/internPeriod.png"; // Icona dell'indirizzo
+		addrImg.src = "img/internPeriod.png"; 
 
 		const addrDiv = document.createElement("div");
 		addrDiv.id = "internPeriod";
@@ -175,16 +174,16 @@
 		minorInfoTitle2.appendChild(addrImg);
 		minorInfoTitle2.appendChild(addrDiv);
 
-		// Aggiungi i minor-info alla card
+		// add info to the div
 		minorInfo.appendChild(minorInfoTitle1);
 		minorInfo.appendChild(minorInfoTitle2);
 
-		// Aggiungi tutti gli elementi alla card
+		//add div to the card
 		card.appendChild(cardTitle1);
 		card.appendChild(cardTitle2);
 		card.appendChild(minorInfo);
 
-		card.addEventListener("click", () => {
+		card.addEventListener("click", () => { //when clicking each card, company can go to different pages based on current position
 			sessionStorage.setItem("matchID", card.id);
 			switch (cardContainer) {
 				case avail_newMatch_section:
@@ -203,7 +202,7 @@
 			}
 		});
 
-		// Inserisci la card nel contenitore
+		// insert card into main contenitor
 		cardContainer.appendChild(card);
 	}
 
@@ -217,23 +216,25 @@
 		}
 	});
 
+	//company searching a particular student
 	searchBtn.addEventListener("click", () => {
 
 		var searchKey = document.getElementById("searchKey").value;
-		if (searchKey === "") {
+		if (searchKey === "") { //input control
 			return;
 		}
+		
 		makeCall("GET", "ProfileManager?page=filteredInternships&condition=" + searchKey, null,
 			(req) => {
 				if (req.readyState == 4) {
 					document.getElementById("searchKey").value = "";
 					document.getElementById("searchKey").placeholder = 'Search for internships';
 					switch (req.status) {
-						case 200: // andato a buon fine
+						case 200: 
 							var jsonData = JSON.parse(req.responseText);
 							if (jsonData != null && jsonData.length > 0) {
 								cleanUp();
-								for (const match of jsonData) {
+								for (const match of jsonData) { //create matches found
 									createMatchCard(
 										match.id,
 										match.internship.student.name,
@@ -243,18 +244,19 @@
 									)
 								}
 							} else {
-								alert("No internship found with that company");
+								alert("No internship found with that student");
 								askOngoingIntern();
 							}
 							break;
 						case 403:
-							console.log("errore 403");
+							alert(req.responseText);
 							break;
 						case 412:
-							console.log("errore 412");
+							alert(req.responseText);
+							window.location.href = "index.html";
 							break;
 						case 500:
-							console.log("errore 500");
+							alert(req.responseText);
 							break;
 					}
 				}
@@ -262,6 +264,7 @@
 
 	})
 
+	//clicked tab matches
 	matchesTab.addEventListener("click", () => {
 
 		//change tab color
@@ -275,15 +278,15 @@
 		document.getElementById("overlap").style.visibility = "hidden";
 		cleanUp();
 
+		//ask all matches
 		makeCall("GET", "MatchManager?page=showMatches", null,
 			(req) => {
 				if (req.readyState == 4) {
 					switch (req.status) {
 						case 200:
 							var jsonData = JSON.parse(req.responseText);
-							console.log(jsonData);
 							if (jsonData != null) {
-								for (const match of jsonData) {
+								for (const match of jsonData) { //create match card in the right section (there are three sections)
 									var pageLocation = avail_newMatch_section;
 									if ("acceptedYNCompany" in match && "acceptedYNStudent" in match && "confirmedYN" in match && match.confirmedYN == true) {
 										pageLocation = acceptDeclineInterview_section;
@@ -304,19 +307,21 @@
 							}
 							break;
 						case 403:
-							console.log("errore 403");
+							alert(req.responseText);
 							break;
 						case 412:
-							console.log("errore 412");
+							alert(req.responseText);
+							window.location.href = "index.html";
 							break;
 						case 500:
-							console.log("errore 500");
+							alert(req.responseText);
 							break;
 					}
 				}
 			});
 	});
 
+	
 	function askOngoingIntern() {
 		//change tab color
 		ongoingInternTab.style.color = "#a37659";
@@ -328,14 +333,15 @@
 		showMatchesDivFields(false);
 		document.getElementById("overlap").style.visibility = "visible";
 
+		//ask ongoing internships
 		makeCall("GET", "ProfileManager?page=openOngoingInternships", null,
 			(req) => {
 				if (req.readyState == 4) {
 					switch (req.status) {
-						case 200: // andato a buon fine
+						case 200: 
 							var jsonData = JSON.parse(req.responseText);
 							if (jsonData != null) {
-								for (const match of jsonData) {
+								for (const match of jsonData) { //create internship card
 									createCard(
 										match.id,
 										match.internship.student.name,
@@ -348,18 +354,19 @@
 								}
 							}
 							else {
-								internList.innerText = "No ongoing interrmships";
+								internList.innerText = "No ongoing internships";
 							}
 
 							break;
 						case 403:
-							console.log("errore 403");
+							alert(req.responseText);
 							break;
 						case 412:
-							console.log("errore 412");
+							alert(req.responseText);
+							window.location.href = "index.html";
 							break;
 						case 500:
-							console.log("errore 500");
+							alert(req.responseText);
 							break;
 					}
 				}
@@ -381,15 +388,15 @@
 		showMatchesDivFields(false);
 		document.getElementById("overlap").style.visibility = "hidden";
 		cleanUp();
-
+		
+		//ask internships proposed by the company
 		makeCall("GET", "PublicationManager?page=proposedInternships", null,
 			(req) => {
 				if (req.readyState == 4) {
 					switch (req.status) {
-						case 200: // andato a buon fine
+						case 200: 
 							var jsonData = JSON.parse(req.responseText);
-							console.log(jsonData);
-							for (const internship of jsonData) {
+							for (const internship of jsonData) { //create internship card
 								createCard(
 									internship.id,
 									internship.company.name,
@@ -402,19 +409,21 @@
 							}
 							break;
 						case 403:
-							console.log("errore 403");
+							alert(req.responseText);
 							break;
 						case 412:
-							console.log("errore 412");
+							alert(req.responseText);
+							window.location.href = "index.html";
 							break;
 						case 500:
-							console.log("errore 500");
+							alert(req.responseText);
 							break;
 					}
 				}
 			});
 	});
 
+	
 	waitingFeedInternshipTab.addEventListener("click", () => {
 
 		//change tab color
@@ -427,15 +436,15 @@
 		sessionStorage.setItem('tab', "waitingFeed");
 		cleanUp();
 
+		//ask company internships without feedback
 		makeCall("GET", "PublicationManager?page=waitingFeedbackInternships", null,
 			(req) => {
 				if (req.readyState == 4) {
 					switch (req.status) {
-						case 200: // andato a buon fine
+						case 200: 
 							var jsonData = JSON.parse(req.responseText);
-							console.log(jsonData);
 							if (jsonData != null) {
-								for (const internship of jsonData) {
+								for (const internship of jsonData) { //create internship card
 									createCard(
 										internship.id,
 										internship.publication.student.name,
@@ -450,13 +459,14 @@
 
 							break;
 						case 403:
-							console.log("errore 403");
+							alert(req.responseText);
 							break;
 						case 412:
-							console.log("errore 412");
+							alert(req.responseText);
+							window.location.href = "index.html";
 							break;
 						case 500:
-							console.log("errore 500");
+							alert(req.responseText);
 							break;
 					}
 				}
@@ -475,26 +485,23 @@
 		window.location.href = "companyProfile.html";
 	})
 
-	//click on card event
+	//click on a card 
 	internList.addEventListener("click", () => {
 		const card = event.target.closest(".card");
 		var tab = sessionStorage.getItem("tab");
 
 		sessionStorage.setItem("MatchType", "NewMatch");
 		if (card) {
-			switch (tab) {
+			switch (tab) { //based on the current tab, go to different pages
 				case "matches":
-					console.log("matches");
 					sessionStorage.setItem("matchID", card.id);
 					window.location.href = "accept_DeclineStudent_Company.html";
 					break;
 				case "waitingFeed":
-					console.log("waitingfeed");
 					sessionStorage.setItem("matchID", card.id);
 					window.location.href = "feedbackForm.html";
 					break;
 				default:
-					console.log("internshipView");
 					sessionStorage.setItem("matchID", card.id);
 					window.location.href = "internshipView_Company.html";
 					break;

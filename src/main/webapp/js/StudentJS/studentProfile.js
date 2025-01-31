@@ -5,18 +5,15 @@
 	const studentEmail = document.getElementById("studentEmail");
 	const studentPhone = document.getElementById("studentPhone");
 	const studentAddress = document.getElementById("studentAddress");
-	
 	const preferences = document.getElementById("preferences");
-
 	const modfyBtn = document.getElementById("modifyCurBtn");
-	const downloadBtn = document.getElementById("downloadCurBtn");
 
 	const ongoingList = document.getElementById("ongoing-internship");
 	const waitingFeed = document.getElementById("feedbacks");
 	
 	const pdf = document.getElementById("pdf-frame");
 
-	window.onload = function() {
+	window.onload = function() { //load student profile info 
 		preferences.innerText = "";
 		studentName.innerText = "";
 		studentEmail.innerText = "";
@@ -30,7 +27,7 @@
 		window.location.href = "homePageStudente.html";
 	})
 
-
+	//when click on the ongoing internship, need to open it
 	ongoingList.addEventListener("click", () => {
 		const card = event.target.closest(".card");
 		if (card) {
@@ -42,6 +39,7 @@
 		}
 	})
 
+	//when click on the internship waiting for feedback, need to open it
 	waitingFeed.addEventListener("click", () => {
 		const card = event.target.closest(".card");
 		if (card) {
@@ -61,9 +59,7 @@
 					switch (req.status) {
 						case 200: // andato a buon fine
 							var jsonData = JSON.parse(req.responseText);
-							console.log(jsonData);
 							var studentData = jsonData[0];
-							console.log(studentData);
 							studentName.innerText = studentData.name;
 							studentEmail.innerText = studentData.email;
 							studentPhone.innerText = studentData.phoneNumber;
@@ -72,14 +68,13 @@
 							var onGoing = jsonData[1];
 							var waiting = jsonData[2];
 							
-							
 							if(!(typeof studentData.publications[0].choosenPreferences === 'undefined')){
 								var dl = document.createElement('dl');
-								for(var i = 0; i < studentData.publications.length; i++){
+								for(var i = 0; i < studentData.publications.length; i++){ // add publications
 									var dt = document.createElement('dt');
 									dt.innerHTML = "publication " + (i + 1) + ": ";
 									dl.appendChild(dt);
-									for(var j = 0; j < studentData.publications[i].choosenPreferences.length; j++){
+									for(var j = 0; j < studentData.publications[i].choosenPreferences.length; j++){ // add preferences
 										var dd = document.createElement('dd');
 										dd.innerHTML = studentData.publications[i].choosenPreferences[j].text;
 										dl.appendChild(dd);
@@ -89,22 +84,20 @@
 							}
 							
 							if(waiting != null){
-								for(var i = 0; i < waiting.length; i++){
+								for(var i = 0; i < waiting.length; i++){ //create internship card waiting feedback
 									var tmp = waiting[0].internship
 									createWaitingForFeedBack(waiting[0].id, tmp.id, tmp.company.name, tmp.roleToCover, tmp.startingDate, tmp.endingDate, tmp.company.address, tmp.openSeats);
 								}
 							}
-							if(onGoing != null){
+							if(onGoing != null){ //create internship card ongoing internship
 								createOnGoingInternship(onGoing.internship.id, onGoing.internship.company.name, onGoing.internship.roleToCover, onGoing.internship.startingDate, onGoing.internship.endingDate, onGoing.internship.company.address, onGoing.internship.openSeats);		
 								sessionStorage.setItem("onGoingMatch", onGoing.id);						
 							}
-							if(studentData.cv != null){
+							if(studentData.cv != null){ //add cv
 								var pdfBase64 = studentData.cv;
 						        var pdfArrayBuffer = base64ToArrayBuffer(pdfBase64);
 						        var blob = new Blob([pdfArrayBuffer], { type: 'application/pdf' });
-						        // Crea un URL oggetto per il Blob
 						        var url = URL.createObjectURL(blob);
-						        // Imposta l'URL nell'iframe
 						        pdf.src = url;
 							}else{
 								modfyBtn.innerHTML = "upload CV";
@@ -115,13 +108,14 @@
 							}
 							break;
 						case 403:
-							console.log("errore 403");
+							alert(req.responseText);
 							break;
 						case 412:
-							console.log("errore 412");
+							alert(req.responseText);
+							window.location.href = "index.html";
 							break;
 						case 500:
-							console.log("errore 500");
+							alert(req.responseText);
 							break;
 					}
 				}
@@ -129,14 +123,14 @@
 	}
 
 	function base64ToArrayBuffer(base64) {
-	            var binaryString = window.atob(base64);
-	            var len = binaryString.length;
-	            var bytes = new Uint8Array(len);
-	            for (var i = 0; i < len; i++) {
-	                bytes[i] = binaryString.charCodeAt(i);
-	            }
-	            return bytes.buffer;
-	        }
+        var binaryString = window.atob(base64);
+        var len = binaryString.length;
+        var bytes = new Uint8Array(len);
+        for (var i = 0; i < len; i++) {
+            bytes[i] = binaryString.charCodeAt(i);
+        }
+        return bytes.buffer;
+	}
 	
 	function createWaitingForFeedBack(idmatch, internshipId, name, role, startingDate, endingDate, address, seats){
 		let card = document.createElement('div');
@@ -224,6 +218,7 @@
 		
 	}
 	
+	//create card ongoing internship
 	function createOnGoingInternship(internshipId, name, role, startingDate, endingDate, address, seats){
 			let card = document.createElement('div');
 			card.className = "card";

@@ -1,7 +1,6 @@
 {
 	const homeBtn = document.getElementById("homeBtn");
 	const profileBtn = document.getElementById("profileBtn");
-	const downloadBtn = document.getElementById("downloadBtn");
 	const acceptBtn = document.getElementById("acceptBtn");
 	const declineBtn = document.getElementById("declineBtn");
 	const studentPreferences = document.getElementById("studentPreferences");
@@ -19,16 +18,14 @@
 	window.onload = function() {
 		var matchID = sessionStorage.getItem("matchID");
 
-
-		// get user info
+		// get match info
 		makeCall("GET", "MatchManager?page=openMatch&IDmatch=" + matchID, null,
 			(req) => {
 				if (req.readyState == 4) {
 					switch (req.status) {
-						case 200: // andato a buon fine
+						case 200: 
 							var jsonData = JSON.parse(req.responseText);
-							console.log(jsonData);
-							if (jsonData != null) {
+							if (jsonData != null) { //open match info
 								studentPreferences.innerText = "";
 								studentName.innerText = jsonData.student.name;
 								studentCourseStudy.innerText = jsonData.student.studyCourse;
@@ -45,21 +42,20 @@
 									var pdfBase64 = jsonData.student.cv;
 									var pdfArrayBuffer = base64ToArrayBuffer(pdfBase64);
 									var blob = new Blob([pdfArrayBuffer], { type: 'application/pdf' });
-									// Crea un URL oggetto per il Blob
 									var url = URL.createObjectURL(blob);
-									// Imposta l'URL nell'iframe
 									pdf.src = url;
 								}
 							}
 							break;
 						case 403:
-							console.log("errore 403");
+							alert(req.responseText);
 							break;
 						case 412:
-							console.log("errore 412");
+							alert(req.responseText);
+							window.location.href = "index.html";
 							break;
 						case 500:
-							console.log("errore 500");
+							alert(req.responseText);
 							break;
 					}
 				}
@@ -74,23 +70,22 @@
 					switch (req.status) {
 						case 200: // andato a buon fine
 							var jsonData = JSON.parse(req.responseText);
-							console.log(jsonData);
-							if (jsonData != null) {
+							if (jsonData != null) { //show all questions and answers
 								interviewID = jsonData.id;
-								//inserimento interview sumUp
 								for (const question of jsonData.form.questions) {
 									printQuestionAndAnswer(question.text, question.answer);
 								}
 							}
 							break;
 						case 403:
-							console.log("errore 403");
+							alert(req.responseText);
 							break;
 						case 412:
-							console.log("errore 412");
+							alert(req.responseText);
+							window.location.href = "index.html";
 							break;
 						case 500:
-							console.log("errore 500");
+							alert(req.responseText);
 							break;
 					}
 				}
@@ -107,28 +102,31 @@
 		window.location.href = "homePageCompany.html";
 	})
 
+	//interview accepted, send updated data
 	acceptBtn.addEventListener("click", () => {
 		makeCall("GET", "Interviewer?page=submitSelection&interview=" + interviewID + "&selected=1", null,
 			(req) => {
 				if (req.readyState == 4) {
 					switch (req.status) {
-						case 200: // andato a buon fine
+						case 200: 
 							homeBtn.click();
 							break;
 						case 403:
-							console.log("errore 403");
+							alert(req.responseText);
 							break;
 						case 412:
-							console.log("errore 412");
+							alert(req.responseText);
+							window.location.href = "index.html";
 							break;
 						case 500:
-							console.log("errore 500");
+							alert(req.responseText);
 							break;
 					}
 				}
 			});
 	})
 
+	//interview declined, send updated data
 	declineBtn.addEventListener("click", () => {
 		makeCall("GET", "Interviewer?page=submitSelection&interview=" + interviewID + "&selected=0", null,
 			(req) => {
@@ -138,13 +136,14 @@
 							homeBtn.click();
 							break;
 						case 403:
-							console.log("errore 403");
+							alert(req.responseText);
 							break;
 						case 412:
-							console.log("errore 412");
+							alert(req.responseText);
+							window.location.href = "index.html";
 							break;
 						case 500:
-							console.log("errore 500");
+							alert(req.responseText);
 							break;
 					}
 				}
@@ -161,6 +160,7 @@
 		return bytes.buffer;
 	}
 
+	
 	function printQuestionAndAnswer(question, answer) {
 		const interviewSumUp = document.getElementById("interviewSumUp");
 

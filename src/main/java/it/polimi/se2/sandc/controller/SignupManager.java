@@ -20,7 +20,7 @@ import it.polimi.se2.sandc.bean.User;
 import it.polimi.se2.sandc.dao.UserDAO;
 
 /**
- * Servlet implementation class SignupManager
+ * Servlet implementation class SignupManager, manages the signup of the user
  */
 @WebServlet("/SignupManager")
 @MultipartConfig
@@ -67,6 +67,7 @@ public class SignupManager extends HttpServlet {
     	
 		UserDAO usr = new UserDAO(connection);
 		
+		//input controls
 		if (email == null || email.isEmpty() || name == null || name.trim().isEmpty() || pwdSame.trim().isEmpty() || phoneNumber.trim().isEmpty() ||
 				pwd == null || pwd.trim().isEmpty() || address == null || phoneNumber == null || userType == null ) {
 			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
@@ -85,14 +86,16 @@ public class SignupManager extends HttpServlet {
 			response.getWriter().println("The two password must be the same!");
 	       	return;
 	    }
+		
+		//set the userType
 		if(userType.equalsIgnoreCase("yes"))
 			userType = "student";
 		else
 			userType = "company";
 		
-		try {
+		try { //register new user
 			usr.registerNewUser(name, email, pwd, address, phoneNumber,studyCourse,userType);
-			//se tutto va bene
+
 			response.setStatus(HttpServletResponse.SC_OK);
 			response.setContentType("application/json");
 			response.setCharacterEncoding("UTF-8");

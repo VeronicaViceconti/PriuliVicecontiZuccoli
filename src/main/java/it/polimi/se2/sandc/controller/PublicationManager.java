@@ -37,7 +37,7 @@ import it.polimi.se2.sandc.dao.StudentDAO;
 import it.polimi.se2.sandc.dao.UserDAO;
 
 /**
- * Servlet implementation class PublicationManager
+ * Servlet implementation class PublicationManager, manages all the actions related to student/company publications
  */
 @WebServlet("/PublicationManager")
 @MultipartConfig
@@ -87,6 +87,7 @@ public class PublicationManager extends HttpServlet {
 		String email = user.getEmail();
 		String userType = (String) s.getAttribute("userType");
 		
+		//input control
 		if(request.getParameter("page") == null) {
 			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 			response.getWriter().write("missing values");
@@ -94,9 +95,9 @@ public class PublicationManager extends HttpServlet {
 		}
 			
 		
-		if(userType.equalsIgnoreCase("student")) { //we want to use student profile 
-			 switch (request.getParameter("page").toString()) { //uso lo switch per capire quale azione dobbiamo fare in questa servlet
-			 	case "getPreferences":
+		if(userType.equalsIgnoreCase("student")) { //we want to use student 
+			 switch (request.getParameter("page").toString()) { 
+			 	case "getPreferences": //find all the preferences of a student
 			 		getPrefereces(email, request, response);
 			 		break;
 			 	default:
@@ -105,14 +106,14 @@ public class PublicationManager extends HttpServlet {
 			 		break;
 			 } 
 		}else { //we want to use company
-			 switch (request.getParameter("page").toString()) { //uso lo switch per capire quale azione dobbiamo fare in questa servlet
-			 	case "getPreferences":
+			 switch (request.getParameter("page").toString()) { 
+			 	case "getPreferences": //find all preferenec of a company
 			 		getPrefereces(email, request, response);
 			 		break;
-			 	case "proposedInternships":
+			 	case "proposedInternships": //find all internships proposed by a company
 			 		getAllCompanyInternships(response, email);
 			 		break;
-			 	case "waitingFeedbackInternships":
+			 	case "waitingFeedbackInternships": //find all company internships that are finished and waiting for feedback
 			 		waitingFeedbackInternships(response,email);
 			 		break;
 			 	default:
@@ -124,6 +125,11 @@ public class PublicationManager extends HttpServlet {
 		
 	}
 
+    /**
+     * Find all the internships that the company need to make a feedback on 
+     * @param email company
+     * @throws IOException
+     */
 	private void waitingFeedbackInternships(HttpServletResponse response, String email) throws IOException {
 		CompanyDAO company = new CompanyDAO(connection);
 		List<Match> matches = new ArrayList<>();
@@ -142,6 +148,7 @@ public class PublicationManager extends HttpServlet {
 		}	
 		
 	}
+	
 	//return alla the internships of a company 
 	private void getAllCompanyInternships(HttpServletResponse response, String email) throws IOException {
 		InternshipDAO intern = new InternshipDAO(connection);
@@ -151,13 +158,12 @@ public class PublicationManager extends HttpServlet {
 			
 			String internString = new Gson().toJson(internships);
 			
-			// Imposta il tipo di contenuto e invia la risposta
 	       response.setContentType("application/json");
 	       response.getWriter().write(internString);       
 	       response.setStatus(HttpServletResponse.SC_OK);
 		}catch (Exception e) {
 			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-			response.getWriter().println("something was wrong while getting company internships");
+			response.getWriter().println("Something was wrong while getting company internships");
 			return;
 		}	
 	}
@@ -171,17 +177,19 @@ public class PublicationManager extends HttpServlet {
 		String userType = (String) s.getAttribute("userType");
 		String email = ((User) s.getAttribute("user")).getEmail();
 		
+		//input control
 		if(request.getParameter("page") == null) {
 			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 			response.getWriter().write("missing values");
 			return;
 		}
-		if(userType.equalsIgnoreCase("student")) { //we want to use student profile -> search company publications
-			 switch (request.getParameter("page").toString()) { //uso lo switch per capire quale azione dobbiamo fare in questa servlet
-			 	case "sendCvForm":
+		
+		if(userType.equalsIgnoreCase("student")) {  //the user is a student
+			 switch (request.getParameter("page").toString()) { 
+			 	case "sendCvForm": //publish cv 
 			 		cvPublication(email, request, response);
 			 		break;
-			 	case "sendPreferences":
+			 	case "sendPreferences": //publish preferences
 						try {
 							preferencePublicationStudent(email, request, response);
 						} catch (IOException | SQLException e) {
@@ -195,13 +203,13 @@ public class PublicationManager extends HttpServlet {
 			 		response.getWriter().println("page not found");
 			 		break;
 			 } 
-		}else { //we want to use company's profile
-			 switch (request.getParameter("page").toString()) { //uso lo switch per capire quale azione dobbiamo fare in questa servlet
-			 	case "sendProjectForm":
+		}else { //we want to use company
+			 switch (request.getParameter("page").toString()) { 
+			 	case "sendProjectForm": //publish internship
 			 		internshipPublication(email, request, response);
 			 		break;
-			 	case "sendPreferences":
-			 		requirementPublicationCompany(email, request, response);
+			 	case "sendPreferences": //publish preferences
+			 		requirementPublicationCompany(request, response);
 			 		break;
 			 	default:
 			 		response.setStatus(HttpServletResponse.SC_NOT_FOUND);
@@ -211,7 +219,11 @@ public class PublicationManager extends HttpServlet {
 		}		
 	}
 	
-	
+	/**
+	 * 
+	 * @param email student
+	 * @throws IOException
+	 */
 	private void cvPublication(String email, HttpServletRequest request, HttpServletResponse response) throws IOException {
 		HttpSession session = request.getSession();	
 		Part part = null;
@@ -235,17 +247,19 @@ public class PublicationManager extends HttpServlet {
 		}
 		
 		StudentDAO dao = new StudentDAO(connection);
+		
 		try {
+			//find the cv
 			String path = getServletContext().getInitParameter("pathUploadCv")  + email + ".pdf";
-			//imageDao.AddImage(username, title, description, path);
 			part.write(path);
 			
+			//update db
 			dao.putCv((User) session.getAttribute("user"), path);
 			response.setStatus(HttpServletResponse.SC_OK);
 			return;
 		} catch (IOException e) {
 			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-			response.getWriter().println("error saving the cv");
+			response.getWriter().println("Error saving the cv");
 			return;
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
@@ -255,11 +269,16 @@ public class PublicationManager extends HttpServlet {
 		}
 	}
 
-	
+	/**
+	 * 
+	 * @param email user
+	 * @throws IOException
+	 */
 	private void getPrefereces(String email, HttpServletRequest request, HttpServletResponse response) throws IOException {
 		
 		PreferenceDAO preferecedao = new PreferenceDAO(connection);
 		
+		//input control
 		if(request.getParameter("type") == null) {
 			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 			response.getWriter().println("missing values");
@@ -271,12 +290,10 @@ public class PublicationManager extends HttpServlet {
 			
 		switch (type) {
 		case "all":
-			try {
+			try { //return all working preferences of the user 
 				ArrayList <Preferences> ris = preferecedao.getWorkingPreferences();
 				String preferences = new Gson().toJson(ris);
-				
-			    // Imposta il tipo di contenuto e invia la risposta
-				
+								
 		       response.setContentType("application/json");
 		       response.getWriter().write(preferences);
 		       response.setStatus(HttpServletResponse.SC_OK);
@@ -293,6 +310,12 @@ public class PublicationManager extends HttpServlet {
 		}
 	}
 	
+	/**
+	 * Publish the preferences of a new student publication 
+	 * @param email student
+	 * @throws IOException
+	 * @throws SQLException
+	 */
 	private void preferencePublicationStudent(String email, HttpServletRequest request, HttpServletResponse response) throws IOException, SQLException {
 		PreferenceDAO preferecedao = new PreferenceDAO(connection);
 		StudentDAO studentdao = new StudentDAO(connection);
@@ -344,6 +367,7 @@ public class PublicationManager extends HttpServlet {
 		
 		
 		int idpub;
+		//create new publication because prerequisites are fine
 		try {
 			idpub = studentdao.createPublication(user);
 		} catch (SQLException e) {
@@ -351,7 +375,7 @@ public class PublicationManager extends HttpServlet {
 			response.getWriter().println("connection error with the db");
 			return;
 		}
-		
+		//add preferences to that publication
 		for(Preferences x : prefs) {
 			try {
 				studentdao.addPreference(user,Integer.parseInt(request.getParameter(x.getText())), idpub);
@@ -365,12 +389,13 @@ public class PublicationManager extends HttpServlet {
 		response.setStatus(HttpServletResponse.SC_OK);
 	}
 	
+	/**
+	 * Publish a new internship created by the company
+	 * @param email company
+	 * @throws IOException
+	 */
 	private void internshipPublication(String email, HttpServletRequest request, HttpServletResponse response) throws IOException {
-		CompanyDAO companydao = new CompanyDAO(connection);
-		StudentDAO studentdao = new StudentDAO(connection);
-		HttpSession session = request.getSession();	
-		User user = (User) session.getAttribute("user");
-		
+		CompanyDAO companydao = new CompanyDAO(connection);		
 		Internship i = new Internship();
 		
 		try {
@@ -404,7 +429,12 @@ public class PublicationManager extends HttpServlet {
 		response.getWriter().write(tmp);
 	}
 
-	private void requirementPublicationCompany(String email, HttpServletRequest request, HttpServletResponse response) throws IOException {
+	
+	/**
+	 * Publish the requirement of a new company internship 
+	 * @throws IOException
+	 */
+	private void requirementPublicationCompany(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		PreferenceDAO preferecedao = new PreferenceDAO(connection);
 		CompanyDAO companydao = new CompanyDAO(connection);
 		HttpSession session = request.getSession();	
@@ -412,7 +442,7 @@ public class PublicationManager extends HttpServlet {
 		
 		List <Preferences> pref = null;
 		
-		try {
+		try { //first find all the working preferences
 			pref = preferecedao.getWorkingPreferences();
 		} catch (SQLException e) {
 			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
@@ -428,10 +458,11 @@ public class PublicationManager extends HttpServlet {
 			return;
 		}
 		
+		//control the ones that are requested for the new internship
 		for(Preferences x : pref) {
 			
 			if(request.getParameter(x.getText()) != null) {
-				try {
+				try { //add new requirements
 					companydao.addRequirement(user, Integer.parseInt(request.getParameter(x.getText())), idInt);
 				} catch (SQLException e) {
 					response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "cannot add the requirement");

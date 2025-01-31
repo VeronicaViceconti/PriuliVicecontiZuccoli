@@ -30,7 +30,7 @@ import it.polimi.se2.sandc.dao.PreferenceDAO;
 import it.polimi.se2.sandc.dao.StudentDAO;
 
 /**
- * Servlet implementation class ComplainManager
+ * Servlet implementation class ComplainManager, manages the complains written by the students and the companies
  */
 @WebServlet("/ComplainManager")
 @MultipartConfig
@@ -72,11 +72,10 @@ public class ComplainManager extends HttpServlet {
 
 	/**
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
+	 * 
 	 */
 	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		
-		CompanyDAO companydao = new CompanyDAO(connection);
-		StudentDAO studentdao = new StudentDAO(connection);
+
 		InternshipDAO internshipdao = new  InternshipDAO(connection);
 		MatchDAO matchdao = new  MatchDAO(connection);
 		HttpSession session = request.getSession();	
@@ -97,6 +96,7 @@ public class ComplainManager extends HttpServlet {
 			return;
 		}
 		
+		//find the match where to write the complain
 		Match m = null;
 		try {
 			m = matchdao.getMatch(idMatch);
@@ -107,6 +107,7 @@ public class ComplainManager extends HttpServlet {
 			return;
 		}
 		
+		//control user type and that the user has that match found (control wrong input)
 		if(user.getWhichUser().equals("student")) {
 			if(!m.getPublication().getStudent().getEmail().equals(user.getEmail())) {
 				response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
@@ -121,6 +122,7 @@ public class ComplainManager extends HttpServlet {
 			}
 		}
 		
+		//write the complain
 		try {
 			internshipdao.writeComplaint(user, m.getPublication().getStudent().getEmail(), m.getInternship().getCompany().getEmail(), answer, idMatch);
 		} catch (SQLException e) {

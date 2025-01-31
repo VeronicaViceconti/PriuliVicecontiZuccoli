@@ -80,7 +80,6 @@ public class FeedbackManager extends HttpServlet {
 		
 		try {
 			answer = StringEscapeUtils.escapeJava(request.getParameter("answer"));
-			System.out.println(answer);
 			idMatch = Integer.parseInt(request.getParameter("idMatch"));
 			if(answer == null || idMatch == -1) {
 				throw new Exception();
@@ -92,8 +91,10 @@ public class FeedbackManager extends HttpServlet {
 			return;
 		}
 		
+		//control user type
 		if(user.getWhichUser().equals("student")) {
 			ArrayList<Match> list = new ArrayList<Match> ();
+			//get match that are finished and that till need a feedback
 			try {
 				list = studentdao.getMatchWaitingFeedback(user.getEmail());
 			} catch (SQLException e) {
@@ -103,6 +104,7 @@ public class FeedbackManager extends HttpServlet {
 			}
 			Boolean found = false;
 			if(list != null) {
+				//find the match selected by the student and that need feedback -> write feedback
 				for(Match i : list) {
 					if(i.getId() == idMatch) {
 						found = true;
@@ -123,7 +125,7 @@ public class FeedbackManager extends HttpServlet {
 				return;
 			}
 			
-		} else {
+		} else { //obtain the company matches that nees feedback
 			ArrayList<Match> list = new ArrayList<Match> ();
 			try {
 				list = companydao.getMatchWaitingFeedback(user.getEmail());
@@ -135,6 +137,7 @@ public class FeedbackManager extends HttpServlet {
 			}
 			Boolean found = false;
 			if(list != null) {
+				//find the match selected by the company that need feedback -> write feedback
 				for(Match i : list) {
 					if(i.getId() == idMatch) {
 						found = true;

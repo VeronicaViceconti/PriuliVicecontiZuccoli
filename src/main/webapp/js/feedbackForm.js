@@ -4,6 +4,7 @@
  const idMatch = sessionStorage.getItem('matchID');
  const feedbackMatch = sessionStorage.getItem('feedbackMatch');
  
+ //send feedback form
  sendBtn.addEventListener("click", (e) => {
 	 	e.preventDefault();
 	 	var form = e.target.closest("form");
@@ -26,16 +27,13 @@
 								}
 			                break;
 			              case 400: // bad request
-			                console.log(message);
-			                //this.alert.textContent = message;
+			                alert(message);
 			                break;
 			              case 401: // unauthorized
-			                console.log(message);
-			                //this.alert.textContent = message;
+			                alert(message);
 			                break;
 			              case 500: // server error
-			            	console.log(message);
-			            	//this.alert.textContent = message;
+			            	alert(message);
 			                break;
 			            }
 			          }

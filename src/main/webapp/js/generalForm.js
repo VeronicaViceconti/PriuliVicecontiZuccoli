@@ -3,11 +3,9 @@
 	const pageTitle = document.getElementById("pageTitle");
 	const homeBtn = document.getElementById("homeBtn");
 	const profileBtn = document.getElementById("profileBtn");
-	const textArea = document.getElementById("textArea");
 
 	const tab = sessionStorage.getItem("tab");
 	const user = sessionStorage.getItem("user");
-	const internship = sessionStorage.getItem("internshipID")
 
 	window.onload = function() {
 
@@ -67,13 +65,6 @@
 			const answer = textarea.value; // Ottieni la risposta inserita
 			answers[`question_${questionNumber}`] = answer; // Aggiungi al JSON
 		});
-
-		const jsonString = JSON.stringify(answers, null, 2); // 'null, 2' per leggibilità
-
-		console.log(jsonString);
-		alert("send: " + jsonString);
-
-
 	})
 	
 	function createQuestionTextArea(questionText, questionNum){

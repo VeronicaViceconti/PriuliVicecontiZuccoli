@@ -29,7 +29,7 @@ import it.polimi.se2.sandc.dao.MatchDAO;
 import it.polimi.se2.sandc.dao.PreferenceDAO;
 
 /**
- * Servlet implementation class Interviewer
+ * Servlet implementation class Interviewer, manages the interview that a company does to the students
  */
 @WebServlet("/Interviewer")
 @MultipartConfig
@@ -83,11 +83,12 @@ public class Interviewer extends HttpServlet {
 		String email =  ((User) s.getAttribute("user")).getEmail();
 		String userType = (String) s.getAttribute("userType");
 		
-		if(userType.equals("student")) { //we want to use student profile -> search company publications
+		if(userType.equals("student")) { //student can't use interview manager
 			response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 			response.getWriter().println("the user isn't authorized");
-		}else { //we want to use company's profile
-			 switch (request.getParameter("page")) { //uso lo switch per capire quale azione dobbiamo fare in questa servlet
+		}else { //company
+			//different actions based on the company current page
+			 switch (request.getParameter("page")) {  
 			 	case "requestForm":
 			 		createInterview(email, request, response);
 			 		break;
@@ -110,6 +111,11 @@ public class Interviewer extends HttpServlet {
 		
 	}
 
+    /**
+     * Return the info about a particular interview
+     * @param id, interview id to be searched
+     * @throws IOException
+     */
 	private void selectInterview(HttpServletResponse response,Integer id) throws IOException {
 		
 		InterviewDAO interviewDAO = new InterviewDAO(connection);
@@ -136,15 +142,15 @@ public class Interviewer extends HttpServlet {
 		String email =  ((User) s.getAttribute("user")).getEmail();
 		String userType = (String) s.getAttribute("userType");
 		
-		if(userType.equals("student")) { //we want to use student profile -> search company publications
+		if(userType.equals("student")) { //student can't be here
 			response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 			response.getWriter().println("the user isn't authorized");
-		}else { //we want to use company's profile
-			 switch (request.getParameter("page").toString()) { //uso lo switch per capire quale azione dobbiamo fare in questa servlet
+		}else { //company
+			//different actions based on the company current page
+			 switch (request.getParameter("page").toString()) { 
 			 	case "submitInterview":
 			 		submitInterview(email, request, response);
 			 		break;
-			 		
 			 	case "submitSelection":
 			 		submitSelection(email, request, response);
 			 		break;
@@ -156,17 +162,19 @@ public class Interviewer extends HttpServlet {
 		}
 	}
 	
-	
+	/**
+	 * Creates a new interview 
+	 * @param email of the company who wants to create an interview
+	 * @throws IOException
+	 */
 	private void createInterview(String email, HttpServletRequest request, HttpServletResponse response) throws IOException {
 		
 		MatchDAO matchdao = new MatchDAO(connection);
-		CompanyDAO companydao = new CompanyDAO(connection);
 		HttpSession session = request.getSession();	
 		User user = (User) session.getAttribute("user");
 		
-		
-		
 		int idMatch;
+		//control an idMatch is passed as parameter
 		try {
 			if(request.getParameter("match") == null) {
 				throw new Exception();
@@ -178,6 +186,7 @@ public class Interviewer extends HttpServlet {
 			return;
 		}
 		
+		//control the company has that match
 		try {
 			if(!matchdao.controlOwnership(email, idMatch, user.getWhichUser())) {
 				response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
@@ -190,8 +199,10 @@ public class Interviewer extends HttpServlet {
 			return;
 		}
 		
+		//create an interview for that match
 		try {
 			Interview interview = matchdao.createInterview(idMatch);
+			//if the student of that match has already accepted another interview, so already has another ongoing internship
 			if(interview == null) {
 				response.getWriter().write("the Student is no available for an interview, retry later");
 				response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
@@ -207,15 +218,14 @@ public class Interviewer extends HttpServlet {
 		}
 	}
 	
+	/**
+	 * Submit the new interview just made
+	 * @param email of the company that is submitting the interview
+	 * @throws IOException
+	 */
 	private void submitInterview(String email, HttpServletRequest request, HttpServletResponse response) throws IOException {
 		
 		InterviewDAO interviewdao = new InterviewDAO(connection);
-		MatchDAO matchdao = new MatchDAO(connection);
-		CompanyDAO companydao = new CompanyDAO(connection);
-		HttpSession session = request.getSession();	
-		User user = (User) session.getAttribute("user");
-		
-		
 		
 		int idInterview;
 		try {
@@ -230,11 +240,10 @@ public class Interviewer extends HttpServlet {
 		}
 		
 		//check that the user owns the internship of the interview
-		
 		try {
 			if(!interviewdao.checkOwnerShip(email, idInterview)) {
 				response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-				response.getWriter().println("the company doesn't owns the intership relative to the interview");
+				response.getWriter().println("the company doesn't own the intership relative to the interview");
 				return;
 			}
 		} catch (SQLException e) {
@@ -257,6 +266,7 @@ public class Interviewer extends HttpServlet {
 			q.setAnswer(StringEscapeUtils.escapeJava(request.getParameter(String.valueOf(q.getId()))));
 		}
 		
+		//add all the answers to the interview
 		for(Question q : questions) {
 			try {
 				interviewdao.setAnswer(q);
@@ -266,20 +276,18 @@ public class Interviewer extends HttpServlet {
 				return;
 			}
 		}
-		//TODO controlla che la company possegga il match dove c'è l'interview
 		
 		response.setStatus(HttpServletResponse.SC_OK);
 	}
 	
+	/**
+	 * The company has accepted or denied the interview, this method update the db based on the company response
+	 * @param email of the company 
+	 * @throws IOException
+	 */
 	private void submitSelection(String email, HttpServletRequest request, HttpServletResponse response) throws IOException {
 		
-		InterviewDAO interviewdao = new InterviewDAO(connection);
-		MatchDAO matchdao = new MatchDAO(connection);
-		CompanyDAO companydao = new CompanyDAO(connection);
-		HttpSession session = request.getSession();	
-		User user = (User) session.getAttribute("user");
-		
-		
+		InterviewDAO interviewdao = new InterviewDAO(connection);		
 		
 		int idInterview, selected;
 		try {
@@ -295,12 +303,15 @@ public class Interviewer extends HttpServlet {
 			return;
 		}
 	
+		
 		try {
+			//controll the company has that interview
 			if(!interviewdao.checkOwnerShip(email, idInterview)) {
 				response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 				response.getWriter().println("the company doesn't owns the intership relative to the interview");
 				return;
 			}
+			//update db
 			interviewdao.acceptDeclineInterview(idInterview, (selected >0));
 		} catch (SQLException e) {
 			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
@@ -310,15 +321,16 @@ public class Interviewer extends HttpServlet {
 		response.setStatus(HttpServletResponse.SC_OK);
 	}
 	
-	
+	/**
+	 * Find all the answer of a particular interview 
+	 * @param email company
+	 * @throws IOException
+	 */
 	private void getAnswers(String email, HttpServletRequest request, HttpServletResponse response) throws IOException {
 		
 		MatchDAO matchdao = new MatchDAO(connection);
-		CompanyDAO companydao = new CompanyDAO(connection);
 		HttpSession session = request.getSession();	
 		User user = (User) session.getAttribute("user");
-		
-		
 		
 		int idMatch;
 		try {
@@ -332,7 +344,7 @@ public class Interviewer extends HttpServlet {
 			return;
 		}
 		
-		
+		//control the company has that match
 		try {
 			if(!matchdao.controlOwnership(email, idMatch, user.getWhichUser())) {
 				response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
@@ -345,6 +357,7 @@ public class Interviewer extends HttpServlet {
 			return;
 		}
 		
+		//return interview answers 
 		try {
 			Interview interview = matchdao.getAnswers(idMatch);
 			if(interview == null) {

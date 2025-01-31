@@ -27,7 +27,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
- * Servlet implementation class LoginManager
+ * Servlet implementation class LoginManager, manages the login of the users
  */
 @WebServlet("/LoginManager")
 @MultipartConfig
@@ -66,7 +66,7 @@ public class LoginManager extends HttpServlet {
 		String email = StringEscapeUtils.escapeJava(request.getParameter("email"));
 		String pwd = StringEscapeUtils.escapeJava(request.getParameter("pwd"));
 		
-		
+		//input control
 		if (email == null || email.isEmpty() || pwd== null || pwd.isEmpty()) {
 			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 			response.getWriter().println("Credentials can't be empty!");
@@ -76,6 +76,7 @@ public class LoginManager extends HttpServlet {
 		UserDAO usr = new UserDAO(connection);
 		User u = null;
 		
+		//try login
 		try {
 			u = usr.sendFormLogin(email, pwd);
 		} catch (SQLException e) {
@@ -85,16 +86,17 @@ public class LoginManager extends HttpServlet {
  		}		
 		
 		
-		// se l'utente non è registrato o credenziali non valide
+		// credentials failed or no user found
 		if(u == null) {
 			response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 			response.getWriter().println("Credentials failed, retry!");
 			return;
 		}
 		
-		//se tutto va bene
+		//everything fine
 		request.getSession().setAttribute("user", u);
 		String user = null;
+		//set user session
 		if(u.getWhichUser().equals("student")) {
 			request.getSession().setAttribute("userType", "student");
 			user = new Gson().toJson("student");

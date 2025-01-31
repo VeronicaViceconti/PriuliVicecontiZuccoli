@@ -34,7 +34,7 @@ import it.polimi.se2.sandc.dao.NotifDAO;
 import it.polimi.se2.sandc.dao.StudentDAO;
 
 /**
- * Servlet implementation class MatchManager
+ * Servlet implementation class MatchManager, manages all the actions related to the company or student matches 
  */
 @WebServlet("/MatchManager")
 @MultipartConfig
@@ -98,60 +98,66 @@ public class MatchManager extends HttpServlet {
 	 *      response)
 	 */
 	public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
+		
 		HttpSession s = request.getSession();
 		String userType = (String) s.getAttribute("userType");
 		User user = (User) request.getSession().getAttribute("user");
-		if (userType.equalsIgnoreCase("student")) { // we want to use student profile -> search company publications
-			// the internship exists, now need to find the correspond student's publication
-			switch (request.getParameter("page").toString()) { // uso lo switch per capire quale azione dobbiamo fare in
-																// questa servlet
-			case "acceptMatch": // when the page need to open one internship
-				if (request.getParameter("IDmatch") != null && request.getParameter("accept") != null) {
-					acceptMatch(response, Integer.parseInt(request.getParameter("IDmatch")), user.getEmail(), userType,
-							Integer.parseInt(request.getParameter("accept")));
-				} else {
-					response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+		
+		if(userType.equalsIgnoreCase("student")) { //if user is student
+			
+			 switch (request.getParameter("page").toString()) { 
+			 	case "acceptMatch": //student accepted a match
+			 		//control input
+			 		if(request.getParameter("IDmatch") != null && request.getParameter("accept") != null) {
+			 			//update match on db
+			 			acceptMatch(response,Integer.parseInt(request.getParameter("IDmatch")),user.getEmail(),userType,Integer.parseInt(request.getParameter("accept")));
+			 		}else {
+			 			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+						response.getWriter().println("missing values");
+						return;
+			 		}
+			 		break;
+			 	default:
+			 			response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+			 } 
+		}else { //we want to use company
+			switch (request.getParameter("page").toString()) { 
+		 	case "showMatches": //show matches info
+		 		showAllCompanyMatches(response,user.getEmail());
+		 		break;
+		 	case "acceptMatch": //company accept a match
+		 		//input control
+		 		if(request.getParameter("IDmatch") != null && request.getParameter("accept") != null) {
+		 			//update match on db
+		 			acceptMatch(response,Integer.parseInt(request.getParameter("IDmatch")),user.getEmail(),userType,Integer.parseInt(request.getParameter("accept")));
+		 		}else {
+		 			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 					response.getWriter().println("missing values");
 					return;
-				}
-				break;
-			default:
-				response.setStatus(HttpServletResponse.SC_NOT_FOUND);
-			}
-		} else { // we want to use company
-			switch (request.getParameter("page").toString()) { // uso lo switch per capire quale azione dobbiamo fare in
-																// questa servlet
-			case "showMatches": // when the page need to open one internship
-				showAllCompanyMatches(response, user.getEmail());
-				break;
-			case "acceptMatch": // when the page need to open one internship
-				if (request.getParameter("IDmatch") != null && request.getParameter("accept") != null) {
-					acceptMatch(response, Integer.parseInt(request.getParameter("IDmatch")), user.getEmail(), userType,
-							Integer.parseInt(request.getParameter("accept")));
-				} else {
-					response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+		 		}
+		 		break;
+		 	case "openMatch": //open match info
+		 		if(request.getParameter("IDmatch") != null) {
+		 			Integer idMatch = Integer.parseInt(request.getParameter("IDmatch"));
+			 		openMatch(response,idMatch);
+		 		}else {
+		 			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 					response.getWriter().println("missing values");
 					return;
-				}
-				break;
-			case "openMatch":
-				if (request.getParameter("IDmatch") != null) {
-					Integer idMatch = Integer.parseInt(request.getParameter("IDmatch"));
-					openMatch(response, idMatch);
-				} else {
-					response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-					response.getWriter().println("missing values");
-					return;
-				}
-
-				break;
-			default:
-				response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+		 		}
+		 		break;
+		 	default:
+		 		response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+		 		break;
 			}
 		}
 	}
 
+	/**
+	 * Find all the information about the correlated student + main match infos
+	 * @param idMatch to be opened
+	 * @throws IOException
+	 */
 	private void openMatch(HttpServletResponse response, Integer idMatch) throws IOException {
 		StudentDAO studentdao = new StudentDAO(connection);
 		Publication pub = null;
@@ -159,7 +165,8 @@ public class MatchManager extends HttpServlet {
 		try {
 			pub = studentdao.getProfileAndPubPreferences(idMatch);
 
-			if (pub.getStudent().getCv() != null) {
+			//manages the cv info 
+			if(pub.getStudent().getCv() != null) {
 				File f = new File(pub.getStudent().getCv());
 				if (f.exists()) {
 					byte[] fileContent = new byte[(int) f.length()];
@@ -170,13 +177,11 @@ public class MatchManager extends HttpServlet {
 				}
 			}
 			String pubString = new Gson().toJson(pub);
-
-			// Imposta il tipo di contenuto e invia la risposta
-			response.setContentType("application/json");
-			response.getWriter().write(pubString);
-			response.setStatus(HttpServletResponse.SC_OK);
+	
+	       response.setContentType("application/json");
+	       response.getWriter().write(pubString);       
+	       response.setStatus(HttpServletResponse.SC_OK);
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 			response.getWriter().println("Error opening infos match, retry later");
 			return;
@@ -184,11 +189,19 @@ public class MatchManager extends HttpServlet {
 
 	}
 
-	private void acceptMatch(HttpServletResponse response, int matchID, String email, String userType,
-			int acceptedOrNot) throws IOException {
 
+	/**
+	 * 
+	 * @param matchID to be accepted
+	 * @param email of the user
+	 * @param userType, string that indicate if the current user is student or company
+	 * @param acceptedOrNot, 1 or 0
+	 * @throws IOException
+	 */
+	private void acceptMatch(HttpServletResponse response, int matchID, String email,String userType,int acceptedOrNot) throws IOException {
+		
 		MatchDAO match = new MatchDAO(connection);
-		// controll that the student has that match
+		//control that the student has that match
 		try {
 			Boolean YN = match.controlOwnership(email, matchID, userType);
 			if (!YN) {
@@ -197,15 +210,16 @@ public class MatchManager extends HttpServlet {
 				return;
 			}
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 			response.getWriter().println("Error controlling ownership, retry later");
 			return;
 		}
 
 		try {
-			if (acceptedOrNot == 1)
-				match.updateMatchAccepted(matchID, userType, acceptedOrNot);
+			//if the match is accepted, update the db 
+			if(acceptedOrNot == 1)
+				match.updateMatchAccepted(matchID,userType,acceptedOrNot);
+			//if not accepted, the match is no more important
 			else
 				match.deleteMatch(matchID);
 		} catch (SQLException e) {
@@ -216,6 +230,11 @@ public class MatchManager extends HttpServlet {
 		}
 	}
 
+	/**
+	 * Show all the matches and all the info about them
+	 * @param email company
+	 * @throws IOException
+	 */
 	private void showAllCompanyMatches(HttpServletResponse response, String email) throws IOException {
 		MatchDAO match = new MatchDAO(connection);
 		List<Match> matches = null;
@@ -224,7 +243,6 @@ public class MatchManager extends HttpServlet {
 			matches = match.findCompanyMatches(email);
 			String matchString = new Gson().toJson(matches);
 
-			// Imposta il tipo di contenuto e invia la risposta
 			response.setContentType("application/json");
 			response.getWriter().write(matchString);
 			response.setStatus(HttpServletResponse.SC_OK);

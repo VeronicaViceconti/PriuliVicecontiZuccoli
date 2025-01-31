@@ -14,13 +14,12 @@
 	}
 
 	showLogin = function() {
-
 		document.getElementById("login").style.display = 'block';
 		document.getElementById("Signin").style.display = 'none';
 		document.getElementById("errors").textContent = "";
 	}
 	
-	
+	//the right input to show
 	studentRadios.forEach(radio => {
 	  radio.addEventListener('change', function() {  
 	    if (this.checked) {
@@ -41,7 +40,6 @@
 	document.getElementById("link-login").addEventListener('click', (e) => {
 		showLogin();
 	});
-
 
 	function saveFCMToken(token) {
 		makeCall("POST", 'MatchManager?page=saveToken&token=' + token, null,
@@ -67,12 +65,13 @@
 		var studyCourse = form.querySelector("[name='StudyCourse']").value;
 		const regexTel = /^[0-9]{10}$/;
 
-		//controllo che l'utente inserisca una mail : somenthing@something.something
+		//mail : somenthing@something.something
 		if (!regex.test(email)) {
 			document.getElementById("signInError").textContent = "This is not a real email!";
 			return;
 		}
 		
+		//all input control
 		if (!regexTel.test(phoneNumber)) {
 			document.getElementById("signInError").textContent = "This is not a real telephone number!";
 			return;
@@ -105,14 +104,13 @@
 		}
 
 		if (form.checkValidity()) {
-			//metodo post della servlet CheckLogin
 			makeCall("POST", 'SignupManager', form,
-				function(x) { // X è UN OGGETTO XMLHttpRequest
+				function(x) { // 
 					if (x.readyState == XMLHttpRequest.DONE) {
 						var message = x.responseText;
 
 						switch (x.status) {
-							case 200:  //richiesta andata a buon fine
+							case 200:  
 								showLogin();
 								break;
 							case 400: // bad request
@@ -136,21 +134,22 @@
 		document.getElementById("userEmail").innerText = form.elements["email"].value;
 		if (form.checkValidity()) {
 			makeCall("POST", 'LoginManager?page=toHomepage', form,
-				function(x) { // X è UN OGGETTO XMLHttpRequest
+				function(x) {
 					if (x.readyState == XMLHttpRequest.DONE) {
 						var message = x.responseText;
 						switch (x.status) {
-							case 200:  //richiesta andata a buon fine
 
+							case 200: 
 								var jsonData = JSON.parse(message);
 								sessionStorage.setItem('user', jsonData);  //mi salvo in js il nome dell'utente
 								saveFCMToken(document.getElementById("token").innerText);
 
 								if (jsonData === "company")
-									window.location.href = "CompanyHTML/homePageCompany.html";
+									window.location.href = "homePageCompany.html";
 								else
 									window.location.href = "homePageStudente.html";
 
+								sessionStorage.setItem('user', jsonData);  //save user in session
 								break;
 							case 400: // bad request
 								document.getElementById("errors").textContent = message;

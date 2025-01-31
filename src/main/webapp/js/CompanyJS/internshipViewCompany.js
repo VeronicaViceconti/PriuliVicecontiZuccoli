@@ -15,7 +15,7 @@
 	const tab = sessionStorage.getItem("tab");
 	const IDMatch = sessionStorage.getItem("matchID");
 
-	window.onload = function() {
+	window.onload = function() { //open the right infos based on the current tab selected
 
 		jobDesc.innerText = "";
 		workCond.innerText = "";
@@ -26,7 +26,7 @@
 		openPositions.innerText = "";
 
 		switch (tab) {
-			case "ongoing":
+			case "ongoing": //if internship is in ongoing, can ask for writing complain
 				pageTitle.innerHTML = "Ongoing internship Info";
 
 				let complaintBtn = document.createElement("div");
@@ -39,7 +39,7 @@
 
 				actionBtnsContainer.appendChild(complaintBtn);
 				break;
-			case "proposed":
+			case "proposed": //if internship is proposed, can modify or delete it
 				pageTitle.innerHTML = "Proposed internship info";
 
 				let modifyBtn = document.createElement("div");
@@ -62,7 +62,7 @@
 				actionBtnsContainer.appendChild(deleteBtn);
 
 				break;
-			case "waitingFeed":
+			case "waitingFeed": //if internship need feedback, you can add it
 
 				pageTitle.innerHTML = "Request for Feedback";
 
@@ -76,7 +76,7 @@
 				actionBtnsContainer.appendChild(feedbackBtn);
 				break;
 		}
-
+		//in each tab,need to load internship info
 		loadInternshipInfo(IDMatch);
 
 	}
@@ -94,12 +94,10 @@
 			case "proposed" :
 				makeCall("GET", "ProfileManager?page=internshipInfo&ID=" + IDMatch, null,
 					(req) => {
-						console.log(IDMatch);
 						if (req.readyState == 4) {
 							switch (req.status) {
 								case 200: // andato a buon fine
 									var jsonData = JSON.parse(req.responseText);
-									console.log(jsonData);
 									//fill the page							
 									company.innerText = jsonData.company.name;
 									role.innerText = jsonData.roleToCover;
@@ -115,27 +113,25 @@
 									}
 									break;
 								case 403:
-									console.log("errore 403");
+									alert(req.responseText);
 									break;
 								case 412:
-									console.log("errore 412");
+									alert(req.responseText);
 									break;
 								case 500:
-									console.log("errore 500");
+									alert(req.responseText);
 									break;
 							}
 						}
 				});
 				break;
-			default :
+			default : //ask for internship info
 				makeCall("GET", "ProfileManager?page=internshipInfo&IDMatch=" + IDMatch, null,
 					(req) => {
-						console.log(IDMatch);
 						if (req.readyState == 4) {
 							switch (req.status) {
-								case 200: // andato a buon fine
+								case 200: 
 									var jsonData = JSON.parse(req.responseText);
-									console.log(jsonData);
 									//fill the page							
 									company.innerText = jsonData.internship.company.name;
 									role.innerText = jsonData.internship.roleToCover;
@@ -151,13 +147,14 @@
 									}
 									break;
 								case 403:
-									console.log("errore 403");
+									alert(req.responseText);
 									break;
 								case 412:
-									console.log("errore 412");
+									alert(req.responseText);
+									window.location.href = "index.html";
 									break;
 								case 500:
-									console.log("errore 500");
+									alert(req.responseText);
 									break;
 							}
 						}

@@ -1,5 +1,4 @@
 {
-	const pageTitle = document.getElementById("pageTitle");
 	const workingConditions = document.getElementById("workingConditions");
 	const jobDesc = document.getElementById("jobDescription");
 	const actionBtnsContainer = document.getElementById("actionButtonContainer");
@@ -15,7 +14,8 @@
 	const internID = sessionStorage.getItem("internshipID");
 	var companyToken;
 
-	window.onload = function() {
+	window.onload = function() {//open different infos based on the current tab clicked
+
 
 		jobDesc.innerText = "";
 		workingConditions.innerText = "";
@@ -28,22 +28,23 @@
 		loadInternshipInfo(internID);
 
 		switch (tab) {
-			case "available/newMatch":
-				pageTitle.innerHTML = "Internship Info";
+			case "available/newMatch": //need to open internship info and working preferences
+				document.title = "Internship Info";
 
 				let applyBtn = document.createElement("div");
 				applyBtn.classList.add("brownBtn");
 				applyBtn.textContent = "Apply";
 				loadPubAndWP(); //load the user pubblications
-				applyBtn.onclick = function() {
+				applyBtn.onclick = function() {//if student apply, need to create match
+
 					const optionChosen = document.getElementById("options").value;
 					createMatch(optionChosen);
 				}
 
 				actionBtnsContainer.appendChild(applyBtn);
 				break;
-			case "matches":
-				pageTitle.innerHTML = "Match info";
+			case "matches": //need to open match info
+				document.title = "Match info";
 
 				let acceptBtn = document.createElement("div");
 				acceptBtn.classList.add("brownBtn");
@@ -53,46 +54,50 @@
 				declineBtn.classList.add("hollowBtn");
 				declineBtn.textContent = "decline";
 
+				//match accepted
 				acceptBtn.onclick = function() {
 					var matchID = sessionStorage.getItem("matchID");
 					makeCall("GET", "MatchManager?page=acceptMatch&accept=1&IDmatch=" + matchID, null,
-						(req) => {
-							if (req.readyState == 4) {
-								switch (req.status) {
-									case 200: // andato a buon fine
-										homeBtn.click();
-										break;
-									case 403:
-										console.log("errore 403");
-										break;
-									case 412:
-										console.log("errore 412");
-										break;
-									case 500:
-										console.log("errore 500");
-										break;
+							(req) => {
+								if (req.readyState == 4) {
+									switch (req.status) {
+										case 200:
+											homeBtn.click();
+											break;
+										case 403:
+											alert(req.responseText);
+											break;
+										case 412:
+											alert(req.responseText);
+											window.location.href = "index.html";
+											break;
+										case 500:
+											alert(req.responseText);
+											break;
+									}
 								}
-							}
-						});
+							});
 				}
 
+				//match declined
 				declineBtn.onclick = function() {
 					var matchID = sessionStorage.getItem("matchID");
 					makeCall("GET", "MatchManager?page=acceptMatch&accept=0&IDmatch=" + matchID, null,
 						(req) => {
 							if (req.readyState == 4) {
 								switch (req.status) {
-									case 200: // andato a buon fine
+									case 200:
 										homeBtn.click();
 										break;
 									case 403:
-										console.log("errore 403");
+										alert(req.responseText);
 										break;
 									case 412:
-										console.log("errore 412");
+										alert(req.responseText);
+										window.location.href = "index.html";
 										break;
 									case 500:
-										console.log("errore 500");
+										alert(req.responseText);
 										break;
 								}
 							}
@@ -102,8 +107,8 @@
 				actionBtnsContainer.appendChild(acceptBtn);
 				actionBtnsContainer.appendChild(declineBtn);
 				break;
-			case "ongoing":
-				pageTitle.innerHTML = "Ongoing internship";
+			case "ongoing": //open ongoing internship info and can write complain on it
+				document.title  = "Ongoing internship";
 
 				let complaintBtn = document.createElement("div");
 				complaintBtn.classList.add("brownBtn");
@@ -115,9 +120,9 @@
 				actionBtnsContainer.appendChild(complaintBtn);
 
 				break;
-			case "waitingFeed":
+			case "waitingFeed": //internships that waiting for feedback, can write it
 
-				pageTitle.innerHTML = "Request for Feedback";
+				document.title  = "Request for Feedback";
 
 				let feedbackBtn = document.createElement("div");
 				feedbackBtn.classList.add("brownBtn");
@@ -128,12 +133,13 @@
 
 				actionBtnsContainer.appendChild(feedbackBtn);
 				break;
-			case "waitingInterview":
-				pageTitle.innerHTML = "Waiting for interview";
+			case "waitingInterview": //internships that are waiting interview
+				document.title = "Waiting for interview";
 				break;
 
 		}
 
+		loadInternshipInfo(sessionStorage.getItem("internshipID"));
 	}
 
 	homeBtn.addEventListener("click", () => {
@@ -151,11 +157,9 @@
 					switch (req.status) {
 						case 200: // andato a buon fine
 							var jsonData = JSON.parse(req.responseText);
-							console.log(jsonData);
 							if (jsonData != null) {
 								
 								companyToken = jsonData.company.token;
-								
 								company.innerText = jsonData.company.name;
 								role.innerText = jsonData.roleToCover;
 								location.innerText = jsonData.company.address;
@@ -172,20 +176,21 @@
 
 							break;
 						case 403:
-							console.log("errore 403");
+							alert(req.responseText);
 							break;
 						case 412:
-							console.log("errore 412");
+							alert(req.responseText);
+							window.location.href = "index.html";
 							break;
 						case 500:
-							console.log("errore 500");
+							alert(req.responseText);
 							break;
 					}
 				}
 			});
 	}
-
-	function loadPubAndWP() {
+	
+	function loadPubAndWP() { //ask all student publications and working preferences 
 		makeCall("GET", "ProfileManager?page=openPubAndWP", null,
 			(req) => {
 				if (req.readyState == 4) {
@@ -225,13 +230,14 @@
 
 							break;
 						case 403:
-							console.log("errore 403");
+							alert(req.responseText);
 							break;
 						case 412:
-							console.log("errore 412");
+							alert(req.responseText);
+							window.location.href = "index.html";
 							break;
 						case 500:
-							console.log("errore 500");
+							alert(req.responseText);
 							break;
 					}
 				}
@@ -245,18 +251,19 @@
 			(req) => {
 				if (req.readyState == 4) {
 					switch (req.status) {
-						case 200: // andato a buon fine
+						case 200: 					
 							sendNotif("New Match!", "New match available", companyToken);
 							window.location.href = "homePageStudente.html";
 							break;
 						case 403:
-							console.log("errore 403");
+							alert(req.responseText);
 							break;
 						case 412:
-							console.log("errore 412");
+							alert(req.responseText);
+							window.location.href = "index.html";
 							break;
 						case 500:
-							console.log("errore 500");
+							alert(req.responseText);
 							break;
 					}
 				}
