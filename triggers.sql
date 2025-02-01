@@ -19,26 +19,26 @@ IF EXISTS (SELECT * FROM Student WHERE email = NEW.email)
     END IF;
  end//
  
- create trigger matchMakerStudents
+  delimiter //
+create trigger matchMakerStudents
  after insert on Preference 
- for each row  	
+ for each row
  begin 
-	declare num Integer;
+    declare num Integer;
     select count(*) into num
     from preference
-	where idPublication = new.idPublication;
-    
-	insert into Matches (idPublication, idInternship)  
-		select idPublication, idInternship as internship
-		from  Preference as p inner join Requirement as r on p.idWorkingPreferences = r.idWorkingPreference
+    where idPublication = new.idPublication;
+
+    insert into Matches (idPublication, idInternship)
+        select idPublication, idInternship as internship
+        from  Preference as p inner join Requirement as r on p.idWorkingPreferences = r.idWorkingPreference
         where idPublication = new.idPublication and not exists (select * from Matches as m where m.idPublication = p.idPublication and r.idInternship = m.idInternship) 
-			and  (select count(*) from internship inner join matches on internship.id = matches.idInternship inner join interview on matches.id = interview.idMatch
-					where interview.confirmedYN = 1 and internship.id = r.idInternship) < (select openSeats from internship where internship.id = r.idInternship) and current_date() < (select startingDate from internship where internship.id = r.idInternship)
+            and (select openSeats from internship where internship.id = r.idInternship) > 0 and current_date() < (select startingDate from internship where internship.id = r.idInternship)
         group by idPublication, idInternship
         having count(*) >= (num - 1) or count(*) >= ((select count(*) from requirement where idInternship = r.idInternship) -1) ;
  end //
  
- delimiter //
+
  create trigger matchMakerCompanies
  after insert on Requirement 
  for each row 
@@ -91,36 +91,22 @@ delimiter ;
  end //
  
  
- 
+delimiter //
  create trigger deleteMatchWhenNoMoreAvailableSeats 
- after update on interview
+ after update on internship
  for each row 
  begin 
-	declare intId integer;
-    declare seats integer;
-	declare occupied integer;
-    
-    select m.idInternship into intId
-    from interview as i inner join matches as m on i.idMatch = m.id
-    where i.id = new.id;
-	
-	select openSeats into seats from internship where id = intId;
-    
-    select count(*) into occupied
-    from matches as m inner join interview as i on i.idMatch = m.id
-    where confirmedYN = true and m.idInternship = intId;
- 	if seats = occupied then
-		create temporary table temp_match as 
-           select m.id
-			from matches as m inner join interview as i on  i.idMatch = m.id
-			where i.confirmedYN = true and m.idInternship = intId;
-            
-			delete from matches where id not in (select id from temp_match) and idInternship = intId;
-            
-            drop temporary table temp_match;
-        end if;
+    if new.openSeats = 0 then
+        create temporary table temp_match as 
+        select m.id
+        from matches as m inner join interview as i on  i.idMatch = m.id
+        where i.confirmedYN = true and m.idInternship = new.id;
+
+        delete from matches where id not in (select id from temp_match) and idInternship = new.id;
+
+        drop temporary table temp_match;
+    end if;
  end//
-  
   
  create trigger deleteMatchFalseInterview
  after update on interview

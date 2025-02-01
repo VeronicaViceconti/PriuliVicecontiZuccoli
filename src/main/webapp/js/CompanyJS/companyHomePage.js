@@ -92,6 +92,7 @@
 		avail_newMatch_section.innerHTML = "";
 		waitingResponse_section.innerHTML = "";
 		waitingInterview_section.innerHTML = "";
+		acceptDeclineInterview_section.innerHTML = "";
 	}
 
 	//this function create the match card with basic info (student info)

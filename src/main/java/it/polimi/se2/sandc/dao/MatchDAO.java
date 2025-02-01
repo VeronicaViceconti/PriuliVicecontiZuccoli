@@ -233,10 +233,26 @@ public class MatchDAO {
 					if(result2.getString("confirmedYN") != null) {
 			            continue;
 			        }else {
-			        	if(result2.getString("interviewID") != null) //interview made
-			        		match.setconfirmedYN(true);
-			        	else
-			        		match.setconfirmedYN(false); //interview not still made
+			        	if(result2.getString("interviewID") != null) { //interview made
+			                    String query2 = "select * from interview inner join question on interview.idForm = question.idForm where question.answer is not null and interview.id = ?";
+			                    try(PreparedStatement stat2 = connection.prepareStatement(query2)){
+			                      stat2.setInt(1, result2.getInt("interviewID"));
+			                      try(ResultSet r = stat2.executeQuery()){
+			                        if(r.isBeforeFirst()) {
+			                          match.setconfirmedYN(true);//interview made
+			                        }else {
+			                          String query3  = "delete from interview where id = ?";
+			                          try(PreparedStatement stat3 = connection.prepareStatement(query3)){
+			                            stat3.setInt(1, result2.getInt("interviewID"));
+			                            stat3.executeUpdate();
+			                          }
+			                          match.setconfirmedYN(false); //exit without sending response
+			                        }
+			                      }
+			                    }
+		                  } else {
+		                    match.setconfirmedYN(false); //interview not still made
+		                  }
 			        }
 				
 					Publication pub = new Publication();

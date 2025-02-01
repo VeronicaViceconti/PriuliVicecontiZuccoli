@@ -257,6 +257,8 @@
 										null
 									);
 								}
+							}else{
+								document.getElementById("available/newMatch").innerText = "No available internships";
 							}
 							
 							break;
