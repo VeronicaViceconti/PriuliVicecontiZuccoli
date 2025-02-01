@@ -561,7 +561,7 @@ class ProfileManagerTest {
 		
 		assertTrue(m.getId() == 1);
 		
-		assertTrue(waitFeedback.size() == 0);
+		assertTrue(waitFeedback == null);
 	}
 	
 	@Test

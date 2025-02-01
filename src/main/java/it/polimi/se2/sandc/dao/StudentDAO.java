@@ -343,13 +343,13 @@ public class StudentDAO {
 				+ "from (((publication as p inner join matches as m on m.idPublication = p.id )\n"
 				+ "inner join internship as i on m.idInternship = i.id) inner join company as c on c.email = i.company) inner join student as s on p.student = s.email\n"
 				+ "where m.id in (select idMatch from interview where confirmedYN = 1) and s.email like ? and current_date() > i.endingDate and\n"
-				+ "s.email not in (select studentID from feedback where studentYN = 1)";
+				+ "s.email not in (select studentID from feedback where studentYN = 1 and feedback.idMatch = m.id)";
 		
 		try(PreparedStatement statement = connection.prepareStatement(query)){
 			statement.setString(1, email);
 			
 			try(ResultSet result = statement.executeQuery()){
-				if(result.isBeforeFirst())
+				if(!result.isBeforeFirst())
 					return null;
 				while(result.next()) {
 					Company c = new Company();
